@@ -16,33 +16,31 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 export default {
-  name: 'HTInputFile',
+  name: "HTInputFile",
   props: {
-    label: { type: String, default: '' },
+    label: { type: String, default: "" },
     modelValue: {
       type: File,
       default: null,
     },
     error: {
       type: String,
-      default: '',
+      default: "",
     },
   },
-  emits: { 'update:modelValue': null },
+  emits: { "update:modelValue": null },
   setup(props, { emit }) {
     const updateFile = (event) => {
-      emit('update:modelValue', event.target.files[0]);
+      emit("update:modelValue", event.target.files[0]);
     };
 
     const fileName = computed(() => {
-      return props.modelValue?.name || '';
+      return props.modelValue?.name || "";
     });
     return { updateFile, fileName };
   },
 };
 </script>
-
-<style lang="scss"></style>

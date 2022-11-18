@@ -26,11 +26,11 @@
 
 <script>
 export default {
-  name: 'HTRadionButtonGroup',
+  name: "HTRadionButtonGroup",
   props: {
     label: {
       type: String,
-      default: '',
+      default: "",
     },
     options: {
       required: true,
@@ -38,7 +38,7 @@ export default {
     },
     modelValue: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   setup(_, { emit }) {
@@ -48,5 +48,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped></style>

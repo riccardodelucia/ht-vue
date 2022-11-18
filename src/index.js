@@ -1,4 +1,5 @@
 import _ from "lodash";
+import "@/assets/style/main.css";
 
 export default {
   install(app) {

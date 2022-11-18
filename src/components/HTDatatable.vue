@@ -54,9 +54,9 @@
 </template>
 
 <script>
-import { reactive, ref, watch, computed } from 'vue';
+import { reactive, ref, watch, computed } from "vue";
 
-const search = ref('');
+const search = ref("");
 const currentPage = ref(0);
 const pageSize = ref(5);
 
@@ -98,22 +98,22 @@ const sortData = (data, columns, currentSortKey, order) => {
   };
 
   return data.slice().sort((a, b) => {
-    const dataColumnIndex = getIndex(columns, 'name', currentSortKey);
+    const dataColumnIndex = getIndex(columns, "name", currentSortKey);
 
     const valueA = a[currentSortKey];
     const valueB = b[currentSortKey];
 
     switch (columns[dataColumnIndex]?.type) {
-      case 'date': {
+      case "date": {
         const dateA = new Date(valueA);
         const dateB = new Date(valueB);
         return (dateB.getTime() - dateA.getTime()) * order;
       }
-      case 'number': {
+      case "number": {
         return (+valueB - +valueA) * order;
       }
 
-      case 'string': {
+      case "string": {
         const stringA = String(valueA).toLowerCase();
         const stringB = String(valueB).toLowerCase();
 
@@ -127,7 +127,7 @@ const sortData = (data, columns, currentSortKey, order) => {
 };
 
 export default {
-  name: 'HTDatatable',
+  name: "HTDatatable",
   props: {
     columns: { type: Array, default: () => [] },
     rows: { type: Array, default: () => [] },
@@ -137,7 +137,7 @@ export default {
     const currentSortKey = ref(
       props.columns.find((column) => {
         sortable(column);
-      })?.name || ''
+      })?.name || ""
     );
 
     const sortOrders = reactive(
@@ -199,120 +199,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.datatable {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-
-  &__controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  &__search {
-    margin-right: auto;
-  }
-
-  &__select {
-    min-width: 8rem;
-  }
-
-  &__table {
-    overflow: scroll;
-  }
-
-  &__pagination {
-    align-self: flex-end;
-  }
-}
-
-.table {
-  border-collapse: collapse;
-  width: 100%;
-  overflow: hidden;
-  table-layout: fixed;
-
-  &__head {
-    text-align: left;
-  }
-
-  &__head-item {
-    padding: 0.5em;
-    color: var(--color-grey-medium);
-    font-size: 1.5rem;
-
-    cursor: pointer;
-
-    &--sorting,
-    &--sorting-asc,
-    &--sorting-desc {
-      padding-right: 18px;
-      position: relative;
-    }
-
-    &--sorting:before,
-    &--sorting:after,
-    &--sorting-asc:before,
-    &--sorting-asc:after,
-    &--sorting-desc:before,
-    &--sorting-desc:after {
-      border: 4px solid transparent;
-      content: '';
-      display: block;
-      height: 0;
-      right: 5px;
-      top: 50%;
-      position: absolute;
-      width: 0;
-    }
-
-    &--sorting:before {
-      border-bottom-color: var(--color-grey-medium);
-      margin-top: -9px;
-    }
-
-    &--sorting:after {
-      border-top-color: var(--color-grey-medium);
-      margin-top: 1px;
-    }
-
-    &--sorting-asc:before {
-      border-bottom-color: var(--color-grey-medium);
-      margin-top: -9px;
-    }
-
-    &--sorting-desc:after {
-      border-top-color: var(--color-grey-medium);
-      margin-top: 1px;
-    }
-  }
-
-  &__body {
-    & > tr > td {
-      padding: 0.3em 0.5em;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  }
-
-  &__body > tr > td,
-  &__head-item {
-    border-bottom: 1px solid var(--color-grey-light);
-  }
-
-  &__n-items-selector {
-    background-color: var(--color-grey-light);
-    border: 1px solid var(--color-grey-medium);
-    border-radius: 8px;
-    padding: 0.2em 0.3em;
-    font-size: 1.5rem;
-
-    &:focus {
-      outline: none;
-    }
-  }
-}
-</style>

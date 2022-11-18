@@ -34,40 +34,38 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 export default {
-  name: 'HTInputFileMultiple',
+  name: "HTInputFileMultiple",
   props: {
-    label: { type: String, default: '' },
+    label: { type: String, default: "" },
     modelValue: {
       type: Array,
       default: null,
     },
     error: {
       type: String,
-      default: '',
+      default: "",
     },
   },
-  emits: { 'update:modelValue': null },
+  emits: { "update:modelValue": null },
   setup(props, { emit }) {
     const updateFile = (event) => {
-      emit('update:modelValue', [...event.target.files]);
+      emit("update:modelValue", [...event.target.files]);
     };
 
     const fileName = computed(() => {
-      return props.modelValue?.name || '';
+      return props.modelValue?.name || "";
     });
 
     const removeFile = (selected) => {
       const files = [...props.modelValue].filter((file) => file !== selected);
 
-      emit('update:modelValue', files.length > 0 ? files : undefined);
+      emit("update:modelValue", files.length > 0 ? files : undefined);
     };
 
     return { updateFile, fileName, removeFile };
   },
 };
 </script>
-
-<style lang="scss"></style>

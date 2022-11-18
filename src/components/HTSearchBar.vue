@@ -12,32 +12,17 @@
 
 <script>
 export default {
-  name: 'HTSearchBar',
+  name: "HTSearchBar",
   props: {
     modelValue: { type: [String, Number], default: undefined },
   },
-  emits: ['search'],
+  emits: ["search"],
   methods: {
     updateValue(e) {
-      this.$emit('search', e.target.value);
+      this.$emit("search", e.target.value);
     },
   },
 };
 </script>
 
-<style lang="scss">
-.search {
-  position: relative;
-
-  input {
-    padding-right: 5rem;
-  }
-
-  &__icon {
-    color: var(--color-grey-dark);
-    position: absolute;
-    right: 1em;
-    top: 0.85em;
-  }
-}
-</style>
+<style lang="scss"></style>

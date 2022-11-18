@@ -14,26 +14,6 @@
 
 <script>
 export default {
-  name: 'HTFooter',
+  name: "HTFooter",
 };
 </script>
-
-<style lang="scss">
-.footer {
-  background-color: var(--color-blue-light);
-
-  &__logo {
-    padding: 2em 3em 0.5em 3em;
-    margin: auto;
-
-    display: block;
-    width: 30rem;
-  }
-
-  &__address {
-    padding: 0.5em 3em 2em 3em;
-    color: #fff;
-    text-align: center;
-  }
-}
-</style>

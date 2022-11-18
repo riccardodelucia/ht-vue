@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'HTThumbnail',
+  name: "HTThumbnail",
   props: {
     img: {
       type: Object,
@@ -18,5 +18,3 @@ export default {
   methods: {},
 };
 </script>
-
-<style lang="scss"></style>

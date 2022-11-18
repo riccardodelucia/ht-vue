@@ -14,26 +14,24 @@
 
 <script>
 export default {
-  name: 'HTCheckbox',
+  name: "HTCheckbox",
   props: {
     label: {
       type: String,
-      default: '',
+      default: "",
     },
     option: {
       type: String,
-      default: '',
+      default: "",
     },
     modelValue: { type: Boolean, required: true },
   },
-  emits: { 'update:modelValue': null },
+  emits: { "update:modelValue": null },
   setup(props, { emit }) {
     const onClick = () => {
-      emit('update:modelValue', !props.modelValue);
+      emit("update:modelValue", !props.modelValue);
     };
     return { onClick };
   },
 };
 </script>
-
-<style lang="scss"></style>

@@ -14,62 +14,26 @@
 
 <script>
 export default {
-  name: 'ToggleSwitch',
+  name: "ToggleSwitch",
   props: {
     label: {
       type: String,
-      default: '',
+      default: "",
     },
     option: {
       type: String,
-      default: '',
+      default: "",
     },
     modelValue: {
       type: Boolean,
       required: true,
     },
   },
-  emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
   methods: {
     onClick() {
-      this.$emit('update:modelValue', !this.modelValue);
+      this.$emit("update:modelValue", !this.modelValue);
     },
   },
 };
 </script>
-
-<style lang="scss">
-.toggle {
-  display: flex;
-  gap: 0.5em;
-  cursor: pointer;
-  user-select: none;
-
-  &__input {
-    width: 5rem;
-    height: 3rem;
-    background-color: white;
-    border: 2px solid var(--color-blue-lighter);
-    border-radius: 3.4rem;
-    position: relative;
-
-    &:after {
-      content: '';
-      position: absolute;
-      left: 0.5rem;
-      top: 0.4rem;
-      width: 1.8rem;
-      height: 1.8rem;
-      border-radius: 50%;
-      background-color: var(--color-blue-lighter);
-      transition: transform 0.2s ease;
-    }
-
-    &--selected {
-      &:after {
-        transform: translate(1.9rem);
-      }
-    }
-  }
-}
-</style>
