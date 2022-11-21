@@ -1,7 +1,7 @@
 {
   "name": "vue-ht-components",
   "author": "Human Technopole SW and Web Unit",
-  "version": "0.0.5",
+  "version": "0.0.0",
   "type": "module",
   "files": [
     "dist"

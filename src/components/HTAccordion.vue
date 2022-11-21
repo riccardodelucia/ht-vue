@@ -39,7 +39,6 @@ export default {
     const isOpen = ref(false);
 
     const collapsed = computed(() => {
-      console.log("called!");
       return isOpen.value ? props.height : 0;
     });
 
