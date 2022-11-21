@@ -4,10 +4,7 @@
       href="https://humantechnopole.it/en/"
       target="_blank"
       class="header__logo-link"
-      ><img
-        src="@/assets/logos/ht-logo-white.svg"
-        alt="HT logo"
-        class="header__logo"
+      ><img :src="imgUrl" alt="HT logo" class="header__logo"
     /></a>
     <slot name="logo"></slot>
     <nav class="header__nav">
@@ -19,5 +16,10 @@
 <script>
 export default {
   name: "HTHeader",
+  data() {
+    return {
+      imgUrl: new URL("../assets/ht-logo-white.svg", import.meta.url).href,
+    };
+  },
 };
 </script>

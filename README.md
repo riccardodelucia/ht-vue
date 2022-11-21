@@ -47,3 +47,7 @@ npm unlink --no-save vue-ht-components
 ```
 npm unlink
 ```
+
+## Important notes
+
+This package relies on an external **ht-design** private package, which only provides the style and the fonts. Nevertheless, the style code is directly bundled within this package. The reason is that it appears to be difficult to add link the fonts from **ht-design** to the corresponding stylesheet. This happens because **ht-design** doesn't execute any
