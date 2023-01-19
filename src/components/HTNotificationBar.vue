@@ -10,13 +10,14 @@
 
 <script>
 export default {
-  name: "HTNotificationBar",
+  name: 'HTNotificationBar',
   props: {
     notification: {
       type: Object,
       required: true,
     },
   },
+  emits: ['notification:delete'],
   computed: {
     notificationClass() {
       return `notification__bar--${this.notification.type}`;
@@ -24,7 +25,7 @@ export default {
   },
   methods: {
     onClick() {
-      this.$store.dispatch("notification/remove", this.notification);
+      this.$emit('notification:delete', this.notification.id);
     },
   },
 };
