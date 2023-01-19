@@ -1,5 +1,5 @@
 {
-  "name": "vue-ht-components",
+  "name": "ht-vue",
   "author": "Human Technopole SW and Web Unit",
   "version": "0.0.0",
   "type": "module",
@@ -7,11 +7,26 @@
     "dist"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/vue-ht-components.js",
-      "require": "./dist/vue-ht-components.umd.js"
+    "./components": {
+      "import": "./dist/components.js",
+      "require": "./dist/components.cjs"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./authentication": {
+      "import": "./dist/auth.js",
+      "require": "./dist/auth.cjs"
+    },
+    "./composables": {
+      "import": "./dist/composables.js",
+      "require": "./dist/composables.cjs"
+    },
+    "./utilities": {
+      "import": "./dist/utilities.js",
+      "require": "./dist/utilities.cjs"
+    },
+    "./api": {
+      "import": "./dist/api.js",
+      "require": "./dist/api.cjs"
+    }
   },
   "scripts": {
     "dev": "vite",
@@ -19,16 +34,26 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@xstate/vue": "^2.0.0",
+    "axios": "^1.2.1",
+    "d3": "^7.7.0",
+    "deepdash-es": "^5.3.9",
     "ht-design": "^0.0.1",
+    "keycloak-js": "^19.0.1",
     "lodash": "^4.17.21",
+    "tippy.js": "^6.3.7",
     "vue": "^3.2.41",
     "vue-feather": "^2.0.0",
     "vue-router": "^4.1.6",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "xstate": "^4.35.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.2.0",
     "autoprefixer": "^10.4.13",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-vue": "^9.8.0",
     "postcss-comment": "^2.0.0",
     "postcss-import": "^15.0.0",
     "postcss-nested": "^6.0.0",

@@ -1,10 +1,10 @@
 <template>
   <div class="search">
     <ht-input
-      v-bind="$attrs"
+      placeholder="Search..."
       type="text"
-      placeholder="Search for job"
       :model-value="modelValue"
+      v-bind="$attrs"
     ></ht-input>
     <div class="search__icon"><vue-feather type="search"></vue-feather></div>
   </div>
@@ -12,17 +12,16 @@
 
 <script>
 export default {
-  name: "HTSearchBar",
+  name: 'HTSearchBar',
+  inheritAttrs: false,
   props: {
     modelValue: { type: [String, Number], default: undefined },
   },
-  emits: ["search"],
+  emits: ['search'],
   methods: {
     updateValue(e) {
-      this.$emit("search", e.target.value);
+      this.$emit('search', e.target.value);
     },
   },
 };
 </script>
-
-<style lang="scss"></style>

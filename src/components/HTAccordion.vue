@@ -23,19 +23,19 @@
 </template>
 
 <script>
-import UniqueID from "@/composables/uuid.js";
-import { ref, computed } from "vue";
+import { uuid as UUID } from '@/utilities/index.js';
+import { ref, computed } from 'vue';
 
 export default {
-  name: "HTAccordion",
+  name: 'HTAccordion',
   props: {
     height: {
       type: String,
-      default: "min-content",
+      default: 'min-content',
     },
   },
   setup(props) {
-    const uuid = UniqueID();
+    const uuid = UUID();
     const isOpen = ref(false);
 
     const collapsed = computed(() => {
