@@ -29,6 +29,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@computational-biology-web-unit/ht-design": "^0.0.1",
     "@xstate/vue": "^2.0.0",
     "axios": "^1.2.1",
     "d3": "^7.7.0",
