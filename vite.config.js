@@ -3,21 +3,22 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 // https://vitejs.dev/config/
+// test
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './lib'),
     },
   },
   build: {
     lib: {
       entry: {
-        components: path.resolve(__dirname, 'src/components/index.js'),
-        auth: path.resolve(__dirname, 'src/authentication/index.js'),
-        composables: path.resolve(__dirname, 'src/composables/index.js'),
-        utilities: path.resolve(__dirname, 'src/utilities/index.js'),
-        api: path.resolve(__dirname, 'src/api/index.js'),
+        index: path.resolve(__dirname, 'lib/components/index.js'),
+        components: path.resolve(__dirname, 'lib/components/index.js'),
+        auth: path.resolve(__dirname, 'lib/auth/index.js'),
+        utilities: path.resolve(__dirname, 'lib/utilities/index.js'),
+        api: path.resolve(__dirname, 'lib/api/index.js'),
       },
     },
     rollupOptions: {

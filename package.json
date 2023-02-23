@@ -7,25 +7,20 @@
     "dist"
   ],
   "exports": {
+    ".": {
+      "import": "./lib/components/index.js"
+    },
     "./components": {
-      "import": "./dist/components.js",
-      "require": "./dist/components.cjs"
+      "import": "./lib/components/components.js"
     },
-    "./authentication": {
-      "import": "./dist/auth.js",
-      "require": "./dist/auth.cjs"
-    },
-    "./composables": {
-      "import": "./dist/composables.js",
-      "require": "./dist/composables.cjs"
+    "./auth": {
+      "import": "./lib/auth/index.js"
     },
     "./utilities": {
-      "import": "./dist/utilities.js",
-      "require": "./dist/utilities.cjs"
+      "import": "./lib/utilities/index.js"
     },
     "./api": {
-      "import": "./dist/api.js",
-      "require": "./dist/api.cjs"
+      "import": "./lib/api/index.js"
     }
   },
   "scripts": {
@@ -41,6 +36,7 @@
     "keycloak-js": "^19.0.1",
     "lodash": "^4.17.21",
     "tippy.js": "^6.3.7",
+    "uuid": "^9.0.0",
     "vue": "^3.2.41",
     "vue-feather": "^2.0.0",
     "vue-router": "^4.1.6",
