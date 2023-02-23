@@ -37,7 +37,7 @@ export default defineConfig({
           'vue-feather': 'VueFeather',
           vuex: 'Vuex',
           'vue-router': 'VueRouter',
-          keycloak: 'Keycloak',
+          'keycloak-js': 'Keycloak',
           tippy: 'tippy',
           xstate: 'XState',
           lodash: '_',
