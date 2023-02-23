@@ -12,7 +12,7 @@
       "import": "./lib/components/index.js"
     },
     "./components": {
-      "import": "./lib/components/components.js"
+      "import": "./dist/components.js"
     },
     "./auth": {
       "import": "./lib/auth/index.js"
