@@ -15,7 +15,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: path.resolve(__dirname, 'lib/components/index.js'),
-        components: path.resolve(__dirname, 'lib/components/index.js'),
+        components: path.resolve(__dirname, 'lib/components/components.js'),
         auth: path.resolve(__dirname, 'lib/auth/index.js'),
         utilities: path.resolve(__dirname, 'lib/utilities/index.js'),
         api: path.resolve(__dirname, 'lib/api/index.js'),
