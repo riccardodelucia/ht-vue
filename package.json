@@ -42,7 +42,6 @@
     "vue": "^3.2.41",
     "vue-feather": "^2.0.0",
     "vue-router": "^4.1.6",
-    "vuex": "^4.1.0",
     "xstate": "^4.35.0"
   },
   "devDependencies": {

@@ -25,11 +25,11 @@ export default defineConfig({
       external: [
         'vue',
         'vue-feather',
-        'vuex',
         'vue-router',
-        'keycloak',
+        'keycloak-js',
         'tippy.js',
         'd3',
+        'xstate',
       ],
       output: {
         globals: {
