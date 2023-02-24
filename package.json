@@ -9,19 +9,19 @@
   ],
   "exports": {
     ".": {
-      "import": "./lib/components/index.js"
+      "import": "./dist/index.js"
     },
     "./components": {
       "import": "./dist/components.js"
     },
     "./auth": {
-      "import": "./lib/auth/index.js"
+      "import": "./dist/index.js"
     },
     "./utilities": {
-      "import": "./lib/utilities/index.js"
+      "import": "./dist/index.js"
     },
     "./api": {
-      "import": "./lib/api/index.js"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
