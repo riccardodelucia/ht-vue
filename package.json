@@ -15,13 +15,13 @@
       "import": "./dist/components.js"
     },
     "./auth": {
-      "import": "./dist/index.js"
+      "import": "./dist/auth.js"
     },
     "./utilities": {
-      "import": "./dist/index.js"
+      "import": "./dist/utilities.js"
     },
     "./api": {
-      "import": "./dist/index.js"
+      "import": "./dist/api.js"
     }
   },
   "scripts": {
