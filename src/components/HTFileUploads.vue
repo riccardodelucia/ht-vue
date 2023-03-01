@@ -3,31 +3,26 @@
     <h4>Uploading Files</h4>
     <HTFileUploadController
       v-for="upload in uploads"
-      :key="upload.storeItemId"
+      :key="upload.id"
       :upload="upload"
-      @upload:delete="deleteUpload(upload)"
+      v-bind="$attrs"
     >
     </HTFileUploadController>
   </div>
 </template>
 
 <script>
-import { useUploads } from './uploads.js';
 import HTFileUploadController from './HTFileUploadController.vue';
 
 export default {
   name: 'HTFileUploads',
   components: { HTFileUploadController },
-  setup() {
-    const uploads = useUploads();
-
-    const deleteUpload = function (upload) {
-      uploads.value = uploads.value.filter((item) => item !== upload);
-    };
-    return {
-      uploads,
-      deleteUpload,
-    };
+  inheritAttrs: false,
+  props: {
+    uploads: {
+      type: Array,
+      default: () => [],
+    },
   },
 };
 </script>

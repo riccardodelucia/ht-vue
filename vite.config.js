@@ -3,47 +3,43 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 // https://vitejs.dev/config/
-// test
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './lib'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
+    sourcemap: true,
     lib: {
       entry: {
-        index: path.resolve(__dirname, 'lib/components/index.js'),
-        components: path.resolve(__dirname, 'lib/components/components.js'),
-        auth: path.resolve(__dirname, 'lib/auth/index.js'),
-        utilities: path.resolve(__dirname, 'lib/utilities/index.js'),
-        api: path.resolve(__dirname, 'lib/api/index.js'),
+        index: path.resolve(__dirname, 'src/index.js'),
+        components: path.resolve(__dirname, 'src/components/components.js'),
       },
     },
     rollupOptions: {
+      // I'm keeping external and output.globals in sync
       external: [
         'vue',
-        'vue-feather',
         'vue-router',
-        'keycloak-js',
-        'tippy.js',
         'd3',
         'xstate',
+        'lodash',
+        'deepdash-es',
+        'vue-feather',
       ],
       output: {
         globals: {
           vue: 'Vue',
-          'vue-feather': 'VueFeather',
-          vuex: 'Vuex',
           'vue-router': 'VueRouter',
-          'keycloak-js': 'Keycloak',
-          tippy: 'tippy',
+          d3: 'd3',
           xstate: 'XState',
           lodash: '_',
-          deepdash: 'deepdash',
-          d3: 'd3',
+          'deepdash-es': 'deepdash',
+          'vue-feather': 'VueFeather',
         },
+        chunkFileNames: 'allComponents.[hash].js',
       },
     },
   },
