@@ -1,16 +1,8 @@
-export * from './composables.js';
-export * from './notifications.js';
-export * from './uploads.js';
-export * from './composables.js';
-
 import _ from 'lodash';
 
-import notifications from './notifications.js';
-import uploads from './uploads.js';
-
-export default {
+export const HTVue = {
   install(app) {
-    const componentFiles = import.meta.globEager('./*.vue');
+    const componentFiles = import.meta.globEager('./components/*.vue');
     Object.entries(componentFiles).forEach(([path, m]) => {
       const componentName = _.upperFirst(
         _.camelCase(
@@ -23,12 +15,6 @@ export default {
 
       app.component(`${componentName}`, m.default);
     });
-
-    app.provide('notifications', notifications);
-    app.config.globalProperties.$notifications = notifications;
-
-    app.provide('uploads', uploads);
-    app.config.globalProperties.$uploads = uploads;
 
     app.directive('click-outside', {
       beforeMount(el, binding) {

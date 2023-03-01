@@ -17,3 +17,4 @@ export { default as HTSelect } from './HTSelect.vue';
 export { default as HTSidenav } from './HTSidenav.vue';
 export { default as HTTextarea } from './HTTextarea.vue';
 export { default as HTToggleSwitch } from './HTToggleSwitch.vue';
+export { default as HTUser } from './HTUser.vue';

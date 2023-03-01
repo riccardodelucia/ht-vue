@@ -4,10 +4,6 @@ export function useNotifications() {
   return inject('notifications');
 }
 
-let notificationId = 0;
-const notificationsTimeout = 5;
-const notifications = ref([]);
-
 function timedOutNotificationDelete(id, timeout) {
   setTimeout(() => {
     notifications.value = notifications.value.filter((item) => item.id !== id);
@@ -50,4 +46,6 @@ export function sendErrorNotification({
   );
 }
 
-export default notifications;
+let notificationId = 0;
+const notificationsTimeout = 5;
+export const notifications = ref([]);

@@ -2,7 +2,7 @@
 import { h, ref, computed } from 'vue';
 import VueFeather from 'vue-feather';
 
-import { resizeListener } from './composables.js';
+import { resizeListener } from '../composables.js';
 
 export default {
   name: 'HTPagination',
