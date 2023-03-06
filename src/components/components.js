@@ -1,6 +1,5 @@
 export { default as HTAccordion } from './HTAccordion.vue';
 export { default as HTBrushArea } from './HTBrushArea.vue';
-export { default as HTChartAxis } from './HTChartAxis.vue';
 export { default as HTCheckbox } from './HTCheckbox.vue';
 export { default as HTDatatable } from './HTDatatable.vue';
 export { default as HTFooter } from './HTFooter.vue';
