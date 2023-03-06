@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, watchEffect } from 'vue';
 
 export const resizeListener = function (resizeListener) {
   onMounted(() => {
@@ -7,5 +7,11 @@ export const resizeListener = function (resizeListener) {
   });
   onUnmounted(() => {
     window.removeEventListener('resize', resizeListener);
+  });
+};
+
+export const makeReactiveAxis = function (axisSetup) {
+  watchEffect(axisSetup, {
+    flush: 'post',
   });
 };
