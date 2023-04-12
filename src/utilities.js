@@ -1,6 +1,7 @@
 import tippy from 'tippy.js';
 import lodash from 'lodash-es';
 import deepdash from 'deepdash-es';
+import { AxiosError } from 'axios';
 const _ = deepdash(lodash);
 
 export const getInnerChartSizes = function (width, height, margin) {
@@ -71,4 +72,23 @@ export function interceptorCamelize(response) {
   }
 
   return response;
+}
+
+///////////////////////////////////////
+
+// Manage async API calls errors
+export function parseErrorMesssage(error) {
+  let message = '';
+  if (error instanceof AxiosError) {
+    message = error?.response
+      ? error.response?.data?.detail
+        ? error.response.data.detail
+        : 'Unknown API response error data'
+      : error.message
+      ? error.message
+      : error;
+  } else {
+    message = error.message ? error.message : error;
+  }
+  return message;
 }

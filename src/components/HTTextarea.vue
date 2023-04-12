@@ -11,10 +11,7 @@
       >
       </textarea>
     </label>
-    <div v-if="error" class="input-field__error">
-      <vue-feather type="alert-circle" size="16px"></vue-feather
-      ><small>{{ error }}</small>
-    </div>
+    <ht-input-error-message :error="error"></ht-input-error-message>
   </div>
 </template>
 
@@ -31,13 +28,13 @@ export default {
       default: '',
     },
     error: {
-      type: String,
-      default: '',
+      type: [String, null],
+      default: null,
     },
   },
-  emits: ['update:modelValue'],
+  emits: ['update:model-value'],
   setup(_, { emit }) {
-    const onInput = (event) => emit('update:modelValue', event.target.value);
+    const onInput = (event) => emit('update:model-value', event.target.value);
     return {
       onInput,
     };
