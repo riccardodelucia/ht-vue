@@ -7,7 +7,6 @@ export { default as HTFormProgressBar } from './HTFormProgressBar.vue';
 export { default as HTHeader } from './HTHeader.vue';
 export { default as HTInput } from './HTInput.vue';
 export { default as HTInputFile } from './HTInputFile.vue';
-export { default as HTInputFileMultiple } from './HTInputFileMultiple.vue';
 export { default as HTModal } from './HTModal.vue';
 export { default as HTPagination } from './HTPagination.vue';
 export { default as HTRadioGroup } from './HTRadioGroup.vue';

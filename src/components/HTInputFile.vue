@@ -3,15 +3,29 @@
     <label v-if="label">{{ label }}</label>
     <div class="file">
       <label class="btn btn--primary btn--sm"
-        >Choose a File
-        <input type="file" style="display: none" @change.stop="updateFile" />
+        >{{ !multiple ? 'Select File' : 'Select Files' }}
+        <input
+          type="file"
+          style="display: none"
+          :multiple="multiple"
+          @change.stop="updateFile"
+        />
       </label>
-      <span>{{ fileName }}</span>
+      <span>{{ filename }}</span>
     </div>
-    <div v-if="error" class="input-field__error">
-      <vue-feather type="alert-circle" size="16px"></vue-feather
-      ><small>{{ error }}</small>
-    </div>
+    <ul v-if="multiple && modelValue.length > 0" class="file__list">
+      <li v-for="(file, i) in modelValue" :key="i">
+        <vue-feather
+          type="x-circle"
+          size="16px"
+          class="file__remove"
+          @click="removeFile(file)"
+        >
+        </vue-feather>
+        <span>{{ file.name }}</span>
+      </li>
+    </ul>
+    <ht-input-error-message :error="error"></ht-input-error-message>
   </div>
 </template>
 
@@ -23,29 +37,50 @@ export default {
   props: {
     label: { type: String, default: '' },
     modelValue: {
-      type: File,
-      default: null,
+      type: [File, Array],
+      default: undefined,
     },
     error: {
-      type: String,
-      default: '',
-    },
-    multiple: {
-      type: Boolean,
-      default: false,
+      type: [String, null],
+      default: null,
     },
   },
-  emits: { 'update:modelValue': null },
+  emits: { 'update:model-value': null },
   setup(props, { emit }) {
-    const updateFile = (event) => {
-      emit('update:modelValue', event.target.files[0]);
-    };
+    let updateFile, filename, removeFile, multiple;
 
-    const fileName = computed(() => {
-      return props.modelValue?.name || '';
-    });
+    if (props.modelValue === undefined) {
+      multiple = false;
+      updateFile = (event) => {
+        emit('update:model-value', event.target.files[0]);
+      };
 
-    return { updateFile, fileName };
+      filename = computed(() => {
+        return props.modelValue?.name || '';
+      });
+    } else if (props.modelValue instanceof File) {
+      multiple = false;
+      updateFile = (event) => {
+        emit('update:model-value', event.target.files[0]);
+      };
+
+      filename = computed(() => {
+        return props.modelValue?.name || '';
+      });
+    } else {
+      multiple = true;
+      updateFile = (event) => {
+        emit('update:model-value', [...event.target.files]);
+      };
+
+      removeFile = (selected) => {
+        const files = [...props.modelValue].filter((file) => file !== selected);
+
+        emit('update:model-value', files);
+      };
+    }
+
+    return { updateFile, removeFile, filename, multiple };
   },
 };
 </script>
