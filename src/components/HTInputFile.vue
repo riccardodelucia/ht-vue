@@ -1,41 +1,25 @@
 <template>
-  <div class="input-field">
-    <label v-if="label">{{ label }}</label>
-    <div class="file">
-      <label class="btn btn--primary btn--sm"
-        >{{ !multiple ? 'Select File' : 'Select Files' }}
-        <input
-          type="file"
-          style="display: none"
-          :multiple="multiple"
-          @change.stop="updateFile"
-        />
-      </label>
-      <span>{{ filename }}</span>
+  <div>
+    <label :for="uuid">{{ label }}</label>
+    <div class="input-file-container">
+      <input :id="uuid" type="file" v-bind="$attrs" :aria-invalid="error ? true : null" @change.stop="updateFiles" />
+      <span class="filename">{{ filename }}</span>
     </div>
-    <ul v-if="multiple && modelValue.length > 0" class="file__list">
-      <li v-for="(file, i) in modelValue" :key="i">
-        <vue-feather
-          type="x-circle"
-          size="16px"
-          class="file__remove"
-          @click="removeFile(file)"
-        >
-        </vue-feather>
-        <span>{{ file.name }}</span>
-      </li>
-    </ul>
-    <ht-input-error-message :error="error"></ht-input-error-message>
+    <small v-if="error" class="ht-error-message">{{ error }}</small>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   name: 'HTInputFile',
   props: {
-    label: { type: String, default: '' },
+    label: {
+      type: String,
+      default: '',
+    },
     modelValue: {
       type: [File, Array],
       default: undefined,
@@ -47,40 +31,50 @@ export default {
   },
   emits: { 'update:model-value': null },
   setup(props, { emit }) {
-    let updateFile, filename, removeFile, multiple;
+    const uuid = uuidv4();
 
-    if (props.modelValue === undefined) {
-      multiple = false;
-      updateFile = (event) => {
+    const uploadMsg = ref('');
+
+    const updateFiles = (event) => {
+      if (!event.target.hasAttribute('multiple')) {
         emit('update:model-value', event.target.files[0]);
-      };
-
-      filename = computed(() => {
-        return props.modelValue?.name || '';
-      });
-    } else if (props.modelValue instanceof File) {
-      multiple = false;
-      updateFile = (event) => {
-        emit('update:model-value', event.target.files[0]);
-      };
-
-      filename = computed(() => {
-        return props.modelValue?.name || '';
-      });
-    } else {
-      multiple = true;
-      updateFile = (event) => {
+        uploadMsg.value = event.target.files[0].name;
+      } else {
         emit('update:model-value', [...event.target.files]);
-      };
+        const fileLength = event.target.files.length;
+        uploadMsg.value = `${fileLength} files`;
+      }
+    };
 
-      removeFile = (selected) => {
-        const files = [...props.modelValue].filter((file) => file !== selected);
+    const filename = computed(() => {
+      if (Array.isArray(props.modelValue)) return props.modelValue.length > 0 ? props.modelValue.length > 1 ? `${props.modelValue.length} files` : "1 file" : ""
+      return props.modelValue?.name;
+    })
 
-        emit('update:model-value', files);
-      };
-    }
-
-    return { updateFile, removeFile, filename, multiple };
+    return { updateFiles, uuid, uploadMsg, filename };
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.input-file-container {
+  position: relative;
+  width: max-content;
+}
+
+input[type="file"] {
+  color: transparent;
+}
+
+.filename {
+  position: absolute;
+  left: 9rem;
+  top: .7rem;
+  max-width: calc(100% - 9rem);
+  max-height: 2em;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

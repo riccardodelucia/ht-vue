@@ -1,21 +1,13 @@
 <template>
-  <div class="input-field">
-    <label v-if="label" class="input-field__label">
-      {{ label }}
-      <textarea
-        class="textarea"
-        :class="{ 'input--error': error }"
-        :value="modelValue"
-        v-bind="$attrs"
-        @input.stop="onInput"
-      >
-      </textarea>
-    </label>
-    <ht-input-error-message :error="error"></ht-input-error-message>
+  <div>
+    <label :for="uuid">{{ label }}</label>
+    <textarea :id="uuid" :value="modelValue" v-bind="$attrs" @input.stop="onInput"></textarea>
   </div>
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
+
 export default {
   name: 'HTTextArea',
   props: {
@@ -27,16 +19,14 @@ export default {
       type: String,
       default: '',
     },
-    error: {
-      type: [String, null],
-      default: null,
-    },
   },
   emits: ['update:model-value'],
   setup(_, { emit }) {
+    const uuid = uuidv4();
     const onInput = (event) => emit('update:model-value', event.target.value);
     return {
       onInput,
+      uuid,
     };
   },
 };

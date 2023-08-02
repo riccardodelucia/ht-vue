@@ -1,61 +1,23 @@
 <template>
-  <div class="uploads__file upload-controller">
-    <div class="upload-controller__file">
-      <vue-feather
-        v-if="state.matches('uploaded')"
-        class="upload-controller__icon upload-controller__icon--uploaded"
-        type="check-circle"
-        size="20px"
-      >
-      </vue-feather>
-      <span>{{ filename }}</span>
-    </div>
-    <span
-      v-if="state.matches('uploading') || state.matches('uploaded')"
-      class="upload-controller__percentage"
-      >{{ state.context.percentage }}%</span
-    >
-    <vue-feather
-      v-if="state.matches('uploading')"
-      class="upload-controller__icon upload-controller__icon--delete"
-      type="trash-2"
-      size="20px"
-      @click="abort"
-    >
-    </vue-feather>
-    <vue-feather
-      v-else
-      class="upload-controller__icon upload-controller__icon--remove"
-      type="x-circle"
-      size="20px"
-      @click="remove"
-    >
-    </vue-feather>
-    <div class="upload-controller__status">
-      <div
-        v-if="state.matches('uploading')"
-        class="upload-controller__progress-bar-container"
-      >
-        <div
-          class="upload-controller__progress-bar"
-          :style="{ width: state.context.percentage + '%' }"
-        ></div>
-      </div>
-      <div
-        v-else-if="state.matches('uploaded')"
-        class="upload-controller__uploaded-msg-container"
-      >
-        <span class="upload-controller__status-message"
-          >Uploaded. Click &nbsp;</span
-        >
-        <vue-feather type="x-circle" size="10px"> </vue-feather>
-        <span class="upload-controller__status-message"> &nbsp; to close</span>
-      </div>
-      <span
-        v-else-if="state.matches('aborted') || state.matches('error')"
-        class="upload-controller__status-message"
-        >{{ state.context.errorMessage }}</span
-      >
+  <div class="upload ht-card ht-container">
+    <span class="upload__filename">
+      {{ filename }}
+    </span>
+    <span v-if="state.matches('uploading') || state.matches('uploaded')" class="upload__percentage">{{
+      state.context.percentage }}%</span>
+    <ht-button-icon v-if="state.matches('uploading')" type="button" icon-type="trash-2" width="20px" @click="abort">
+    </ht-button-icon>
+    <ht-button-icon v-else type="button" icon-type="x-circle" width="20px" @click="remove">
+    </ht-button-icon>
+
+    <div class="upload__progress">
+      <ht-progress v-if="state.matches('uploading')" :value="state.context.percentage"></ht-progress>
+      <small v-else-if="state.matches('uploaded')" class="green">
+        Uploaded
+      </small>
+      <small v-else-if="state.matches('aborted') || state.matches('error')" class="red">
+        {{ state.context.errorMessage }}
+      </small>
     </div>
   </div>
 </template>
@@ -69,38 +31,38 @@ import { createMachine, assign } from 'xstate';
 // SERVICES
 const uploadFile =
   ({ upload }) =>
-  (callback) => {
-    const progressCallback = (progress) =>
-      callback({
-        type: 'PROGRESS',
-        progress,
+    (callback) => {
+      const progressCallback = (progress) =>
+        callback({
+          type: 'PROGRESS',
+          progress,
+        });
+
+      const uploadedCallback = () =>
+        callback({
+          type: 'UPLOADED',
+        });
+
+      const errorCallback = (error) =>
+        callback({
+          type: 'ERROR',
+          payload: { error },
+        });
+
+      const { instance, config } = upload;
+
+      instance.interceptors.request.use((config) => {
+        config.onUploadProgress = progressCallback;
+        return config;
       });
+      instance(config)
+        .then(uploadedCallback)
+        .catch((error) => {
+          errorCallback(error);
+        });
 
-    const uploadedCallback = () =>
-      callback({
-        type: 'UPLOADED',
-      });
-
-    const errorCallback = (error) =>
-      callback({
-        type: 'ERROR',
-        payload: { error },
-      });
-
-    const { instance, config } = upload;
-
-    instance.interceptors.request.use((config) => {
-      config.onUploadProgress = progressCallback;
-      return config;
-    });
-    instance(config)
-      .then(uploadedCallback)
-      .catch((error) => {
-        errorCallback(error);
-      });
-
-    return () => {};
-  };
+      return () => { };
+    };
 
 ////////////////////////////////////////////////////////////////
 // ACTIONS
@@ -241,3 +203,52 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.upload {
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) repeat(2, max-content);
+
+  grid-template-areas:
+    'filename percentage button'
+    'progress progress progress';
+
+  grid-column-gap: var(--size-2);
+
+  background-color: var(--background-color, var(--ht-surface-1));
+
+  &__filename {
+    grid-area: filename;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__percentage {
+    grid-area: percentage;
+  }
+
+  button {
+    grid-area: button;
+    color: var(--ht-color-red);
+  }
+
+  &__progress {
+    grid-area: progress;
+
+    small {
+      font-size: var(--font-size-0);
+      line-height: var(--font-lineheight-1);
+    }
+
+    .green {
+      color: var(--ht-color-green)
+    }
+
+    .red {
+      color: var(--ht-color-red)
+    }
+  }
+}
+</style>
