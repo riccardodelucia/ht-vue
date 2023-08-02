@@ -1,15 +1,8 @@
 <template>
-  <div class="input-field">
-    <label v-if="label" :for="uuid"> {{ label }}</label>
-    <input
-      :id="uuid"
-      class="input"
-      :class="{ 'input--error': error }"
-      :value="modelValue"
-      v-bind="$attrs"
-      @input.stop="onInput"
-    />
-    <ht-input-error-message :error="error"></ht-input-error-message>
+  <div>
+    <label :for="uuid">{{ label }}</label>
+    <input :id="uuid" :value="modelValue" v-bind="$attrs" :aria-invalid="error ? true : null" @input.stop="onInput" />
+    <small v-if="error" class="ht-error-message">{{ error }}</small>
   </div>
 </template>
 

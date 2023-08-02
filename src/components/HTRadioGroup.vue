@@ -1,26 +1,14 @@
 <template>
-  <div class="input-field">
-    <label v-if="label">{{ label }}</label>
-    <div class="radio-group">
-      <label
-        v-for="option in options"
-        :key="option"
-        class="radio-group__element"
-      >
-        <div
-          class="radio-group__input"
-          :class="{ 'radio-group__input--selected': option === modelValue }"
-        ></div>
-        <input
-          :id="option"
-          hidden
-          type="radio"
-          :value="option"
-          @click="emit('update:modelValue', option)"
-        />
-        {{ option }}
-      </label>
+  <div>
+    <span>{{ label }}</span>
+    <div class="ht-radiogroup">
+      <div v-for="option in options" :key="option">
+        <input :id="option" type="radio" :value="option" :checked="modelValue === option"
+          @click="emit('update:modelValue', option)" />
+        <label :for="option">{{ option }}</label>
+      </div>
     </div>
+    <small v-if="error">{{ error }}</small>
   </div>
 </template>
 
@@ -39,6 +27,10 @@ export default {
     modelValue: {
       type: String,
       default: '',
+    },
+    error: {
+      type: [String, null],
+      default: null,
     },
   },
   setup(_, { emit }) {

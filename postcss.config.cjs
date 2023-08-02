@@ -1,8 +1,8 @@
 module.exports = {
-  parser: require("postcss-comment"),
+  parser: require('postcss-comment'),
   plugins: [
-    require("postcss-nested"),
-    require("postcss-import"),
-    require("autoprefixer"),
+    require('postcss-nested'),
+    require('postcss-import'),
+    require('autoprefixer'),
   ],
 };

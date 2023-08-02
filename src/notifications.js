@@ -46,6 +46,23 @@ export function sendErrorNotification({
   );
 }
 
+export function removeNotification(id) {
+  notifications.value = notifications.value.filter(
+    (notification) => notification.id !== id
+  );
+}
+
 let notificationId = 0;
 const notificationsTimeout = 5;
 export const notifications = ref([]);
+
+export const HTNotificationsPlugin = {
+  install(app) {
+    app.config.globalProperties.$sendSuccessNotification =
+      sendSuccessNotification;
+    app.config.globalProperties.$sendErrorNotification = sendErrorNotification;
+    app.config.globalProperties.$removeNotification = removeNotification;
+
+    app.provide('notifications', notifications);
+  },
+};

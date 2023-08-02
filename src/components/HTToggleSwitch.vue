@@ -1,20 +1,18 @@
 <template>
-  <div class="input-field">
-    <label v-if="label">{{ label }}</label>
-    <label class="toggle">
-      <div
-        class="toggle__input"
-        :class="{ 'toggle__input--selected': modelValue }"
-      ></div>
-      <input hidden type="checkbox" @click="onClick" />
-      {{ option }}
-    </label>
+  <div>
+    <div>
+      <input :id="uuid" role="switch" :checked="modelValue" type="checkbox" @click="onClick" />
+      <label :for="uuid">{{ option }}</label>
+    </div>
+    <small v-if="error" class="ht-error-message">{{ error }}</small>
   </div>
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
+
 export default {
-  name: 'ToggleSwitch',
+  name: 'HTToggleSwitch',
   props: {
     label: {
       type: String,
@@ -28,12 +26,19 @@ export default {
       type: Boolean,
       required: true,
     },
+    error: {
+      type: [String, null],
+      default: null,
+    },
   },
   emits: ['update:modelValue'],
-  methods: {
-    onClick() {
-      this.$emit('update:modelValue', !this.modelValue);
-    },
+  setup(props, { emit }) {
+    const uuid = uuidv4();
+
+    const onClick = () => {
+      emit('update:modelValue', !props.modelValue);
+    };
+    return { onClick, uuid };
   },
 };
 </script>

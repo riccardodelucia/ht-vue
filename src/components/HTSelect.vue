@@ -1,44 +1,22 @@
 <template>
-  <div class="input-field">
-    <label v-if="label">{{ label }}</label>
-    <div
-      ref="select"
-      class="select"
-      :class="{ 'select--error': error }"
-      :tabindex="tabindex"
-      @blur="open = false"
-      @focus="open = true"
-    >
-      <div
-        class="select__selection"
-        :class="{
-          'select__selection--empty': selection === placeholder,
-        }"
-      >
-        {{ selection }}
-      </div>
-      <div
-        v-if="open"
-        class="select__overlay"
-        @click.stop="closeSelector"
-      ></div>
-      <div v-show="open" class="select__options">
-        <div
-          v-for="(option, index) of options"
-          :key="index"
-          class="select__option"
-          @click.stop="clickedOption(option)"
-        >
-          {{ showLabel(option) }}
-        </div>
-      </div>
-    </div>
-    <ht-input-error-message :error="error"></ht-input-error-message>
+  <div>
+    <label v-if="label" :for="uuid">{{ label }}</label>
+    <select :id="uuid" :value="optionLabel(modelValue)" v-bind="{
+      ...$attrs,
+      class: null, //this bypasses classes that need to be assigned to the root <div></div> tag only
+      onChange,
+    }" :aria-invalid="error ? true : null">
+      <option disabled value="">Please select one</option>
+      <option v-for="option in options" :key="option" :value="optionLabel(option)" :selected="option === modelValue">
+        {{ optionLabel(option) }}
+      </option>
+    </select>
+    <small v-if="error" class="ht-error-message">{{ error }}</small>
   </div>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   name: 'HTSelect',
@@ -46,66 +24,44 @@ export default {
     label: { type: String, default: '' },
     options: {
       type: Array,
-      default: () => [],
-    },
-    optionLabel: {
-      type: String,
-      default: 'label',
+      required: true,
     },
     error: {
       type: [String, null],
       default: null,
     },
-    placeholder: {
-      type: String,
-      default: 'Select an option',
-    },
     modelValue: {
       type: [Object, String, Number, null],
-      required: true,
       default: undefined,
-    },
-    tabindex: {
-      type: Number,
-      required: false,
-      default: 0,
     },
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const open = ref(false);
-    const select = ref(null);
+    const uuid = uuidv4();
 
-    const closeSelector = () => {
-      open.value = false;
-      select.value.blur();
-    };
-
-    const clickedOption = (option) => {
-      emit('update:modelValue', option);
-      closeSelector();
-    };
-
-    const showLabel = (option) => {
+    const optionLabel = (option) => {
       if (typeof option === 'object') {
-        return option?.[props.optionLabel] || option;
+        return option?.label || option;
       }
       return option;
     };
 
-    const selection = computed(() => {
-      if (props.options.find((elem) => elem === props.modelValue))
-        return showLabel(props.modelValue);
-      return props.placeholder;
-    });
+    const optionValue = (label) => {
+      if (typeof props.options[0] === 'object') {
+        return props.options.find((item) => item.label === label);
+      }
+      return label;
+    };
+
+    const onChange = (event) => {
+      const value = optionValue(event.target.value);
+      emit('update:modelValue', value);
+    };
 
     return {
-      open,
-      selection,
-      select,
-      closeSelector,
-      clickedOption,
-      showLabel,
+      optionLabel,
+      onChange,
+      uuid,
     };
   },
 };

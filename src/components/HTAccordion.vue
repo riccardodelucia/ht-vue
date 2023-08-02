@@ -1,23 +1,17 @@
 <template>
   <div class="accordion">
-    <input
-      :id="uuid"
-      class="accordion__checkbox"
-      type="checkbox"
-      @change="isOpen = !isOpen"
-    />
-    <label :for="uuid" class="accordion__label">
-      <vue-feather v-if="!isOpen" type="plus-circle"></vue-feather>
-      <vue-feather v-else type="minus-circle"></vue-feather>
-      <span>{{ label }}</span>
-    </label>
-    <div
-      class="accordion__collapsible-content"
-      :style="{
-        'max-height': collapsed,
-      }"
-    >
-      <slot></slot>
+    <component :is="`h${headingLevel}`">
+      <button :id="uuidButton" class="ht-reset" type="button" :aria-expanded="isExpanded" :aria-controls="uuidPanel"
+        @click="onClick">
+        <!-- Use a <span> element to add classes for styling text -->
+        <slot name="header"></slot>
+        <vue-feather type="chevron-down"></vue-feather>
+      </button>
+    </component>
+    <div :id="uuidPanel" class="panel" role="region" :aria-labelledby="uuidButton" :aria-hidden="!isExpanded">
+      <div>
+        <slot name="panel"></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -25,26 +19,70 @@
 <script>
 import { v4 as uuidv4 } from 'uuid';
 
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 export default {
   name: 'HTAccordion',
   props: {
-    label: { type: String, default: '' },
-    height: {
-      type: String,
-      default: 'min-content',
-    },
+    headingLevel: { type: Number, default: 2 },
   },
-  setup(props) {
-    const uuid = uuidv4();
-    const isOpen = ref(false);
+  setup() {
+    const isExpanded = ref(false);
+    const uuidButton = uuidv4();
+    const uuidPanel = uuidv4();
 
-    const collapsed = computed(() => {
-      return isOpen.value ? props.height : 0;
-    });
+    const onClick = () => {
+      isExpanded.value = !isExpanded.value;
+    };
 
-    return { uuid, isOpen, collapsed };
+    return { isExpanded, onClick, uuidButton, uuidPanel };
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.accordion {
+  --animation-time: 200ms;
+
+  &> :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--accordion-header-color, inherit);
+  }
+
+  &> :is(h1, h2, h3, h4, h5, h6)>button {
+    display: flex;
+    gap: .5em;
+    align-items: center;
+    justify-content: space-between;
+
+    &>*:last-child {
+      flex-shrink: 0;
+      transition: transform var(--animation-time) ease-out;
+    }
+
+    &[aria-expanded='true']>*:last-child {
+      transform: rotate(180deg);
+    }
+
+    :slotted(span) {
+      text-align: left;
+    }
+  }
+}
+
+.panel {
+  color: var(--accordion-panel-color, inherit);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--animation-time) ease-in-out;
+
+  &[aria-hidden='false'] {
+    grid-template-rows: 1fr;
+    margin-top: var(--size-3);
+  }
+
+  // This instruction is important to ensure the hidden content on closed accordions
+  &>div {
+    overflow: hidden;
+  }
+}
+</style>

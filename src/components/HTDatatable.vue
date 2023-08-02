@@ -1,55 +1,30 @@
 <template>
   <div class="datatable">
-    <div class="datatable__controls">
-      <ht-search-bar
-        :model-value="search"
-        @update:model-value="setSearch"
-      ></ht-search-bar>
-      <ht-select
-        v-model="pageSize"
-        style="width: 6rem"
-        :options="[5, 10, 20]"
-      ></ht-select>
-    </div>
+    <ht-search-bar class="datatable__search" label="Datatable Search" :model-value="search"
+      @update:model-value="setSearch" @submit="onSubmit"></ht-search-bar>
+    <ht-select v-model="pageSize" class="datatable__select" style="width: 6rem" :options="[5, 10, 20]"></ht-select>
 
-    <table class="datatable__table table">
-      <thead class="table__head">
+    <table class="datatable__table">
+      <thead>
         <tr>
-          <th
-            v-for="column in columns"
-            :key="column.name"
-            class="table__head-item"
-            :class="
-              sortable(column)
-                ? currentSortKey === column.name
-                  ? sortOrders[column.name] > 0
-                    ? 'table__head-item--sorting-asc'
-                    : 'table__head-item--sorting-desc'
-                  : 'table__head-item--sorting'
-                : ''
-            "
-            :style="'width:' + column.width"
-            @click="sortable(column) && sortBy(column.name)"
-          >
+          <th v-for="column in columns" :key="column.name" :class="sortable(column)
+              ? currentSortKey === column.name
+                ? sortOrders[column.name] > 0
+                  ? 'sorting-asc'
+                  : 'sorting-desc'
+                : 'sorting'
+              : ''
+            " :style="'width:' + column.width" @click="sortable(column) && sortBy(column.name)">
             {{ column.label }}
           </th>
         </tr>
       </thead>
-      <tbody class="table__body">
-        <slot
-          v-for="(row, index) in paginatedItems"
-          :key="index"
-          :row="row"
-        ></slot>
+      <tbody>
+        <slot v-for="(row, index) in paginatedItems" :key="index" :row="row"></slot>
       </tbody>
     </table>
-    <ht-pagination
-
-      class="datatable__pagination margin-top"
-      :current-page="currentPage"
-      :number-of-pages="numberOfPages"
-      @paginate="setCurrentPage"
-    >
+    <ht-pagination class="datatable__pagination" :current-page="currentPage" :number-of-pages="numberOfPages"
+      @paginate="setCurrentPage">
     </ht-pagination>
   </div>
 </template>
@@ -58,7 +33,7 @@
 import { reactive, ref, watch, computed } from 'vue';
 
 const search = ref('');
-const currentPage = ref(0);
+const currentPage = ref(1);
 const pageSize = ref(5);
 
 const setSearch = (value) => {
@@ -71,12 +46,12 @@ const setCurrentPage = (value) => {
 };
 
 const resetPagination = () => {
-  currentPage.value = 0;
+  currentPage.value = 1;
 };
 
 const paginate = (items, pageSize, currentPage) => {
-  const stopIndex = Math.min((currentPage + 1) * pageSize, items.length);
-  return items.slice(currentPage * pageSize, stopIndex);
+  const stopIndex = Math.min(currentPage * pageSize, items.length);
+  return items.slice((currentPage - 1) * pageSize, stopIndex);
 };
 
 const sortable = (item) => {
@@ -200,3 +175,97 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.datatable {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  grid-row-gap: var(--size-5);
+
+  grid-template-areas:
+    'search select'
+    'table table'
+    '. pagination';
+
+  &__search {
+    grid-area: search;
+  }
+
+  &__select {
+    grid-area: select;
+    justify-self: end;
+  }
+
+  &__table {
+    grid-area: table;
+    table-layout: fixed;
+
+    border-collapse: collapse;
+
+    .sorting,
+    .sorting-asc,
+    .sorting-desc {
+      padding-right: 18px;
+      position: relative;
+    }
+
+    .sorting:before,
+    .sorting:after,
+    .sorting-asc:before,
+    .sorting-asc:after,
+    .sorting-desc:before,
+    .sorting-desc:after {
+      border: 4px solid transparent;
+      content: '';
+      display: block;
+      height: 0;
+      right: 5px;
+      top: 50%;
+      position: absolute;
+      width: 0;
+    }
+
+    .sorting:before {
+      border-bottom-color: var(--ht-color-gray-3);
+      margin-top: -9px;
+    }
+
+    .sorting:after {
+      border-top-color: var(--ht-color-gray-3);
+      margin-top: 1px;
+    }
+
+    .sorting-asc:before {
+      border-bottom-color: var(--ht-color-gray-3);
+      margin-top: -9px;
+    }
+
+    .sorting-desc:after {
+      border-top-color: var(--ht-color-gray-3);
+      margin-top: 1px;
+    }
+
+    :slotted(td),
+    th {
+      text-align: left;
+      padding: var(--size-2) var(--size-3);
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    :slotted(tr:nth-child(odd)) {
+      background-color: var(--ht-surface-3);
+    }
+
+    :slotted(tr:nth-child(even)) {
+      background-color: var(--ht-surface-2);
+    }
+  }
+
+  &__pagination {
+    grid-area: pagination;
+    justify-self: end;
+  }
+}
+</style>

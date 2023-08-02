@@ -1,8 +1,35 @@
-<script>
-import { h, ref, computed } from 'vue';
-import VueFeather from 'vue-feather';
+<template>
+  <nav class="pagination">
+    <ul>
+      <li class="ht-flex-align-center">
+        <a v-if="currentPage > 1" class="ht-flex-align-center chevron"
+          @click="emit('paginate', currentPage - 1)"><vue-feather type="chevron-left"></vue-feather></a>
+        <a v-else class="ht-flex-align-center chevron" aria-disabled="true"><vue-feather
+            type="chevron-left"></vue-feather></a>
+      </li>
 
-import { resizeListener } from '../composables.js';
+      <li v-for="page in pages" :key="page">
+        <a class="page ht-number-indicator" :aria-current="page === currentPage ? 'page' : null"
+          @click="emit('paginate', page)">{{ page }}</a>
+      </li>
+      <li class="ht-flex-align-center">
+        <a v-if="currentPage < numberOfPages" class="ht-flex-align-center chevron"
+          @click="emit('paginate', currentPage + 1)"><vue-feather type="chevron-right"></vue-feather></a>
+        <a v-else class="ht-flex-align-center chevron" aria-disabled="true"><vue-feather
+            type="chevron-right"></vue-feather></a>
+      </li>
+    </ul>
+  </nav>
+</template>
+
+<script>
+import { computed } from 'vue';
+
+const arrayRange = (start, stop, step) =>
+  Array.from(
+    { length: (stop - start) / step + 1 },
+    (value, index) => start + index * step
+  );
 
 export default {
   name: 'HTPagination',
@@ -11,146 +38,94 @@ export default {
       type: Number,
       default: 20,
       validator(value) {
-        return value >= 0;
+        return value > 0;
       },
     },
     currentPage: {
       type: Number,
-      default: 7,
+      default: 1,
       validator(value) {
-        return value >= 0;
+        return value > 0;
       },
+    },
+    displayedPages: {
+      type: Number,
+      default: 5,
+      validator(value) {
+        // must be a positive odd number
+        return value > 0 && value % 2 === 1;
+      },
+    },
+    routePath: {
+      type: String,
+      default: '/jobs',
     },
   },
   emits: { paginate: null },
 
-  setup(props) {
-    const isMobile = ref(false);
-    const delta = 5;
+  setup(props, { emit }) {
+    const pages = computed(() => {
+      // the window indicates the range of pages to be displayed (could be greater than the number of available pages)
+      const windowMiddlePoint = Math.ceil(props.displayedPages / 2); // middle point in the window, use to decide how to shift the window among the available pages
 
-    resizeListener(() => (isMobile.value = window.innerWidth < 500));
+      const windowRightHalf = props.displayedPages - windowMiddlePoint; // right part of the window, from windowMiddlePoint to end
+      const windowLeftHalf = windowMiddlePoint - 1; // left part of the window, from start to windowMiddlePoint excluded
 
-    const pagination = computed(() => {
-      const paginationData = {
-        prevPage: props.currentPage > 0,
-        nextPage: props.currentPage < props.numberOfPages - 1,
-        pages: [],
-      };
+      const K = props.numberOfPages - windowRightHalf; // for lack of a better name. This stores the pages belonging to the right part of the window, when using the last window (i.e. the very last pages of the list)
 
-      if (props.numberOfPages <= delta) {
-        paginationData.pages = Array.from(Array(props.numberOfPages).keys());
-      } else {
-        const startArray = Array.from(Array(delta - 1).keys());
+      const WStart = arrayRange(1, props.displayedPages, 1); // first window, spanning from the first page until window length
+      const WEnd = arrayRange(
+        props.numberOfPages - props.displayedPages + 1,
+        props.numberOfPages,
+        1
+      );
 
-        const endArray = Array.from(Array(props.numberOfPages).keys()).slice(
-          -delta + 1
-        );
-
-        const deltaArray = Array.from(Array(props.numberOfPages).keys()).slice(
-          props.currentPage - Math.floor(delta / 2),
-          props.currentPage + Math.ceil(delta / 2)
-        );
-
-        // compose array
-        let pages = [];
-        if (props.currentPage < delta - 1) {
-          pages = startArray;
-          pages.push('...');
-          pages.push(props.numberOfPages - 1);
-        } else if (props.currentPage > props.numberOfPages - delta + 1) {
-          pages = endArray;
-          pages.unshift('...');
-          pages.unshift(0);
-        } else {
-          pages = deltaArray;
-          pages.unshift('...');
-          pages.unshift(0);
-          pages.push('...');
-          pages.push(props.numberOfPages - 1);
-        }
-
-        paginationData.pages = pages;
+      // Algorithm
+      if (props.numberOfPages <= props.displayedPages) {
+        // show all pages
+        return arrayRange(1, props.numberOfPages, 1);
+      }
+      // choose correct window
+      if (props.currentPage <= windowMiddlePoint) {
+        return WStart;
       }
 
-      return paginationData;
+      if (props.currentPage >= K) {
+        return WEnd;
+      }
+      //sliding window, centere props.currentPage in windowMiddlePoint
+      return arrayRange(
+        props.currentPage - windowLeftHalf,
+        props.currentPage + windowRightHalf,
+        1
+      );
     });
 
     return {
-      isMobile,
-      delta,
-      pagination,
+      pages,
+      emit,
     };
-  },
-  render() {
-    const children = [];
-
-    children.push(
-      h(VueFeather, {
-        type: 'chevron-left',
-        class: [
-          'pagination__navigation',
-          this.pagination.prevPage ? '' : 'pagination--disabled',
-        ],
-        ...(this.pagination.prevPage && {
-          onClick: () => {
-            this.$emit('paginate', this.currentPage - 1);
-          },
-        }),
-      })
-    );
-
-    if (!this.isMobile) {
-      this.pagination.pages.forEach((page) => {
-        if (!isNaN(page)) {
-          children.push(
-            h(
-              'div',
-              {
-                class: [
-                  'pagination__page',
-                  page === this.currentPage ? 'pagination__page--selected' : '',
-                ],
-                onClick: () => {
-                  this.$emit('paginate', page);
-                },
-              },
-              [h('text', page + 1)]
-            )
-          );
-        } else {
-          children.push(h('span', page));
-        }
-      });
-    } else {
-      children.push(
-        h(
-          'div',
-          {
-            class: ['pagination__page', 'pagination__page--selected'],
-          },
-          [h('span', this.currentPage + 1)]
-        )
-      );
-    }
-
-    children.push(
-      h(VueFeather, {
-        type: 'chevron-right',
-        class: [
-          'pagination__navigation',
-          this.pagination.nextPage ? '' : 'pagination--disabled',
-        ],
-        ...(this.pagination.nextPage && {
-          onClick: () => {
-            this.$emit('paginate', this.currentPage + 1);
-          },
-        }),
-      })
-    );
-
-    return h('div', { class: 'pagination' }, children);
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="postcss">
+.pagination {
+  ul {
+    display: flex;
+    align-items: space-between;
+    list-style: none;
+    gap: var(--size-3);
+  }
+
+  .page,
+  .page:hover {
+    text-decoration: none;
+  }
+
+  .chevron[aria-disabled='true'] {
+    cursor: not-allowed;
+    color: var(--ht-color-gray-1);
+  }
+}
+</style>
