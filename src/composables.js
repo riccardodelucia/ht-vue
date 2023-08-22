@@ -1,4 +1,5 @@
-import { onMounted, onUnmounted, watchEffect } from 'vue';
+import { onMounted, onUnmounted, watchEffect, ref } from 'vue';
+import tippy from 'tippy.js';
 
 export const resizeListener = function (resizeListener) {
   onMounted(() => {
@@ -14,4 +15,21 @@ export const makeReactiveAxis = function (axisSetup) {
   watchEffect(axisSetup, {
     flush: 'post',
   });
+};
+
+export const useTooltip = function (config = { animation: 'false' }) {
+  const tooltipInstance = ref(null);
+
+  const showTooltip = (event, content) => {
+    const instance = tippy(event.target);
+    instance.setProps(config);
+    instance.setContent(content);
+    tooltipInstance.value = instance;
+  };
+
+  const hideTooltip = () => {
+    tooltipInstance.value.destroy();
+  };
+
+  return { showTooltip, hideTooltip };
 };
