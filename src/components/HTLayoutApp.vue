@@ -1,13 +1,26 @@
 <template>
   <div class="app-layout">
     <header class="app-header">
-      <ht-button-icon id="toggle-sidenav" class="toggle-sidenav" icon-type="menu" type="button" label="Toggle Menu"
-        aria-controls="sidenav" :aria-expanded="isExpanded" @click="onClick">
-      </ht-button-icon>
+      <HTButtonIcon
+        id="toggle-sidenav"
+        class="toggle-sidenav"
+        icon-type="menu"
+        type="button"
+        label="Toggle Menu"
+        aria-controls="sidenav"
+        :aria-expanded="isExpanded"
+        @click="onClick"
+      >
+      </HTButtonIcon>
       <slot name="header"></slot>
     </header>
-    <ht-sidenav id="sidenav" class="sidenav" aria-labelledby="toggle-sidenav" :aria-hidden="!isExpanded"
-      :sidenav-object="sidenavObject"></ht-sidenav>
+    <HTSidenav
+      id="sidenav"
+      class="sidenav"
+      aria-labelledby="toggle-sidenav"
+      :aria-hidden="!isExpanded"
+      :sidenav-object="sidenavObject"
+    ></HTSidenav>
     <main id="main" class="main">
       <slot></slot>
     </main>
@@ -16,11 +29,14 @@
 
 <script>
 import { ref } from 'vue';
+import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import HTSidenav from '@/components/HTSidenav.vue';
 
 import menuLogo from '@/assets/icons/menu-icon.svg';
 
 export default {
   name: 'HTLayoutApp',
+  components: { HTButtonIcon, HTSidenav },
   props: {
     sidenavObject: { type: Object, required: true },
     showUser: { type: Boolean, default: false },

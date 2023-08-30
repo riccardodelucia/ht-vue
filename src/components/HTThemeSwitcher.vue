@@ -1,14 +1,15 @@
 <template>
-  <ht-button-icon
+  <HTButtonIcon
     type="button"
     :icon-type="currentTheme === 'dark' ? 'sun' : 'moon'"
     label="Switch Between Brigh /Dark Color Scheme"
     @click="onClick"
-  ></ht-button-icon>
+  ></HTButtonIcon>
 </template>
 
 <script>
 import { ref } from 'vue';
+import HTButtonIcon from '@/components/HTButtonIcon.vue';
 
 function computeInitialTheme() {
   if (import.meta.env.SSR) {
@@ -25,6 +26,7 @@ function computeInitialTheme() {
 
 export default {
   name: 'HTThemeSwitcher',
+  components: { HTButtonIcon },
   setup() {
     const currentTheme = ref(computeInitialTheme());
     setTheme(currentTheme.value);

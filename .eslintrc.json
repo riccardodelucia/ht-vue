@@ -17,6 +17,7 @@
   ],
   "rules": {
     "vue/no-unused-vars": "off",
-    "vue/first-attribute-linebreak": "off"
+    "vue/first-attribute-linebreak": "off",
+    "vue/no-setup-props-destructure" : "off"
   }
 }

@@ -1,22 +1,29 @@
 <template>
   <aside class="sidenav">
-    <a class="logo" href="https://humantechnopole.it/en/" target="_blank"><img :src="htLogoWhite" alt="HT logo" /></a>
+    <a class="logo" href="https://humantechnopole.it/en/" target="_blank"
+      ><img :src="htLogoWhite" alt="HT logo"
+    /></a>
     <h2>{{ sidenavObject.title }}</h2>
     <ul class="ht-reset sidenav-list">
       <li v-for="link in sidenavObject.links" :key="link.id">
-        <router-link active-class="active" :to="link.url">
-          <vue-feather :type="link.type || 'chevron-right'"></vue-feather><span>{{ link.label }}</span>
-        </router-link>
+        <RouterLink active-class="active" :to="link.url">
+          <VueFeather :type="link.type || 'chevron-right'"></VueFeather
+          ><span>{{ link.label }}</span>
+        </RouterLink>
       </li>
     </ul>
   </aside>
 </template>
 
 <script>
+import VueFeather from 'vue-feather';
+import { RouterLink } from 'vue-router';
+
 import htLogoWhite from '../assets/ht-logo-white.svg';
 
 export default {
   name: 'HTSidenav',
+  components: { VueFeather, RouterLink },
   props: {
     sidenavObject: {
       type: Object,
@@ -58,7 +65,7 @@ export default {
   list-style: none;
 
   li {
-    >a {
+    > a {
       display: flex;
       align-items: center;
       gap: var(--size-3);
@@ -80,7 +87,7 @@ export default {
         }
       }
 
-      >* {
+      > * {
         flex-shrink: 0;
       }
 

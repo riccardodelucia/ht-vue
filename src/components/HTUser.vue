@@ -1,16 +1,36 @@
 <template>
-  <a v-if="!auth.authenticated" tabindex="0" class="ht-reset" to="#" @click="auth.login()" @keyup.enter="auth.login()">
+  <a
+    v-if="!auth.authenticated"
+    tabindex="0"
+    class="ht-reset"
+    to="#"
+    @click="auth.login()"
+    @keyup.enter="auth.login()"
+  >
     Sign in or Register
   </a>
   <div v-else v-click-outside="onClickOutside" class="user ht-grid-center-xy">
-    <ht-button-icon icon-type="user" type="button" label="Open User Menu" :aria-expanded="open" aria-controls="user-menu"
-      @click="open = !open"></ht-button-icon>
-    <div v-show="open" class="ht-card ht-container" id="user-menu" role="menu">
+    <HTButtonIcon
+      icon-type="user"
+      type="button"
+      label="Open User Menu"
+      :aria-expanded="open"
+      aria-controls="user-menu"
+      @click="open = !open"
+    ></HTButtonIcon>
+    <div
+      v-show="open"
+      id="user-menu"
+      class="ht-card ht-container ht-layout-stack"
+      role="menu"
+    >
       <h2 id="user-menu-heading">
         {{ userName }}
       </h2>
       <nav aria-labelledby="user-menu-heading">
-        <a class="ht-reset logout" href="#" @click="auth.logout()"><vue-feather type="log-out"></vue-feather>logout</a>
+        <a class="ht-reset logout" href="#" @click="auth.logout()">
+          <VueFeather type="log-out"></VueFeather>logout
+        </a>
       </nav>
     </div>
   </div>
@@ -18,9 +38,12 @@
 
 <script>
 import { ref, computed, inject } from 'vue';
+import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import VueFeather from 'vue-feather';
 
 export default {
   name: 'HTUser',
+  components: { HTButtonIcon, VueFeather },
   setup() {
     const open = ref(false);
     const auth = inject('auth');
@@ -58,11 +81,6 @@ h2 {
   position: relative;
 
   [role='menu'] {
-
-    >*+* {
-      margin-top: var(--gap, 1em);
-    }
-
     position: absolute;
     background-color: var(--ht-surface-2);
     color: var(--ht-text-color-1);

@@ -2,21 +2,37 @@
   <nav class="pagination">
     <ul>
       <li class="ht-flex-align-center">
-        <a v-if="currentPage > 1" class="ht-flex-align-center chevron"
-          @click="emit('paginate', currentPage - 1)"><vue-feather type="chevron-left"></vue-feather></a>
-        <a v-else class="ht-flex-align-center chevron" aria-disabled="true"><vue-feather
-            type="chevron-left"></vue-feather></a>
+        <a
+          v-if="currentPage > 1"
+          class="ht-flex-align-center chevron"
+          @click="emit('paginate', currentPage - 1)"
+        >
+          <VueFeather type="chevron-left"></VueFeather>
+        </a>
+        <a v-else class="ht-flex-align-center chevron" aria-disabled="true">
+          <VueFeather type="chevron-left"></VueFeather>
+        </a>
       </li>
 
       <li v-for="page in pages" :key="page">
-        <a class="page ht-number-indicator" :aria-current="page === currentPage ? 'page' : null"
-          @click="emit('paginate', page)">{{ page }}</a>
+        <a
+          class="page ht-number-indicator"
+          :aria-current="page === currentPage ? 'page' : null"
+          @click="emit('paginate', page)"
+          >{{ page }}</a
+        >
       </li>
       <li class="ht-flex-align-center">
-        <a v-if="currentPage < numberOfPages" class="ht-flex-align-center chevron"
-          @click="emit('paginate', currentPage + 1)"><vue-feather type="chevron-right"></vue-feather></a>
-        <a v-else class="ht-flex-align-center chevron" aria-disabled="true"><vue-feather
-            type="chevron-right"></vue-feather></a>
+        <a
+          v-if="currentPage < numberOfPages"
+          class="ht-flex-align-center chevron"
+          @click="emit('paginate', currentPage + 1)"
+        >
+          <VueFeather type="chevron-right"></VueFeather>
+        </a>
+        <a v-else class="ht-flex-align-center chevron" aria-disabled="true">
+          <VueFeather type="chevron-right"></VueFeather>
+        </a>
       </li>
     </ul>
   </nav>
@@ -24,15 +40,17 @@
 
 <script>
 import { computed } from 'vue';
+import VueFeather from 'vue-feather';
 
 const arrayRange = (start, stop, step) =>
   Array.from(
     { length: (stop - start) / step + 1 },
-    (value, index) => start + index * step
+    (value, index) => start + index * step,
   );
 
 export default {
   name: 'HTPagination',
+  components: { VueFeather },
   props: {
     numberOfPages: {
       type: Number,
@@ -77,7 +95,7 @@ export default {
       const WEnd = arrayRange(
         props.numberOfPages - props.displayedPages + 1,
         props.numberOfPages,
-        1
+        1,
       );
 
       // Algorithm
@@ -97,7 +115,7 @@ export default {
       return arrayRange(
         props.currentPage - windowLeftHalf,
         props.currentPage + windowRightHalf,
-        1
+        1,
       );
     });
 

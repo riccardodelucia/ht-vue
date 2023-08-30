@@ -2,10 +2,16 @@
   <div>
     <label :for="uuid">{{ label }}</label>
     <div class="input-file-container">
-      <input :id="uuid" type="file" v-bind="$attrs" :aria-invalid="error ? true : null" @change.stop="updateFiles" />
+      <input
+        :id="uuid"
+        type="file"
+        v-bind="$attrs"
+        :aria-invalid="error ? true : null"
+        @change.stop="updateFiles"
+      />
       <span class="filename">{{ filename }}</span>
     </div>
-    <small v-if="error" class="ht-error-message">{{ error }}</small>
+    <small v-if="error">{{ error }}</small>
   </div>
 </template>
 
@@ -47,9 +53,14 @@ export default {
     };
 
     const filename = computed(() => {
-      if (Array.isArray(props.modelValue)) return props.modelValue.length > 0 ? props.modelValue.length > 1 ? `${props.modelValue.length} files` : "1 file" : ""
+      if (Array.isArray(props.modelValue))
+        return props.modelValue.length > 0
+          ? props.modelValue.length > 1
+            ? `${props.modelValue.length} files`
+            : '1 file'
+          : '';
       return props.modelValue?.name;
-    })
+    });
 
     return { updateFiles, uuid, uploadMsg, filename };
   },
@@ -62,14 +73,14 @@ export default {
   width: max-content;
 }
 
-input[type="file"] {
+input[type='file'] {
   color: transparent;
 }
 
 .filename {
   position: absolute;
   left: 9rem;
-  top: .7rem;
+  top: 0.7rem;
   max-width: calc(100% - 9rem);
   max-height: 2em;
   display: block;

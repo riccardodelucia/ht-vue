@@ -1,7 +1,12 @@
 <template>
   <div>
     <label :for="uuid">{{ label }}</label>
-    <textarea :id="uuid" :value="modelValue" v-bind="$attrs" @input.stop="onInput"></textarea>
+    <textarea
+      :id="uuid"
+      :value="modelValue"
+      v-bind="$attrs"
+      @input.stop="onInput"
+    ></textarea>
   </div>
 </template>
 

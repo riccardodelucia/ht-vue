@@ -1,36 +1,65 @@
 <template>
   <div class="datatable">
-    <ht-search-bar class="datatable__search" label="Datatable Search" :model-value="search"
-      @update:model-value="setSearch" @submit="onSubmit"></ht-search-bar>
-    <ht-select v-model="pageSize" class="datatable__select" style="width: 6rem" :options="[5, 10, 20]"></ht-select>
+    <HTSearchBar
+      class="datatable__search"
+      label="Datatable Search"
+      :model-value="search"
+      @update:model-value="setSearch"
+      @submit="onSubmit"
+    ></HTSearchBar>
+    <HTSelect
+      v-model="pageSize"
+      class="datatable__select"
+      style="width: 6rem"
+      :options="[5, 10, 20]"
+    ></HTSelect>
 
-    <table class="datatable__table">
+    <table>
       <thead>
         <tr>
-          <th v-for="column in columns" :key="column.name" :class="sortable(column)
-              ? currentSortKey === column.name
-                ? sortOrders[column.name] > 0
-                  ? 'sorting-asc'
-                  : 'sorting-desc'
-                : 'sorting'
-              : ''
-            " :style="'width:' + column.width" @click="sortable(column) && sortBy(column.name)">
+          <th
+            v-for="column in columns"
+            :key="column.name"
+            :class="
+              sortable(column)
+                ? currentSortKey === column.name
+                  ? sortOrders[column.name] > 0
+                    ? 'sorting-asc'
+                    : 'sorting-desc'
+                  : 'sorting'
+                : ''
+            "
+            :style="'width:' + column.width"
+            @click="sortable(column) && sortBy(column.name)"
+          >
             {{ column.label }}
           </th>
         </tr>
       </thead>
       <tbody>
-        <slot v-for="(row, index) in paginatedItems" :key="index" :row="row"></slot>
+        <slot
+          v-for="(row, index) in paginatedItems"
+          :key="index"
+          :row="row"
+        ></slot>
       </tbody>
     </table>
-    <ht-pagination class="datatable__pagination" :current-page="currentPage" :number-of-pages="numberOfPages"
-      @paginate="setCurrentPage">
-    </ht-pagination>
+    <HTPagination
+      class="datatable__pagination"
+      :current-page="currentPage"
+      :number-of-pages="numberOfPages"
+      @paginate="setCurrentPage"
+    >
+    </HTPagination>
   </div>
 </template>
 
 <script>
 import { reactive, ref, watch, computed } from 'vue';
+
+import HTSearchBar from '@/components/HTSearchBar.vue';
+import HTSelect from '@/components/HTSelect.vue';
+import HTPagination from '@/components/HTPagination.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -104,23 +133,23 @@ const sortData = (data, columns, currentSortKey, order) => {
 
 export default {
   name: 'HTDatatable',
+  components: { HTSearchBar, HTSelect, HTPagination },
   props: {
     columns: { type: Array, default: () => [] },
     rows: { type: Array, default: () => [] },
   },
-
   setup(props) {
     const currentSortKey = ref(
       props.columns.find((column) => {
         sortable(column);
-      })?.name || ''
+      })?.name || '',
     );
 
     const sortOrders = reactive(
       props.columns.reduce((acc, column) => {
         acc[column.name] = -1;
         return acc;
-      }, {})
+      }, {}),
     );
 
     const sortBy = (key) => {
@@ -197,7 +226,12 @@ export default {
     justify-self: end;
   }
 
-  &__table {
+  &__pagination {
+    grid-area: pagination;
+    justify-self: end;
+  }
+
+  table {
     grid-area: table;
     table-layout: fixed;
 
@@ -261,11 +295,6 @@ export default {
     :slotted(tr:nth-child(even)) {
       background-color: var(--ht-surface-2);
     }
-  }
-
-  &__pagination {
-    grid-area: pagination;
-    justify-self: end;
   }
 }
 </style>

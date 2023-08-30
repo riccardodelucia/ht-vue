@@ -1,17 +1,27 @@
 <template>
   <div>
     <label v-if="label" :for="uuid">{{ label }}</label>
-    <select :id="uuid" :value="optionLabel(modelValue)" v-bind="{
-      ...$attrs,
-      class: null, //this bypasses classes that need to be assigned to the root <div></div> tag only
-      onChange,
-    }" :aria-invalid="error ? true : null">
+    <select
+      :id="uuid"
+      :value="optionLabel(modelValue)"
+      v-bind="{
+        ...$attrs,
+        class: null, //this bypasses classes that need to be assigned to the root <div></div> tag only
+        onChange,
+      }"
+      :aria-invalid="error ? true : null"
+    >
       <option disabled value="">Please select one</option>
-      <option v-for="option in options" :key="option" :value="optionLabel(option)" :selected="option === modelValue">
+      <option
+        v-for="option in options"
+        :key="option"
+        :value="optionLabel(option)"
+        :selected="option === modelValue"
+      >
         {{ optionLabel(option) }}
       </option>
     </select>
-    <small v-if="error" class="ht-error-message">{{ error }}</small>
+    <small v-if="error">{{ error }}</small>
   </div>
 </template>
 

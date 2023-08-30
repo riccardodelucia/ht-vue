@@ -3,19 +3,39 @@
     <span class="upload__filename">
       {{ filename }}
     </span>
-    <span v-if="state.matches('uploading') || state.matches('uploaded')" class="upload__percentage">{{
-      state.context.percentage }}%</span>
-    <ht-button-icon v-if="state.matches('uploading')" type="button" icon-type="trash-2" width="20px" @click="abort">
-    </ht-button-icon>
-    <ht-button-icon v-else type="button" icon-type="x-circle" width="20px" @click="remove">
-    </ht-button-icon>
-
+    <span
+      v-if="state.matches('uploading') || state.matches('uploaded')"
+      class="upload__percentage"
+      >{{ state.context.percentage }}%</span
+    >
+    <HTButtonIcon
+      v-if="state.matches('uploading')"
+      type="button"
+      icon-type="trash-2"
+      width="20px"
+      @click="abort"
+    >
+    </HTButtonIcon>
+    <HTButtonIcon
+      v-else
+      type="button"
+      icon-type="x-circle"
+      width="20px"
+      @click="remove"
+    >
+    </HTButtonIcon>
     <div class="upload__progress">
-      <ht-progress v-if="state.matches('uploading')" :value="state.context.percentage"></ht-progress>
+      <HTProgress
+        v-if="state.matches('uploading')"
+        :value="state.context.percentage"
+      ></HTProgress>
       <small v-else-if="state.matches('uploaded')" class="green">
         Uploaded
       </small>
-      <small v-else-if="state.matches('aborted') || state.matches('error')" class="red">
+      <small
+        v-else-if="state.matches('aborted') || state.matches('error')"
+        class="red"
+      >
         {{ state.context.errorMessage }}
       </small>
     </div>
@@ -26,43 +46,45 @@
 import { toRaw } from 'vue';
 import { useMachine } from '@xstate/vue';
 import { createMachine, assign } from 'xstate';
+import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import HTProgress from '@/components/HTProgress.vue';
 
 ////////////////////////////////////////////////////////////////
 // SERVICES
 const uploadFile =
   ({ upload }) =>
-    (callback) => {
-      const progressCallback = (progress) =>
-        callback({
-          type: 'PROGRESS',
-          progress,
-        });
-
-      const uploadedCallback = () =>
-        callback({
-          type: 'UPLOADED',
-        });
-
-      const errorCallback = (error) =>
-        callback({
-          type: 'ERROR',
-          payload: { error },
-        });
-
-      const { instance, config } = upload;
-
-      instance.interceptors.request.use((config) => {
-        config.onUploadProgress = progressCallback;
-        return config;
+  (callback) => {
+    const progressCallback = (progress) =>
+      callback({
+        type: 'PROGRESS',
+        progress,
       });
-      instance(config)
-        .then(uploadedCallback)
-        .catch((error) => {
-          errorCallback(error);
-        });
 
-      return () => { };
-    };
+    const uploadedCallback = () =>
+      callback({
+        type: 'UPLOADED',
+      });
+
+    const errorCallback = (error) =>
+      callback({
+        type: 'ERROR',
+        payload: { error },
+      });
+
+    const { instance, config } = upload;
+
+    instance.interceptors.request.use((config) => {
+      config.onUploadProgress = progressCallback;
+      return config;
+    });
+    instance(config)
+      .then(uploadedCallback)
+      .catch((error) => {
+        errorCallback(error);
+      });
+
+    return () => {};
+  };
 
 ////////////////////////////////////////////////////////////////
 // ACTIONS
@@ -73,18 +95,18 @@ const assignProgress = assign(
         file: { size },
       },
     },
-    { progress }
+    { progress },
   ) => {
     const totalFileBytesUploaded = progress.loaded;
     const percentage = Math.min(
       Math.round((totalFileBytesUploaded * 100) / size),
-      99
+      99,
     );
     return {
       totalFileBytesUploaded,
       percentage,
     };
-  }
+  },
 );
 
 const assignProgress100 = assign({
@@ -173,6 +195,7 @@ const uploadFileMachine = createMachine({
 
 export default {
   name: 'HTFileUploadController',
+  components: { HTButtonIcon, HTProgress },
   props: {
     upload: {
       type: Object,
@@ -216,7 +239,7 @@ export default {
 
   grid-column-gap: var(--size-2);
 
-  background-color: var(--background-color, var(--ht-surface-1));
+  background-color: var(--upload-background-color, var(--ht-surface-1));
 
   &__filename {
     grid-area: filename;
@@ -243,11 +266,11 @@ export default {
     }
 
     .green {
-      color: var(--ht-color-green)
+      color: var(--ht-color-green);
     }
 
     .red {
-      color: var(--ht-color-red)
+      color: var(--ht-color-red);
     }
   }
 }

@@ -57,7 +57,7 @@ export default {
             [0, 0],
             [props.width, props.height],
           ])
-          .on('brush end', updateBrushedDomain)
+          .on('brush end', updateBrushedDomain),
       );
     });
 

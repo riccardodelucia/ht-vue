@@ -1,9 +1,22 @@
 <template>
   <header class="header">
-    <a href="https://humantechnopole.it/en/" target="_blank"><img :src="htLogoWhite" alt="HT logo" class="ht-logo" /></a>
-    <ht-button-icon aria-controls="primary-navigation" icon-type="menu" class="menu-button"
-      label="Toggle Primary Navigation" :aria-expanded="isExpanded" @click="onClick"></ht-button-icon>
-    <div id="primary-navigation" class="header__slot" :aria-hidden="!isExpanded">
+    <a href="https://humantechnopole.it/en/" target="_blank"
+      ><img :src="htLogoWhite" alt="HT logo" class="logo"
+    /></a>
+    <HTButtonIcon
+      v-if="$slots.default"
+      aria-controls="primary-navigation"
+      icon-type="menu"
+      class="menu-button"
+      label="Toggle Primary Navigation"
+      :aria-expanded="isExpanded"
+      @click="onClick"
+    ></HTButtonIcon>
+    <div
+      id="primary-navigation"
+      class="header__slot"
+      :aria-hidden="!isExpanded"
+    >
       <slot></slot>
     </div>
   </header>
@@ -12,24 +25,11 @@
 <script>
 import { ref } from 'vue';
 import htLogoWhite from '../assets/ht-logo-white.svg';
+import HTButtonIcon from '@/components/HTButtonIcon.vue';
 
 export default {
   name: 'HTHeaderWeb',
-  props: {
-    showThemeSwitcher: {
-      type: Boolean,
-      default: true,
-    },
-    showUser: {
-      type: Boolean,
-      default: false,
-    },
-    links: {
-      type: Array,
-      default: () => [],
-    },
-    minSize: { type: Number, default: 500 },
-  },
+  components: { HTButtonIcon },
   setup() {
     const isExpanded = ref(true);
 
@@ -85,7 +85,6 @@ export default {
     }
 
     @media (min-width: 50em) {
-
       &[aria-hidden='false'],
       &[aria-hidden='true'] {
         display: block;
@@ -104,7 +103,7 @@ export default {
   top: 1.5em;
 }
 
-.ht-logo {
+.logo {
   width: auto;
   height: 2rem;
   margin-block: var(--size-4);

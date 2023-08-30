@@ -1,7 +1,12 @@
 <template>
   <div class="ht-toast" :data-type="type === 'error' ? 'error' : null">
     <h2>{{ title }}</h2>
-    <button class="ht-reset" type="button" aria-label="Close" @click="onClick(notification)">
+    <button
+      class="ht-reset"
+      type="button"
+      aria-label="Close"
+      @click="onClick(notification)"
+    >
       <span class="ht-visually-hidden">Close Toast</span>
     </button>
     <slot></slot>

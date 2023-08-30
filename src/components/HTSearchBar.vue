@@ -5,18 +5,26 @@
       <label :for="uuid" class="ht-visually-hidden">
         {{ label }}
       </label>
-      <input :id="uuid" :value="modelValue" :placeholder="label" type="search" @input="onInput" />
-      <ht-button-icon type="submit" icon-type="search" label="Submit Search">
-      </ht-button-icon>
+      <input
+        :id="uuid"
+        :value="modelValue"
+        :placeholder="label"
+        type="search"
+        @input="onInput"
+      />
+      <HTButtonIcon type="submit" icon-type="search" label="Submit Search">
+      </HTButtonIcon>
     </div>
   </form>
 </template>
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
+import HTButtonIcon from '@/components/HTButtonIcon.vue';
 
 export default {
   name: 'HTSearchBar',
+  components: { HTButtonIcon },
   props: {
     label: { type: String, required: true },
     modelValue: { type: [String, Number], default: undefined },
@@ -25,7 +33,7 @@ export default {
   data() {
     const uuid = uuidv4();
     const value = this.modelValue;
-    return { uuid, value }
+    return { uuid, value };
   },
   methods: {
     onInput(e) {
