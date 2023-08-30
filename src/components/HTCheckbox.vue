@@ -4,7 +4,7 @@
       <input :id="uuid" :checked="modelValue" type="checkbox" @click="onClick" />
       <label :for="uuid">{{ option }}</label>
     </div>
-    <small v-if="error" class="ht-error-message">{{ error }}</small>
+    <small v-if="error">{{ error }}</small>
   </div>
 </template>
 

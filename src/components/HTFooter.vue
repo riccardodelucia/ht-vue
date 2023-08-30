@@ -26,7 +26,10 @@ export default {
 
 <style lang="postcss" scoped>
 .footer {
-  background-color: var(--ht-color-brand-blue-2);
+  background-color: var(
+    --footer-background-color,
+    var(--ht-color-brand-blue-2)
+  );
   color: white;
   padding: var(--size-3);
 
@@ -39,6 +42,10 @@ export default {
     img {
       width: 15rem;
     }
+  }
+
+  address {
+    text-align: center;
   }
 }
 </style>

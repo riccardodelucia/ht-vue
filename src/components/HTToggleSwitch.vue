@@ -1,7 +1,13 @@
 <template>
   <div>
     <div>
-      <input :id="uuid" role="switch" :checked="modelValue" type="checkbox" @click="onClick" />
+      <input
+        :id="uuid"
+        role="switch"
+        :checked="modelValue"
+        type="checkbox"
+        @click="onClick"
+      />
       <label :for="uuid">{{ option }}</label>
     </div>
     <small v-if="error" class="ht-error-message">{{ error }}</small>

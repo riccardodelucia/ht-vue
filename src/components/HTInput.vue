@@ -1,8 +1,14 @@
 <template>
   <div>
     <label :for="uuid">{{ label }}</label>
-    <input :id="uuid" :value="modelValue" v-bind="$attrs" :aria-invalid="error ? true : null" @input.stop="onInput" />
-    <small v-if="error" class="ht-error-message">{{ error }}</small>
+    <input
+      :id="uuid"
+      :value="modelValue"
+      v-bind="$attrs"
+      :aria-invalid="error ? true : null"
+      @input.stop="onInput"
+    />
+    <small v-if="error">{{ error }}</small>
   </div>
 </template>
 

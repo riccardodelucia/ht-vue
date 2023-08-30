@@ -1,14 +1,27 @@
 <template>
+  <!-- Evaluate to rewrite taking advantage of <details><summary></summary></details> native HTML elements (current problem: poor animation customization)-->
   <div class="accordion">
     <component :is="`h${headingLevel}`">
-      <button :id="uuidButton" class="ht-reset" type="button" :aria-expanded="isExpanded" :aria-controls="uuidPanel"
-        @click="onClick">
+      <button
+        :id="uuidButton"
+        class="ht-reset"
+        type="button"
+        :aria-expanded="isExpanded"
+        :aria-controls="uuidPanel"
+        @click="onClick"
+      >
         <!-- Use a <span> element to add classes for styling text -->
         <slot name="header"></slot>
-        <vue-feather type="chevron-down"></vue-feather>
+        <VueFeather type="chevron-down"></VueFeather>
       </button>
     </component>
-    <div :id="uuidPanel" class="panel" role="region" :aria-labelledby="uuidButton" :aria-hidden="!isExpanded">
+    <div
+      :id="uuidPanel"
+      class="panel"
+      role="region"
+      :aria-labelledby="uuidButton"
+      :aria-hidden="!isExpanded"
+    >
       <div>
         <slot name="panel"></slot>
       </div>
@@ -18,11 +31,12 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
-
 import { ref } from 'vue';
+import VueFeather from 'vue-feather';
 
 export default {
   name: 'HTAccordion',
+  components: { VueFeather },
   props: {
     headingLevel: { type: Number, default: 2 },
   },
@@ -44,28 +58,29 @@ export default {
 .accordion {
   --animation-time: 200ms;
 
-  &> :is(h1, h2, h3, h4, h5, h6) {
-    color: var(--accordion-header-color, inherit);
+  & > :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--accordion-header-text-color, inherit);
   }
 
-  &> :is(h1, h2, h3, h4, h5, h6)>button {
+  & > :is(h1, h2, h3, h4, h5, h6) > button {
     display: flex;
-    gap: .5em;
+    gap: 0.5em;
     align-items: center;
     justify-content: space-between;
+    text-align: left;
 
-    &>*:last-child {
+    & > *:last-child {
       flex-shrink: 0;
       transition: transform var(--animation-time) ease-out;
     }
 
-    &[aria-expanded='true']>*:last-child {
+    &[aria-expanded='true'] > *:last-child {
       transform: rotate(180deg);
     }
 
-    :slotted(span) {
+    /* :slotted(span) {
       text-align: left;
-    }
+    } */
   }
 }
 

@@ -3,8 +3,13 @@
     <span>{{ label }}</span>
     <div class="ht-radiogroup">
       <div v-for="option in options" :key="option">
-        <input :id="option" type="radio" :value="option" :checked="modelValue === option"
-          @click="emit('update:modelValue', option)" />
+        <input
+          :id="option"
+          type="radio"
+          :value="option"
+          :checked="modelValue === option"
+          @click="emit('update:modelValue', option)"
+        />
         <label :for="option">{{ option }}</label>
       </div>
     </div>
