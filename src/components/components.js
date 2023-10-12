@@ -17,7 +17,6 @@ export { default as HTRadioGroup } from './HTRadioGroup.vue';
 export { default as HTSearchBar } from './HTSearchBar.vue';
 export { default as HTSelect } from './HTSelect.vue';
 export { default as HTSidenav } from './HTSidenav.vue';
-export { default as HTSwatches } from './HTSwatches.vue';
 export { default as HTTextarea } from './HTTextarea.vue';
 export { default as HTThemeSwitcher } from './HTThemeSwitcher.vue';
 export { default as HTTab } from './HTTab.vue';
