@@ -9,11 +9,19 @@
         :id="uuid"
         :value="modelValue"
         :placeholder="label"
+        :list="listId"
         type="search"
         @input="onInput"
       />
       <HTButtonIcon type="submit" icon-type="search" label="Submit Search">
       </HTButtonIcon>
+      <datalist :id="listId">
+        <option
+          v-for="(hint, id) in hints"
+          :key="`hint-${id}`"
+          :value="hint"
+        ></option>
+      </datalist>
     </div>
   </form>
 </template>
@@ -28,12 +36,14 @@ export default {
   props: {
     label: { type: String, required: true },
     modelValue: { type: [String, Number], default: undefined },
+    hints: { type: Array, default: () => [] },
   },
   emits: ['update:model-value', 'submit'],
   data() {
     const uuid = uuidv4();
+    const listId = uuidv4();
     const value = this.modelValue;
-    return { uuid, value };
+    return { uuid, value, listId };
   },
   methods: {
     onInput(e) {
@@ -63,6 +73,10 @@ export default {
     right: 0.5rem;
     top: 0.6rem;
     color: var(--ht-color-gray-3);
+  }
+
+  input[list]::-webkit-calendar-picker-indicator {
+    display: none !important;
   }
 }
 </style>
