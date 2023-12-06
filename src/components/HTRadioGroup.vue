@@ -1,19 +1,13 @@
 <template>
-  <div>
-    <span>{{ label }}</span>
-    <div class="ht-radiogroup">
-      <div v-for="option in options" :key="option">
-        <input
-          :id="option"
-          type="radio"
-          :value="option"
-          :checked="modelValue === option"
-          @click="emit('update:modelValue', option)"
-        />
-        <label :for="option">{{ option }}</label>
-      </div>
-    </div>
-    <small v-if="error">{{ error }}</small>
+  <div v-for="(option, idx) in options" :key="`radio-${idx}`">
+    <label>{{ option.label }}</label>
+    <input
+      :value="option.value"
+      type="radio"
+      :name="name"
+      :checked="modelValue === option.value"
+      @change="$emit('update:model-value', option.value)"
+    />
   </div>
 </template>
 
@@ -21,27 +15,19 @@
 export default {
   name: 'HTRadionButtonGroup',
   props: {
-    label: {
-      type: String,
-      default: '',
-    },
     options: {
       required: true,
       type: Array,
     },
     modelValue: {
+      type: [Object, String, Boolean, Number],
+      required: true,
+    },
+    name: {
       type: String,
-      default: '',
-    },
-    error: {
-      type: [String, null],
-      default: null,
+      required: true,
     },
   },
-  setup(_, { emit }) {
-    return {
-      emit,
-    };
-  },
+  emits: { 'update:model-value': null },
 };
 </script>
