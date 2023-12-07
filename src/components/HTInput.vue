@@ -1,15 +1,19 @@
 <template>
-  <div>
-    <label :for="uuid">{{ label }}</label>
-    <input
-      :id="uuid"
-      :value="modelValue"
-      v-bind="$attrs"
-      :aria-invalid="error ? true : null"
-      @input.stop="onInput"
-    />
-    <small v-if="error">{{ error }}</small>
-  </div>
+  <label :for="uuid">{{ label }}</label>
+  <input
+    :id="uuid"
+    :value="modelValue"
+    v-bind="$attrs"
+    :aria-invalid="errorMessage ? true : null"
+    :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
+    @input="$emit('update:model-value', $event.target.value)"
+  />
+  <span
+    v-if="errorMessage"
+    class="ht-input-error-message"
+    aria-live="assertive"
+    >{{ errorMessage }}</span
+  >
 </template>
 
 <script>
@@ -26,19 +30,16 @@ export default {
       type: [String, Number],
       default: '',
     },
-    error: {
+    errorMessage: {
       type: [String, null],
       default: null,
     },
   },
   emits: { 'update:model-value': null },
-  setup(_, { emit }) {
+  setup() {
     const uuid = uuidv4();
-    const onInput = (event) => {
-      emit('update:model-value', event.target.value);
-    };
+
     return {
-      onInput,
       uuid,
     };
   },
