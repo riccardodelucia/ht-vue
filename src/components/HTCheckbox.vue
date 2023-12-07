@@ -1,11 +1,10 @@
 <template>
-  <div>
-    <div>
-      <input :id="uuid" :checked="modelValue" type="checkbox" @click="onClick" />
-      <label :for="uuid">{{ option }}</label>
-    </div>
-    <small v-if="error">{{ error }}</small>
-  </div>
+  <input :id="uuid" v-bind="$attrs" type="checkbox" @change="onChange" />
+  <label :for="uuid">{{ label }}</label>
+
+  <span v-if="errorMessage" class="ht-input-errorMessage-message">
+    {{ errorMessage }}
+  </span>
 </template>
 
 <script>
@@ -14,24 +13,25 @@ import { v4 as uuidv4 } from 'uuid';
 export default {
   name: 'HTCheckbox',
   props: {
-    option: {
+    label: { type: String, default: null },
+    name: {
       type: String,
-      default: '',
-    },
-    error: {
-      type: [String, null],
       default: null,
     },
-    modelValue: { type: Boolean, required: true },
+    value: { type: [String, Boolean, Number], default: 'on' },
+    errorMessage: {
+      type: [String],
+      default: null,
+    },
   },
-  emits: { 'update:modelValue': null },
+  emits: { 'update:model-value': null },
   setup(props, { emit }) {
     const uuid = uuidv4();
 
-    const onClick = () => {
-      emit('update:modelValue', !props.modelValue);
+    const onChange = (e) => {
+      emit('update:model-value', e.target.checked ? props.value : null);
     };
-    return { onClick, uuid };
+    return { onChange, uuid };
   },
 };
 </script>
