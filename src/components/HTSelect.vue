@@ -20,6 +20,7 @@
     </option>
   </select>
   <span
+    v-if="errorMessage"
     :id="`select-error-${uuid}`"
     class="ht-input-error-message"
     aria-live="assertive"
