@@ -6,7 +6,7 @@
     v-bind="$attrs"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
-    @input="$emit('update:model-value', $event.target.value)"
+    @input="onInput"
   />
   <span
     v-if="errorMessage"
@@ -24,11 +24,11 @@ export default {
   props: {
     label: {
       type: String,
-      default: '',
+      default: null,
     },
     modelValue: {
-      type: [String, Number],
-      default: '',
+      type: [String, Number, null],
+      required: true,
     },
     errorMessage: {
       type: [String],
@@ -36,10 +36,16 @@ export default {
     },
   },
   emits: { 'update:model-value': null },
-  setup() {
+  setup(_, { emit, attrs }) {
     const uuid = uuidv4();
+    const onInput = (event) => {
+      if (attrs?.type === 'number')
+        emit('update:model-value', event.target.valueAsNumber);
+      else emit('update:model-value', event.target.value);
+    };
 
     return {
+      onInput,
       uuid,
     };
   },
