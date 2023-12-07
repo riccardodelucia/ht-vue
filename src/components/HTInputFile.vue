@@ -49,8 +49,8 @@ export default {
     const uuid = uuidv4();
 
     const onChange = (event) => {
-      if (attrs?.multiple) {
-        const files = event.target.files;
+      if (attrs?.multiple === '') {
+        const files = Array.from(event.target.files);
         emit('update:files', files);
         const filenames = files.map(({ name }) => name);
         emit('update:filenames', filenames);
