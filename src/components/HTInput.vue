@@ -10,6 +10,7 @@
   />
   <span
     v-if="errorMessage"
+    :id="`input-error-${uuid}`"
     class="ht-input-error-message"
     aria-live="assertive"
     >{{ errorMessage }}</span
@@ -31,7 +32,7 @@ export default {
       required: true,
     },
     errorMessage: {
-      type: [String],
+      type: String,
       default: null,
     },
   },
