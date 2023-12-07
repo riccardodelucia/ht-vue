@@ -31,7 +31,7 @@ export default {
       default: '',
     },
     errorMessage: {
-      type: [String, null],
+      type: [String],
       default: null,
     },
   },
