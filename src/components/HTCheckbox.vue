@@ -1,5 +1,11 @@
 <template>
-  <input :id="uuid" v-bind="$attrs" type="checkbox" @change="onChange" />
+  <input
+    :id="uuid"
+    v-bind="$attrs"
+    type="checkbox"
+    :checked="checked"
+    @change="onChange"
+  />
   <label :for="uuid">{{ label }}</label>
 
   <span v-if="errorMessage" class="ht-input-errorMessage-message">
@@ -23,15 +29,18 @@ export default {
       type: [String],
       default: null,
     },
+    modelValue: { type: [String, Boolean, Number], default: 'on' },
   },
   emits: { 'update:model-value': null },
   setup(props, { emit }) {
     const uuid = uuidv4();
 
+    const checked = props.modelValue === props.value;
+
     const onChange = (e) => {
       emit('update:model-value', e.target.checked ? props.value : null);
     };
-    return { onChange, uuid };
+    return { onChange, uuid, checked };
   },
 };
 </script>
