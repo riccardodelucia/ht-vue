@@ -5,7 +5,6 @@
       label="Datatable Search"
       :model-value="search"
       @update:model-value="setSearch"
-      @submit="onSubmit"
     ></HTSearchBar>
     <div class="datatable__select">
       <HTSelect
@@ -185,7 +184,7 @@ export default {
       return filteredItems.value.length;
     });
     const numberOfPages = computed(() => {
-      return Math.ceil(filteredItemsTotal.value / pageSize.value);
+      return Math.ceil(filteredItemsTotal.value / pageSize.value) || 1;
     });
     const paginatedItems = computed(() => {
       return paginate(filteredItems.value, pageSize.value, currentPage.value);
