@@ -7,16 +7,17 @@
       @update:model-value="setSearch"
       @submit="onSubmit"
     ></HTSearchBar>
-    <HTSelect
-      v-model="pageSize"
-      class="datatable__select"
-      style="width: 6rem"
-      :options="[
-        { label: '5', value: 5 },
-        { label: '10', value: 10 },
-        { label: '20', value: 20 },
-      ]"
-    ></HTSelect>
+    <div class="datatable__select">
+      <HTSelect
+        v-model="pageSize"
+        style="width: 6rem"
+        :options="[
+          { label: '5', value: 5 },
+          { label: '10', value: 10 },
+          { label: '20', value: 20 },
+        ]"
+      ></HTSelect>
+    </div>
 
     <table>
       <thead>

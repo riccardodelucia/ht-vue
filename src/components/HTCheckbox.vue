@@ -29,7 +29,7 @@ export default {
     value: { type: [String, Boolean, Number], required: true },
     modelValue: { type: [String, Boolean, Number, Array], required: true },
     errorMessage: {
-      type: [String],
+      type: String,
       default: null,
     },
   },
@@ -57,3 +57,16 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+label,
+input {
+  vertical-align: middle;
+}
+label {
+  margin-left: var(--size-1);
+}
+input:not(:first-child) {
+  margin-left: var(--size-4);
+}
+</style>

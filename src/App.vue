@@ -11,7 +11,7 @@
           label="Country"
           :hints="searchHints"
         ></ht-search-bar>
-        <div class="formgroup-inline">
+        <div>
           <ht-checkbox
             v-model="checkboxModelValue"
             name="affiliation"
@@ -21,7 +21,7 @@
           <p>checkboxModelValue: {{ checkboxModelValue }}</p>
         </div>
 
-        <div class="formgroup-multiple-inline">
+        <div>
           <ht-checkbox
             v-model="checkboxMultipleModelValue"
             name="country"
@@ -333,22 +333,5 @@ h3 {
 .grid {
   display: grid;
   grid-row-gap: var(--size-3);
-}
-
-.formgroup-inline {
-  input {
-    margin-right: var(--size-3);
-  }
-  & > .ht-input-error-message {
-    display: block;
-  }
-}
-.formgroup-multiple-inline {
-  input {
-    margin-right: var(--size-3);
-  }
-  label:not(:last-child) {
-    margin-right: var(--size-4);
-  }
 }
 </style>
