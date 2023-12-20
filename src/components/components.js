@@ -4,7 +4,6 @@ export { default as HTButtonIcon } from './HTButtonIcon.vue';
 export { default as HTChartLegendColor } from './HTChartLegendColor.vue';
 export { default as HTCheckbox } from './HTCheckbox.vue';
 export { default as HTDatatable } from './HTDatatable.vue';
-export { default as HTFileUploadController } from './HTFileUploadController.vue';
 export { default as HTFooter } from './HTFooter.vue';
 export { default as HTFormProgressBar } from './HTFormProgressBar.vue';
 export { default as HTHeaderWeb } from './HTHeaderWeb.vue';

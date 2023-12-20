@@ -1,28 +1,31 @@
 <template>
-  <div>
-    <label v-if="label" :for="uuid">{{ label }}</label>
-    <select
-      :id="uuid"
-      :value="optionLabel(modelValue)"
-      v-bind="{
-        ...$attrs,
-        class: null, //this bypasses classes that need to be assigned to the root <div></div> tag only
-        onChange,
-      }"
-      :aria-invalid="error ? true : null"
+  <label v-if="label" :for="uuid">{{ label }}</label>
+  <select
+    :id="uuid"
+    v-bind="{
+      ...$attrs,
+      onChange,
+    }"
+    :aria-invalid="errorMessage ? true : null"
+    :aria-describedby="errorMessage ? `select-error-${uuid}` : null"
+  >
+    <option disabled :value="null">Please select one</option>
+    <option
+      v-for="(option, idx) in options"
+      :key="`option-${idx}`"
+      :value="option.value"
+      :selected="option.value === modelValue"
     >
-      <option disabled value="">Please select one</option>
-      <option
-        v-for="option in options"
-        :key="option"
-        :value="optionLabel(option)"
-        :selected="option === modelValue"
-      >
-        {{ optionLabel(option) }}
-      </option>
-    </select>
-    <small v-if="error">{{ error }}</small>
-  </div>
+      {{ option.label }}
+    </option>
+  </select>
+  <span
+    v-if="errorMessage"
+    :id="`select-error-${uuid}`"
+    class="ht-input-error-message"
+    aria-live="assertive"
+    >{{ errorMessage }}</span
+  >
 </template>
 
 <script>
@@ -36,8 +39,8 @@ export default {
       type: Array,
       required: true,
     },
-    error: {
-      type: [String, null],
+    errorMessage: {
+      type: String,
       default: null,
     },
     modelValue: {
@@ -45,33 +48,17 @@ export default {
       default: undefined,
     },
   },
-  emits: ['update:modelValue'],
-  setup(props, { emit }) {
+  emits: ['update:model-value'],
+  setup(_, { emit }) {
     const uuid = uuidv4();
 
-    const optionLabel = (option) => {
-      if (typeof option === 'object') {
-        return option?.label || option;
-      }
-      return option;
-    };
-
-    const optionValue = (label) => {
-      if (typeof props.options[0] === 'object') {
-        return props.options.find((item) => item.label === label);
-      }
-      return label;
-    };
-
-    const onChange = (event) => {
-      const value = optionValue(event.target.value);
-      emit('update:modelValue', value);
+    const onChange = (e) => {
+      emit('update:model-value', e.target.value);
     };
 
     return {
-      optionLabel,
-      onChange,
       uuid,
+      onChange,
     };
   },
 };
