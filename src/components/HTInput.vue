@@ -1,15 +1,20 @@
 <template>
-  <div>
-    <label :for="uuid">{{ label }}</label>
-    <input
-      :id="uuid"
-      :value="modelValue"
-      v-bind="$attrs"
-      :aria-invalid="error ? true : null"
-      @input.stop="onInput"
-    />
-    <small v-if="error">{{ error }}</small>
-  </div>
+  <label :for="uuid">{{ label }}</label>
+  <input
+    :id="uuid"
+    :value="modelValue"
+    v-bind="$attrs"
+    :aria-invalid="errorMessage ? true : null"
+    :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
+    @input="onInput"
+  />
+  <span
+    v-if="errorMessage"
+    :id="`input-error-${uuid}`"
+    class="ht-input-error-message"
+    aria-live="assertive"
+    >{{ errorMessage }}
+  </span>
 </template>
 
 <script>
@@ -20,23 +25,26 @@ export default {
   props: {
     label: {
       type: String,
-      default: '',
+      default: null,
     },
     modelValue: {
-      type: [String, Number],
-      default: '',
+      type: [String, Number, null],
+      required: true,
     },
-    error: {
-      type: [String, null],
+    errorMessage: {
+      type: String,
       default: null,
     },
   },
   emits: { 'update:model-value': null },
-  setup(_, { emit }) {
+  setup(_, { emit, attrs }) {
     const uuid = uuidv4();
     const onInput = (event) => {
-      emit('update:model-value', event.target.value);
+      if (attrs?.type === 'number')
+        emit('update:model-value', event.target.valueAsNumber);
+      else emit('update:model-value', event.target.value);
     };
+
     return {
       onInput,
       uuid,

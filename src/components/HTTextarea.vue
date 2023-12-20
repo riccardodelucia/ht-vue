@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <label :for="uuid">{{ label }}</label>
-    <textarea
-      :id="uuid"
-      :value="modelValue"
-      v-bind="$attrs"
-      @input.stop="onInput"
-    ></textarea>
-  </div>
+  <label :for="uuid">{{ label }}</label>
+  <textarea
+    :id="uuid"
+    :value="modelValue"
+    v-bind="$attrs"
+    @input="$emit('update:model-value', $event.target.value)"
+  ></textarea>
 </template>
 
 <script>
@@ -26,11 +24,9 @@ export default {
     },
   },
   emits: ['update:model-value'],
-  setup(_, { emit }) {
+  setup() {
     const uuid = uuidv4();
-    const onInput = (event) => emit('update:model-value', event.target.value);
     return {
-      onInput,
       uuid,
     };
   },

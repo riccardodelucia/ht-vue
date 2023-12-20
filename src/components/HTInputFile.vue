@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <label :for="uuid">{{ label }}</label>
-    <div class="input-file-container">
-      <input
-        :id="uuid"
-        type="file"
-        v-bind="$attrs"
-        :aria-invalid="error ? true : null"
-        @change.stop="updateFiles"
-      />
-      <span class="filename">{{ filename }}</span>
-    </div>
-    <small v-if="error">{{ error }}</small>
+  <label :for="uuid">{{ label }}</label>
+  <div class="input-file-container">
+    <input
+      :id="uuid"
+      type="file"
+      v-bind="$attrs"
+      :aria-invalid="errorMessage ? true : null"
+      :aria-describedby="errorMessage ? `input-file-error-${uuid}` : null"
+      @change="onChange"
+    />
+    <span class="filename">{{ fileLabel }}</span>
   </div>
+  <span
+    v-if="errorMessage"
+    :id="`input-file-error-${uuid}`"
+    class="ht-input-error-message"
+    aria-live="assertive"
+    >{{ errorMessage }}</span
+  >
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
 export default {
@@ -26,43 +31,47 @@ export default {
       type: String,
       default: '',
     },
-    modelValue: {
+    files: {
       type: [File, Array],
       default: undefined,
     },
-    error: {
-      type: [String, null],
+    filenames: {
+      type: [String, Array],
+      default: undefined,
+    },
+    errorMessage: {
+      type: String,
       default: null,
     },
   },
-  emits: { 'update:model-value': null },
-  setup(props, { emit }) {
+  emits: { 'update:files': null, 'update:filenames': null },
+  setup(props, { emit, attrs }) {
     const uuid = uuidv4();
 
-    const uploadMsg = ref('');
-
-    const updateFiles = (event) => {
-      if (!event.target.hasAttribute('multiple')) {
-        emit('update:model-value', event.target.files[0]);
-        uploadMsg.value = event.target.files[0].name;
+    const onChange = (event) => {
+      if (attrs?.multiple === '') {
+        const files = Array.from(event.target.files);
+        emit('update:files', files);
+        const filenames = files.map(({ name }) => name);
+        emit('update:filenames', filenames);
       } else {
-        emit('update:model-value', [...event.target.files]);
-        const fileLength = event.target.files.length;
-        uploadMsg.value = `${fileLength} files`;
+        const file = event.target.files[0];
+        emit('update:files', file);
+        emit('update:filenames', file.name);
       }
     };
 
-    const filename = computed(() => {
-      if (Array.isArray(props.modelValue))
-        return props.modelValue.length > 0
-          ? props.modelValue.length > 1
-            ? `${props.modelValue.length} files`
+    const fileLabel = computed(() => {
+      if (Array.isArray(props.filenames))
+        return props.filenames.length > 0
+          ? props.filenames.length > 1
+            ? `${props.filenames.length} files`
             : '1 file'
           : '';
-      return props.modelValue?.name;
+      return props.filenames;
     });
 
-    return { updateFiles, uuid, uploadMsg, filename };
+    return { onChange, uuid, fileLabel };
   },
 };
 </script>
