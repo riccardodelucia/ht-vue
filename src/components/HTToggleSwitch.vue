@@ -6,11 +6,17 @@
     type="checkbox"
     :name="name"
     :value="currentValue"
+    :aria-invalid="errorMessage ? true : null"
+    :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
     @change="onChange"
   />
   <label :for="uuid">{{ currentValue }}</label>
-  <span v-if="errorMessage" class="ht-input-error-message">
-    {{ errorMessage }}
+  <span
+    v-if="errorMessage"
+    :id="`input-error-${uuid}`"
+    class="ht-input-error-message"
+    aria-live="assertive"
+    >{{ errorMessage }}
   </span>
 </template>
 
