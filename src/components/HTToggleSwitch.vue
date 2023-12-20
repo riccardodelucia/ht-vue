@@ -1,39 +1,43 @@
 <template>
-  <div>
-    <div>
-      <input
-        :id="uuid"
-        role="switch"
-        :checked="modelValue"
-        type="checkbox"
-        @click="onClick"
-      />
-      <label :for="uuid">{{ option }}</label>
-    </div>
-    <small v-if="error" class="ht-error-message">{{ error }}</small>
-  </div>
+  <input
+    :id="uuid"
+    role="switch"
+    :checked="checked"
+    type="checkbox"
+    :name="name"
+    :value="currentValue"
+    @change="onChange"
+  />
+  <label :for="uuid">{{ currentValue }}</label>
+  <span v-if="errorMessage" class="ht-input-error-message">
+    {{ errorMessage }}
+  </span>
 </template>
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
+
+import { ref } from 'vue';
 
 export default {
   name: 'HTToggleSwitch',
   props: {
     label: {
       type: String,
-      default: '',
+      default: null,
     },
-    option: {
+    name: {
       type: String,
-      default: '',
-    },
-    modelValue: {
-      type: Boolean,
       required: true,
     },
-    error: {
-      type: [String, null],
+    valueOn: { type: [String, Boolean, Number], required: true },
+    valueOff: { type: [String, Boolean, Number], required: true },
+    modelValue: {
+      type: [String, Boolean, Number],
+      required: true,
+    },
+    errorMessage: {
+      type: String,
       default: null,
     },
   },
@@ -41,10 +45,28 @@ export default {
   setup(props, { emit }) {
     const uuid = uuidv4();
 
-    const onClick = () => {
-      emit('update:modelValue', !props.modelValue);
+    const checked = props.modelValue === props.valueOn;
+
+    const currentValue = ref(checked ? props.valueOn : props.valueOff);
+
+    const onChange = (e) => {
+      currentValue.value = e.target.checked ? props.valueOn : props.valueOff;
+      emit('update:modelValue', currentValue.value);
     };
-    return { onClick, uuid };
+    return { onChange, uuid, checked, currentValue };
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+label,
+input {
+  vertical-align: middle;
+}
+label {
+  margin-left: var(--size-1);
+}
+input:not(:first-child) {
+  margin-left: var(--size-4);
+}
+</style>

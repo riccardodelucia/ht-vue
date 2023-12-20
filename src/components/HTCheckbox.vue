@@ -27,7 +27,10 @@ export default {
       required: true,
     },
     value: { type: [String, Boolean, Number], required: true },
-    modelValue: { type: [String, Boolean, Number, Array], required: true },
+    modelValue: {
+      type: [String, Boolean, Number, Array, null],
+      required: true,
+    },
     errorMessage: {
       type: String,
       default: null,
