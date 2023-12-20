@@ -4,11 +4,13 @@
     v-bind="$attrs"
     type="checkbox"
     :checked="checked"
+    :value="value"
+    :name="name"
     @change="onChange"
   />
   <label :for="uuid">{{ label }}</label>
 
-  <span v-if="errorMessage" class="ht-input-errorMessage-message">
+  <span v-if="errorMessage" class="ht-input-error-message">
     {{ errorMessage }}
   </span>
 </template>
@@ -22,14 +24,14 @@ export default {
     label: { type: String, default: null },
     name: {
       type: String,
-      default: null,
+      required: true,
     },
-    value: { type: [String, Boolean, Number], default: 'on' },
+    value: { type: [String, Boolean, Number], required: true },
+    modelValue: { type: [String, Boolean, Number, Array], required: true },
     errorMessage: {
       type: [String],
       default: null,
     },
-    modelValue: { type: [String, Boolean, Number], default: 'on' },
   },
   emits: { 'update:model-value': null },
   setup(props, { emit }) {
@@ -38,7 +40,18 @@ export default {
     const checked = props.modelValue === props.value;
 
     const onChange = (e) => {
-      emit('update:model-value', e.target.checked ? props.value : null);
+      const checkboxes = document.querySelectorAll(
+        `input[type='checkbox'][name='${props.name}']`,
+      );
+      if (checkboxes.length > 1) {
+        const selections = [];
+        checkboxes.forEach((checkbox) => {
+          checkbox.checked && selections.push(checkbox.value);
+        });
+        emit('update:model-value', selections);
+      } else {
+        emit('update:model-value', e.target.checked ? props.value : null);
+      }
     };
     return { onChange, uuid, checked };
   },

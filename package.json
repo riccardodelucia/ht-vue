@@ -31,6 +31,7 @@
     "lodash": "^4.17.21",
     "tippy.js": "^6.3.7",
     "uuid": "^9.0.0",
+    "vee-validate": "^4.12.3",
     "vue-feather": "^2.0.0",
     "xstate": "^4.35.0"
   },
