@@ -9,14 +9,14 @@
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `select-error-${uuid}` : null"
   >
-    <option disabled :value="null">Please select one</option>
+    <option disabled value="">Please select one</option>
     <option
       v-for="(option, idx) in options"
       :key="`option-${idx}`"
-      :value="option.value"
-      :selected="option.value === modelValue"
+      :value="idx"
+      :selected="option === modelValue"
     >
-      {{ option.label }}
+      {{ parseOptionValue(option) }}
     </option>
   </select>
   <span
@@ -45,20 +45,30 @@ export default {
     },
     modelValue: {
       type: [Object, String, Number, null],
-      default: undefined,
+      required: true,
     },
   },
   emits: ['update:model-value'],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const uuid = uuidv4();
 
     const onChange = (e) => {
-      emit('update:model-value', e.target.value);
+      const idx = parseInt(e.target.value);
+      emit('update:model-value', props.options[idx]);
+    };
+
+    const parseOptionValue = (option) => {
+      if (typeof option === 'object') {
+        if (option?.label) return option.label;
+        return JSON.stringify(Object.values(option)[0]);
+      }
+      return option;
     };
 
     return {
       uuid,
       onChange,
+      parseOptionValue,
     };
   },
 };
