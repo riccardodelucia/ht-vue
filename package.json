@@ -25,15 +25,12 @@
   },
   "dependencies": {
     "@computational-biology-sw-web-dev-unit/ht-design": "^0.0.2",
-    "@xstate/vue": "^2.0.0",
-    "axios": "^1.2.1",
     "d3": "^7.7.0",
     "deepdash-es": "^5.3.9",
     "lodash": "^4.17.21",
     "tippy.js": "^6.3.7",
     "uuid": "^9.0.0",
-    "vue-feather": "^2.0.0",
-    "xstate": "^4.35.0"
+    "vue-feather": "^2.0.0"
   },
   "peerDependencies": {
     "vue": "^3.2.41",
