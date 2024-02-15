@@ -35,6 +35,11 @@ export default {
     },
     value: { type: [String, Boolean, Number], required: true },
     modelValue: {
+      /*
+       * 'value' is used to set the value of the checked checkbox, 'modelValue' is used to store either 'value' or null,
+       * according to the checked state of the checkbox. Without declaring a separate value, due to modelValue's possibility of becoming null, we would loose
+       * the checked checkbox value. In addition, 'modelValue' does not coincide with 'value' for multiple checkboxes, since it contains all checked values
+       */
       type: [String, Boolean, Number, Array, null],
       required: true,
     },
