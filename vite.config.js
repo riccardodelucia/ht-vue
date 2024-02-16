@@ -16,6 +16,7 @@ export default defineConfig({
       entry: {
         index: path.resolve(__dirname, 'lib/index.js'),
         components: path.resolve(__dirname, 'lib/components/components.js'),
+        layouts: path.resolve(__dirname, 'lib/layouts/layouts.js'),
       },
     },
     rollupOptions: {
