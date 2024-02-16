@@ -12,10 +12,10 @@
       "import": "./lib/index.js"
     },
     "./components": {
-      "import": "./lib/components.js"
+      "import": "./lib/components/components.js"
     },
     "./layouts": {
-      "import": "./lib/layouts.js"
+      "import": "./lib/layouts/layouts.js"
     },
     "./style.css": {
       "import": "./dist/style.css"
@@ -36,8 +36,8 @@
     "vue-feather": "^2.0.0"
   },
   "peerDependencies": {
-    "vue": "^3.2.41",
-    "@computational-biology-sw-web-dev-unit/ht-design": "^0.0.2"
+    "@computational-biology-sw-web-dev-unit/ht-design": "^0.0.2",
+    "vue": "^3.2.41"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.2.0",
