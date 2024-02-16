@@ -19,6 +19,9 @@
     },
     "./style.css": {
       "import": "./dist/style.css"
+    },
+    "./dist": {
+      "import": "./dist/index.js"
     }
   },
   "scripts": {

@@ -16,21 +16,11 @@ export default defineConfig({
     },
     rollupOptions: {
       // I'm keeping external and output.globals in sync
-      external: [
-        'vue',
-        'vue-router',
-        'd3',
-        'xstate',
-        'lodash',
-        'deepdash-es',
-        'vue-feather',
-      ],
+      external: ['vue', 'd3', 'lodash', 'deepdash-es', 'vue-feather'],
       output: {
         globals: {
           vue: 'Vue',
-          'vue-router': 'VueRouter',
           d3: 'd3',
-          xstate: 'XState',
           lodash: '_',
           'deepdash-es': 'deepdash',
           'vue-feather': 'VueFeather',
