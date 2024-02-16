@@ -28,7 +28,7 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
-import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import HTButtonIcon from './HTButtonIcon.vue';
 
 export default {
   name: 'HTSearchBar',

@@ -29,10 +29,10 @@
 
 <script>
 import { ref } from 'vue';
-import HTButtonIcon from '@/components/HTButtonIcon.vue';
-import HTSidenav from '@/components/HTSidenav.vue';
+import HTButtonIcon from './HTButtonIcon.vue';
+import HTSidenav from './HTSidenav.vue';
 
-import menuLogo from '@/assets/icons/menu-icon.svg';
+import menuLogo from '../assets/icons/menu-icon.svg';
 
 export default {
   name: 'HTLayoutApp',

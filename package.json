@@ -4,14 +4,14 @@
   "version": "0.1.1",
   "type": "module",
   "files": [
-    "dist"
+    "dist", "lib"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js"
+      "import": "./lib/index.js"
     },
     "./components": {
-      "import": "./dist/components.js"
+      "import": "./lib/components.js"
     },
     "./style.css": {
       "import": "./dist/style.css"

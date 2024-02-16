@@ -9,7 +9,7 @@
 
 <script>
 import { ref } from 'vue';
-import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import HTButtonIcon from './HTButtonIcon.vue';
 
 function computeInitialTheme() {
   if (import.meta.env.SSR) {

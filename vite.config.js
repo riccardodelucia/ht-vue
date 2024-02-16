@@ -5,17 +5,17 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  resolve: {
+  /* resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, 'lib'),
     },
-  },
+  }, */
   build: {
     sourcemap: true,
     lib: {
       entry: {
-        index: path.resolve(__dirname, 'src/index.js'),
-        components: path.resolve(__dirname, 'src/components/components.js'),
+        index: path.resolve(__dirname, 'lib/index.js'),
+        components: path.resolve(__dirname, 'lib/components/components.js'),
       },
     },
     rollupOptions: {

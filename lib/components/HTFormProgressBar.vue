@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import HTProgress from '@/components/HTProgress.vue';
+import HTProgress from './HTProgress.vue';
 
 export default {
   name: 'HTFormProgressBar',
