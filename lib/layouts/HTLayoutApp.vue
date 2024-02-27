@@ -19,8 +19,11 @@
       class="sidenav"
       aria-labelledby="toggle-sidenav"
       :aria-hidden="!isExpanded"
-      :sidenav-object="sidenavObject"
-    ></HTSidenav>
+    >
+      <template #sidenav-list>
+        <slot name="sidenav-list"></slot>
+      </template>
+    </HTSidenav>
     <main id="main" class="main">
       <slot></slot>
     </main>
@@ -29,19 +32,14 @@
 
 <script>
 import { ref } from 'vue';
-import HTButtonIcon from '@/components/HTButtonIcon.vue';
-import HTSidenav from '@/components/HTSidenav.vue';
+import HTButtonIcon from '../components/HTButtonIcon.vue';
+import HTSidenav from '../components/HTSidenav.vue';
 
-import menuLogo from '@/assets/icons/menu-icon.svg';
+import menuLogo from '../assets/icons/menu-icon.svg';
 
 export default {
   name: 'HTLayoutApp',
   components: { HTButtonIcon, HTSidenav },
-  props: {
-    sidenavObject: { type: Object, required: true },
-    showUser: { type: Boolean, default: false },
-  },
-
   setup() {
     const isExpanded = ref(true);
 

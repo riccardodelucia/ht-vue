@@ -25,7 +25,7 @@
 <script>
 import { ref } from 'vue';
 import htLogoWhite from '../assets/ht-logo-white.svg';
-import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import HTButtonIcon from './HTButtonIcon.vue';
 
 export default {
   name: 'HTHeaderWeb',

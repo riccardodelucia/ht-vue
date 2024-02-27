@@ -38,7 +38,7 @@
 
 <script>
 import { ref, computed, inject } from 'vue';
-import HTButtonIcon from '@/components/HTButtonIcon.vue';
+import HTButtonIcon from './HTButtonIcon.vue';
 import VueFeather from 'vue-feather';
 
 export default {
