@@ -61,9 +61,9 @@
 <script>
 import { reactive, ref, watch, computed } from 'vue';
 
-import HTSearchBar from '@/components/HTSearchBar.vue';
-import HTSelect from '@/components/HTSelect.vue';
-import HTPagination from '@/components/HTPagination.vue';
+import HTSearchBar from './HTSearchBar.vue';
+import HTSelect from './HTSelect.vue';
+import HTPagination from './HTPagination.vue';
 
 const search = ref('');
 const currentPage = ref(1);
