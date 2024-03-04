@@ -18,12 +18,6 @@
     },
     "./dist": {
       "import": "./dist/index.js"
-    },
-    "./layouts": {
-      "import": "./lib/layouts/layouts.js"
-    },
-    "./HTLayoutApp": {
-      "import": "./lib/layouts/HTLayoutApp.vue"
     }
   },
   "scripts": {
