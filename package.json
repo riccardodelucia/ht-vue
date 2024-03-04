@@ -8,20 +8,22 @@
     "lib"
   ],
   "exports": {
+    "./*.vue": "./lib/components/*.vue",
+    "./layouts/*.vue": "./lib/layouts/*.vue",
     ".": {
       "import": "./lib/index.js"
-    },
-    "./components": {
-      "import": "./lib/components/components.js"
-    },
-    "./layouts": {
-      "import": "./lib/layouts/layouts.js"
     },
     "./style.css": {
       "import": "./dist/style.css"
     },
     "./dist": {
       "import": "./dist/index.js"
+    },
+    "./layouts": {
+      "import": "./lib/layouts/layouts.js"
+    },
+    "./HTLayoutApp": {
+      "import": "./lib/layouts/HTLayoutApp.vue"
     }
   },
   "scripts": {
