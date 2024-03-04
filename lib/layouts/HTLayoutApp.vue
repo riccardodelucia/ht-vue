@@ -19,6 +19,7 @@
       class="sidenav"
       aria-labelledby="toggle-sidenav"
       :aria-hidden="!isExpanded"
+      :title="sidenavTitle"
     >
       <template #sidenav-list>
         <slot name="sidenav-list"></slot>
@@ -40,6 +41,7 @@ import menuLogo from '../assets/icons/menu-icon.svg';
 export default {
   name: 'HTLayoutApp',
   components: { HTButtonIcon, HTSidenav },
+  props: { sidenavTitle: { type: String, default: '' } },
   setup() {
     const isExpanded = ref(true);
 

@@ -15,7 +15,6 @@ import htLogoWhite from '../assets/ht-logo-white.svg';
 
 export default {
   name: 'HTSidenav',
-
   props: {
     title: { type: String, default: 'Test' },
   },
