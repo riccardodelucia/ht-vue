@@ -10,9 +10,8 @@ export default defineConfig({
     lib: {
       entry: {
         index: path.resolve(__dirname, 'lib/index.js'),
-        components: path.resolve(__dirname, 'lib/components/components.js'),
-        layouts: path.resolve(__dirname, 'lib/layouts/layouts.js'),
       },
+      name: 'HTVue',
     },
     rollupOptions: {
       // I'm keeping external and output.globals in sync
@@ -25,7 +24,7 @@ export default defineConfig({
           'deepdash-es': 'deepdash',
           'vue-feather': 'VueFeather',
         },
-        chunkFileNames: 'allComponents.[hash].js',
+        //chunkFileNames: 'allComponents.[hash].js',
       },
     },
   },

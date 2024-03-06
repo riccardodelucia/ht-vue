@@ -77,10 +77,6 @@ export default {
     &[aria-expanded='true'] > *:last-child {
       transform: rotate(180deg);
     }
-
-    /* :slotted(span) {
-      text-align: left;
-    } */
   }
 }
 
@@ -95,8 +91,7 @@ export default {
     margin-top: var(--size-3);
   }
 
-  // This instruction is important to ensure the hidden content on closed accordions
-  &>div {
+  & > div {
     overflow: hidden;
   }
 }
