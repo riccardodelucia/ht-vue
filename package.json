@@ -8,16 +8,11 @@
     "lib"
   ],
   "exports": {
-    "./*.vue": "./lib/components/*.vue",
-    "./layouts/*.vue": "./lib/layouts/*.vue",
     ".": {
-      "import": "./lib/index.js"
+      "import": "./dist/index.js"
     },
     "./style.css": {
       "import": "./dist/style.css"
-    },
-    "./dist": {
-      "import": "./dist/index.js"
     }
   },
   "scripts": {
