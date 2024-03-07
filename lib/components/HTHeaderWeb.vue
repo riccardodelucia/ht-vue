@@ -6,7 +6,7 @@
     <HTButtonIcon
       v-if="$slots.default"
       aria-controls="primary-navigation"
-      icon-type="menu"
+      icon-type="more-vertical"
       class="menu-button"
       label="Toggle Primary Navigation"
       :aria-expanded="isExpanded"
