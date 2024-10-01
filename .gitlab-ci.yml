@@ -38,8 +38,8 @@ build npm dist:
   stage: build
   extends: .config package registry
   script:
-    - npm install
-    - npm run ci
+    - npm ci
+    - npm run build
   artifacts:
     paths:
       - dist
