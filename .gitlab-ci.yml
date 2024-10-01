@@ -33,7 +33,7 @@ version package:
     paths:
       - package.json
   rules:
-    !reference [.only_for_tagged_commit]
+    - !reference [.only_for_tagged_commit]
 
   
 build npm dist:
@@ -55,4 +55,4 @@ publish npm package:
   script:
     - npm publish
   rules:
-    !reference [.only_for_tagged_commit]
+    - !reference [.only_for_tagged_commit]
