@@ -16,7 +16,7 @@ variables:
 
 .only_for_tagged_commit:
   rules:
-    - if: "CI_COMMIT_TAG"
+    - if: "$CI_COMMIT_TAG"
       when: on_success
     - when: never
 
