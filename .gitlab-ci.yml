@@ -1,6 +1,7 @@
 
 
 stages:
+  - version
   - build
   - publish
 
@@ -11,22 +12,37 @@ variables:
   before_script:    
     - npm config set -- //${CI_SERVER_HOST}/api/v4/projects/${PACKAGE_REGISTRY_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
     - npm config set @${CI_PROJECT_NAMESPACE}:registry=https://${CI_SERVER_HOST}/api/v4/projects/${PACKAGE_REGISTRY_PROJECT_ID}/packages/npm/
-    
+
+.only for tagged commit:
+  rules:
+    - if: "$CI_COMMIT_TAG"
+      when: on_success
+    - when: never
+
+version package:
+  image: node:latest
+  stage: version
+  before_script:
+    - apt-get update -y
+    - apt-get install -y gettext jq
+  script:
+    - jq ".version = \"$CI_COMMIT_TAG\"" package.json > package_tmp.json && mv package_tmp.json package.json
+  artifacts:
+    paths:
+      - package.json
+  rules:
+    - !reference [.only for tagged commit, rules]
 
 build npm dist:
   image: node:latest  
   stage: build
   extends: .config package registry
   script:
-    - apt-get update -y
-    - apt-get install -y gettext jq
-    - jq ".version = \"$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_NAME\"" package.json > package_tmp.json && mv package_tmp.json package.json
     - npm install
     - npm run build
   artifacts:
     paths:
       - dist
-      - package.json
     expire_in: 1 day
 
 publish npm package:
@@ -35,3 +51,5 @@ publish npm package:
   extends: .config package registry
   script:
     - npm publish
+  rules:
+    - !reference [.only for tagged commit, rules]
