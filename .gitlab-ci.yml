@@ -15,7 +15,7 @@ variables:
 
 .only for tagged commit:
   rules:
-    - if: "$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED==true"
+    - if: "$CI_COMMIT_TAG"
       when: on_success
     - when: never
 
