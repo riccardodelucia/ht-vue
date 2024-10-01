@@ -13,14 +13,12 @@ variables:
     - npm config set -- //${CI_SERVER_HOST}/api/v4/projects/${PACKAGE_REGISTRY_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
     - npm config set @${CI_PROJECT_NAMESPACE}:registry=https://${CI_SERVER_HOST}/api/v4/projects/${PACKAGE_REGISTRY_PROJECT_ID}/packages/npm/
 
-
-.only_for_tagged_commit:
+.only for tagged commit:
   rules:
     - if: "$CI_COMMIT_TAG"
       when: on_success
     - when: never
 
-  
 version package:
   image: node:latest
   stage: version
@@ -33,9 +31,8 @@ version package:
     paths:
       - package.json
   rules:
-    - !reference [.only_for_tagged_commit, rules]
+    - !reference [.only for tagged commit, rules]
 
-  
 build npm dist:
   image: node:latest  
   stage: build
@@ -55,4 +52,4 @@ publish npm package:
   script:
     - npm publish
   rules:
-    - !reference [.only_for_tagged_commit, rules]
+    - !reference [.only for tagged commit, rules]
