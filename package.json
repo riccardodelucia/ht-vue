@@ -31,8 +31,8 @@
     "vue-feather": "^2.0.0"
   },
   "peerDependencies": {
-    "vue": "^3.2.41",
-    "@nf-data-iu3/ht-design": "^0.0.0"
+    "@nf-data-iu3/ht-design": "^0.0.1",
+    "vue": "^3.2.41"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.2.0",

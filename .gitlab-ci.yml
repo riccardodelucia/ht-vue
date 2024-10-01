@@ -39,7 +39,7 @@ build npm dist:
   extends: .config package registry
   script:
     - npm install
-    - npm run build
+    - npm run ci
   artifacts:
     paths:
       - dist
