@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 
-import '@nf-daha-iu3/ht-design/style.css';
+import '@nf-data-iu3/ht-design/style.css';
 
 import VueFeather from 'vue-feather';
 
