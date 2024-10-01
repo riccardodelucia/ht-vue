@@ -26,6 +26,7 @@ build npm dist:
   artifacts:
     paths:
       - dist
+      - package.json
     expire_in: 1 day
 
 publish npm package:
