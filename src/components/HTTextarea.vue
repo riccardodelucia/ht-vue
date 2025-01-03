@@ -1,34 +1,20 @@
 <template>
-  <label :for="uuid">{{ label }}</label>
-  <textarea
-    :id="uuid"
-    :value="modelValue"
-    v-bind="$attrs"
-    @input="$emit('update:model-value', $event.target.value)"
-  ></textarea>
+  <label v-if="label" :for="id">{{ label }}</label>
+  <textarea :id="id" v-model="model" v-bind="$attrs"></textarea>
 </template>
 
-<script>
+<script setup>
 import { v4 as uuidv4 } from 'uuid';
+const model = defineModel({ type: [String, null], required: true });
 
-export default {
-  name: 'HTTextArea',
-  props: {
-    label: {
-      type: String,
-      default: '',
-    },
-    modelValue: {
-      type: String,
-      default: '',
-    },
+defineProps({
+  label: {
+    type: String,
+    default: null,
   },
-  emits: ['update:model-value'],
-  setup() {
-    const uuid = uuidv4();
-    return {
-      uuid,
-    };
+  id: {
+    type: String,
+    default: () => uuidv4(),
   },
-};
+});
 </script>
