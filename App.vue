@@ -6,7 +6,11 @@
     <section class="ht-layout-stack">
       <h2>Input Controls</h2>
       <div>
-        <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
+        <ht-input
+          v-model="inputFieldModel"
+          label="Input field"
+          type="number"
+        ></ht-input>
         {{ inputFieldModel }}
       </div>
       <div>

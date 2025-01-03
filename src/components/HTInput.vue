@@ -3,6 +3,7 @@
   <input
     :id="id"
     v-model="model"
+    type="text"
     v-bind="$attrs"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `input-error-${id}` : null"

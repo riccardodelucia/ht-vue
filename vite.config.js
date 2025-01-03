@@ -24,6 +24,13 @@ export default defineConfig({
           'deepdash-es': 'deepdash',
           'vue-feather': 'VueFeather',
         },
+        assetFileNames: (assetInfo) => {
+          const fileName = assetInfo.name || assetInfo.names?.[0]; // Support `name` and `names`
+          if (fileName && fileName.endsWith('.css')) {
+            return 'style.css'; // Rename CSS files to style.css
+          }
+          return '[name].[ext]'; // Default naming for other assets
+        },
         //chunkFileNames: 'allComponents.[hash].js',
       },
     },
