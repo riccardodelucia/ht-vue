@@ -30,12 +30,7 @@
         <p>searchModelValue: {{ searchModelValue }}</p>
       </div>
       <div>
-        <ht-checkbox
-          v-model="checkboxModelValue"
-          name="affiliation"
-          :value="checkBoxValue"
-          label="Affiliation"
-        ></ht-checkbox>
+        <ht-checkbox v-model="checkboxModelValue" label="Checked"></ht-checkbox>
         <p>checkboxModelValue: {{ checkboxModelValue }}</p>
       </div>
 
@@ -52,6 +47,7 @@
           value="france"
           label="France"
         ></ht-checkbox>
+
         <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
       </div>
       <div>
@@ -76,9 +72,8 @@ const selectOptions = [
 ];
 const selectModelValue = selectOptions[1];
 
-const checkBoxValue = 'Human Technopole';
-const checkboxModelValue = 'Human Technopole';
-const checkboxMultipleModelValue = [];
+const checkboxModelValue = ref(true);
+const checkboxMultipleModelValue = ref([]);
 
 const searchModelValue = '';
 const searchHints = [

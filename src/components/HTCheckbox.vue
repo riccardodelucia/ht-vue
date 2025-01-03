@@ -1,20 +1,18 @@
 <template>
   <input
-    :id="uuid"
+    :id="id"
     v-bind="$attrs"
+    :checked="isChecked(modelValue, value)"
     type="checkbox"
-    :checked="checked"
-    :value="value"
-    :name="name"
     :aria-invalid="errorMessage ? true : null"
-    :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
+    :aria-describedby="errorMessage ? `input-error-${id}` : null"
     @change="onChange"
   />
-  <label :for="uuid">{{ label }}</label>
+  <label :for="id">{{ label }}</label>
 
   <span
     v-if="errorMessage"
-    :id="`input-error-${uuid}`"
+    :id="`input-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
   >
@@ -22,55 +20,54 @@
   </span>
 </template>
 
-<script>
+<script setup>
 import { v4 as uuidv4 } from 'uuid';
 
-export default {
-  name: 'HTCheckbox',
-  props: {
-    label: { type: String, default: null },
-    name: {
-      type: String,
-      required: true,
-    },
-    value: { type: [String, Boolean, Number], required: true },
-    modelValue: {
-      /*
-       * 'value' is used to set the value of the checked checkbox, 'modelValue' is used to store either 'value' or null,
-       * according to the checked state of the checkbox. Without declaring a separate value, due to modelValue's possibility of becoming null, we would loose
-       * the checked checkbox value. In addition, 'modelValue' does not coincide with 'value' for multiple checkboxes, since it contains all checked values
-       */
-      type: [String, Boolean, Number, Array, null],
-      required: true,
-    },
-    errorMessage: {
-      type: String,
-      default: null,
-    },
-  },
-  emits: { 'update:model-value': null },
-  setup(props, { emit }) {
-    const uuid = uuidv4();
-
-    const checked = props.modelValue === props.value;
-
-    const onChange = (e) => {
-      const checkboxes = document.querySelectorAll(
-        `input[type='checkbox'][name='${props.name}']`,
-      );
-      if (checkboxes.length > 1) {
-        const selections = [];
-        checkboxes.forEach((checkbox) => {
-          checkbox.checked && selections.push(checkbox.value);
-        });
-        emit('update:model-value', selections);
-      } else {
-        emit('update:model-value', e.target.checked ? props.value : null);
-      }
-    };
-    return { onChange, uuid, checked };
-  },
+const isChecked = (modelValue, value) => {
+  if (Array.isArray(modelValue)) {
+    return modelValue.includes(value);
+  }
+  return modelValue;
 };
+
+const onChange = (event) => {
+  if (Array.isArray(props.modelValue)) {
+    const checked = event.target.checked;
+    if (checked) {
+      emit('update:modelValue', [...props.modelValue, props.value]);
+    } else {
+      emit(
+        'update:modelValue',
+        props.modelValue.filter((value) => value !== props.value),
+      );
+    }
+  } else emit('update:modelValue', event.target.checked);
+};
+
+const emit = defineEmits(['update:modelValue']);
+
+const props = defineProps({
+  modelValue: {
+    type: [Boolean, Array],
+    required: true,
+  },
+  value: {
+    type: [String, Number, Boolean],
+    default: null,
+  },
+  label: {
+    type: String,
+    default: null,
+  },
+  errorMessage: {
+    type: String,
+    default: null,
+  },
+  id: {
+    type: String,
+    default: () => uuidv4(),
+  },
+});
 </script>
 
 <style lang="postcss" scoped>
