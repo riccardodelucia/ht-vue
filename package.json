@@ -1,11 +1,11 @@
 {
   "name": "@nf-data-iu3/ht-vue",
   "author": "Human Technopole SW and Web Unit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "files": [
     "dist",
-    "lib"
+    "src"
   ],
   "exports": {
     ".": {
