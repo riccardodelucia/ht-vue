@@ -1,54 +1,37 @@
 <template>
-  <label :for="uuid">{{ label }}</label>
+  <label v-if="label" :for="id">{{ label }}</label>
   <input
-    :id="uuid"
-    :value="modelValue"
+    :id="id"
+    v-model="model"
     v-bind="$attrs"
     :aria-invalid="errorMessage ? true : null"
-    :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
-    @input="onInput"
+    :aria-describedby="errorMessage ? `input-error-${id}` : null"
   />
   <span
     v-if="errorMessage"
-    :id="`input-error-${uuid}`"
+    :id="`input-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
     >{{ errorMessage }}
   </span>
 </template>
 
-<script>
+<script setup>
 import { v4 as uuidv4 } from 'uuid';
+const model = defineModel({ type: [String, Number, null], required: true });
 
-export default {
-  name: 'HTInput',
-  props: {
-    label: {
-      type: String,
-      default: null,
-    },
-    modelValue: {
-      type: [String, Number, null],
-      required: true,
-    },
-    errorMessage: {
-      type: String,
-      default: null,
-    },
+defineProps({
+  label: {
+    type: String,
+    default: null,
   },
-  emits: { 'update:model-value': null },
-  setup(_, { emit, attrs }) {
-    const uuid = uuidv4();
-    const onInput = (event) => {
-      if (attrs?.type === 'number')
-        emit('update:model-value', event.target.valueAsNumber);
-      else emit('update:model-value', event.target.value);
-    };
-
-    return {
-      onInput,
-      uuid,
-    };
+  errorMessage: {
+    type: String,
+    default: null,
   },
-};
+  id: {
+    type: String,
+    default: () => uuidv4(),
+  },
+});
 </script>
