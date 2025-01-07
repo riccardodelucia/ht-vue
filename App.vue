@@ -30,7 +30,10 @@
         <p>searchModelValue: {{ searchModelValue }}</p>
       </div>
       <div>
-        <ht-checkbox v-model="checkboxModelValue" label="Checked"></ht-checkbox>
+        <ht-checkbox
+          v-model="checkboxModelValue"
+          label="Checkbox label"
+        ></ht-checkbox>
         <p>checkboxModelValue: {{ checkboxModelValue }}</p>
       </div>
 
