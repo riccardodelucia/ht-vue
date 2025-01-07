@@ -31,7 +31,7 @@
 <script>
 import { v4 as uuidv4 } from 'uuid';
 
-import { ref, toRaw } from 'vue';
+import { computed, toRaw } from 'vue';
 
 export default {
   name: 'HTSelect',
@@ -54,16 +54,16 @@ export default {
   setup(props, { emit }) {
     const uuid = uuidv4();
 
-    const modelValueInitialIdx = props.options.findIndex(
-      (option) => option === toRaw(props.modelValue),
-    );
-    const selectedIdx = ref(
-      modelValueInitialIdx === -1 ? 0 : modelValueInitialIdx,
-    );
+    const selectedIdx = computed(() => {
+      return props.options.findIndex((option) =>
+        props.valueKey
+          ? option[props.valueKey] === toRaw(props.modelValue)
+          : option === toRaw(props.modelValue),
+      );
+    });
 
     const onChange = (e) => {
       const idx = parseInt(e.target.value);
-      selectedIdx.value = idx;
       emit('update:model-value', props.options[idx]);
     };
 
