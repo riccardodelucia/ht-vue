@@ -2,6 +2,7 @@
   <label v-if="label" :for="uuid">{{ label }}</label>
   <select
     :id="uuid"
+    :value="selectedIdx"
     v-bind="{
       ...$attrs,
       onChange,
@@ -14,9 +15,8 @@
       v-for="(option, idx) in options"
       :key="`option-${idx}`"
       :value="idx"
-      :selected="option === modelValue"
     >
-      {{ parseOptionValue(option) }}
+      {{ parseOptionLabel(option) }}
     </option>
   </select>
   <span
@@ -30,6 +30,8 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid';
+
+import { ref, toRaw } from 'vue';
 
 export default {
   name: 'HTSelect',
@@ -52,23 +54,30 @@ export default {
   setup(props, { emit }) {
     const uuid = uuidv4();
 
+    const modelValueInitialIdx = props.options.findIndex(
+      (option) => option === toRaw(props.modelValue),
+    );
+    const selectedIdx = ref(
+      modelValueInitialIdx === -1 ? 0 : modelValueInitialIdx,
+    );
+
     const onChange = (e) => {
       const idx = parseInt(e.target.value);
+      selectedIdx.value = idx;
       emit('update:model-value', props.options[idx]);
     };
 
-    const parseOptionValue = (option) => {
-      if (typeof option === 'object') {
-        if (option?.label) return option.label;
-        return JSON.stringify(Object.values(option)[0]);
-      }
+    const parseOptionLabel = (option) => {
+      if (typeof option === 'object' && option?.label) return option.label;
+
       return option;
     };
 
     return {
       uuid,
       onChange,
-      parseOptionValue,
+      parseOptionLabel,
+      selectedIdx,
     };
   },
 };

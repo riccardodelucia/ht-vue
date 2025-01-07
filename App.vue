@@ -73,7 +73,7 @@ const selectOptions = [
   { label: 'label 1', value: { key: 'value 1' } },
   { label: 'label 2', value: { key: 'value 2' } },
 ];
-const selectModelValue = selectOptions[1];
+const selectModelValue = ref(selectOptions[1]);
 
 const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
