@@ -75,6 +75,10 @@
         ></ht-radio-group>
         <p>radioModelValue: {{ radioModelValue }}</p>
       </div>
+      <div>
+        <ht-input-file v-model:files="file" label="File input"></ht-input-file>
+        <p>file: {{ file.name }}</p>
+      </div>
     </section>
   </div>
 </template>
@@ -97,6 +101,8 @@ const radioOptions = [1, { label: 'two', value: { two: 2 } }];
 const radioModelValue = ref(radioOptions[0]);
 
 const searchModelValue = '';
+
+const file = ref(null);
 
 const searchHints = [
   'Afghanistan',

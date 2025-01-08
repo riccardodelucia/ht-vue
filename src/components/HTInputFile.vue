@@ -1,19 +1,19 @@
 <template>
-  <label :for="uuid">{{ label }}</label>
+  <label :for="id">{{ label }}</label>
   <div class="input-file-container">
     <input
-      :id="uuid"
+      :id="id"
       type="file"
       v-bind="$attrs"
       :aria-invalid="errorMessage ? true : null"
-      :aria-describedby="errorMessage ? `input-file-error-${uuid}` : null"
+      :aria-describedby="errorMessage ? `input-file-error-${id}` : null"
       @change="onChange"
     />
-    <span class="filename">{{ fileLabel }}</span>
+    <span class="filename">{{ filename }}</span>
   </div>
   <span
     v-if="errorMessage"
-    :id="`input-file-error-${uuid}`"
+    :id="`input-file-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
     >{{ errorMessage }}</span
@@ -25,26 +25,26 @@ import { computed } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
 export default {
-  name: 'HTInputFile',
+  name: 'InputFile',
   props: {
     label: {
       type: String,
       default: '',
     },
     files: {
-      type: [File, Array],
-      default: undefined,
-    },
-    filenames: {
-      type: [String, Array],
+      type: [File, Array, null],
       default: undefined,
     },
     errorMessage: {
       type: String,
       default: null,
     },
+    id: {
+      type: String,
+      default: () => uuidv4(),
+    },
   },
-  emits: { 'update:files': null, 'update:filenames': null },
+  emits: { 'update:files': null },
   setup(props, { emit, attrs }) {
     const uuid = uuidv4();
 
@@ -52,26 +52,22 @@ export default {
       if (attrs?.multiple === '') {
         const files = Array.from(event.target.files);
         emit('update:files', files);
-        const filenames = files.map(({ name }) => name);
-        emit('update:filenames', filenames);
       } else {
         const file = event.target.files[0];
         emit('update:files', file);
-        emit('update:filenames', file.name);
       }
     };
 
-    const fileLabel = computed(() => {
-      if (Array.isArray(props.filenames))
-        return props.filenames.length > 0
-          ? props.filenames.length > 1
-            ? `${props.filenames.length} files`
-            : '1 file'
-          : '';
-      return props.filenames;
+    const filename = computed(() => {
+      if (Array.isArray(props.files) && props.files.length > 0) {
+        return `${props.files.length} file${props.files.length > 1 ? 's' : ''}`;
+      } else if (props.files?.name) {
+        return props.files.name;
+      }
+      return '';
     });
 
-    return { onChange, uuid, fileLabel };
+    return { onChange, uuid, filename };
   },
 };
 </script>
