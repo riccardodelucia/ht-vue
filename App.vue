@@ -67,6 +67,13 @@
         ></ht-select>
         <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
       </div>
+      <div>
+        <ht-radio-group
+          :options="radioOptions"
+          v-model="radioModelValue"
+        ></ht-radio-group>
+        <!-- <p>radioModelValue: {{ radioModelValue }}</p> -->
+      </div>
     </section>
   </div>
 </template>
@@ -84,6 +91,15 @@ const multipleSelectModelValue = ref([]);
 
 const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
+
+const radioOptions = [
+  { label: 'radio label 1', value: { key: 'radio value 1' } },
+  { label: 'radio label 2', value: { key: 'radio value 2' } },
+];
+const radioModelValue = ref({
+  label: 'radio label 1',
+  value: { key: 'radio value 1' },
+});
 
 const searchModelValue = '';
 

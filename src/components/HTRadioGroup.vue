@@ -35,10 +35,10 @@ const emit = defineEmits(['update:model-value']);
 const options = ['One', 'Two'];
 const picked = ref(null);
 
-const radioIdArray = ['one', 'two'];
-/* for (let i = 0; i < props.options.length; i++) {
+const radioIdArray = [];
+for (let i = 0; i < props.options.length; i++) {
   radioIdArray.push(uuidv4());
-} */
+}
 
 /* const radioIdArray = [];
 for (let i = 0; i < props.options.length; i++) {
