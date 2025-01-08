@@ -3,18 +3,17 @@
     <input
       type="radio"
       :id="radioIdArray[idx]"
-      :value="option"
-      v-model="picked"
-      @change="onChange"
+      :value="extractModelValueFromOption(option)"
+      v-model="internalModelValue"
+      @change="onChange(option)"
     />
-    <label :for="radioIdArray[idx]">{{ option }}</label>
+    <label :for="radioIdArray[idx]">{{ parseOptionLabel(option) }}</label>
   </template>
-  <pre>{{ picked }}</pre>
 </template>
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
-import { ref, toRaw } from 'vue';
+import { ref, toRaw, watch } from 'vue';
 
 const props = defineProps({
   options: {
@@ -31,49 +30,31 @@ const props = defineProps({
   },
 });
 
+const extractModelValueFromOption = (option) => {
+  if (typeof option === 'object' && option?.value) return option.value;
+  return option;
+};
+
+const parseOptionLabel = (option) => {
+  if (typeof option === 'object' && option?.label) return option.label;
+  return option;
+};
+
 const emit = defineEmits(['update:model-value']);
 
-const picked = ref(toRaw(props.modelValue));
+const internalModelValue = ref(
+  extractModelValueFromOption(toRaw(props.modelValue)),
+);
 
 const radioIdArray = [];
 for (let i = 0; i < props.options.length; i++) {
   radioIdArray.push(uuidv4());
 }
 
-const onChange = () => {
-  console.log('onChange');
-  emit('update:model-value', picked.value);
+const onChange = (option) => {
+  //internalModelValue.value = extractModelValueFromOption(option);
+  emit('update:model-value', extractModelValueFromOption(option));
 };
-/* const radioIdArray = [];
-for (let i = 0; i < props.options.length; i++) {
-  radioIdArray.push(uuidv4());
-} */
-
-/* export default {
-  name: 'HTRadionButtonGroup',
-  props: {
-    options: {
-      required: true,
-      type: Array,
-    },
-    modelValue: {
-      type: [Object, String, Boolean, Number],
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-  },
-  emits: { 'update:model-value': null },
-  setup(props) {
-    const radioIdArray = [];
-    for (let i = 0; i < props.options.length; i++) {
-      radioIdArray.push(uuidv4());
-    }
-    return { radioIdArray };
-  },
-}; */
 </script>
 
 <style lang="postcss" scoped>
