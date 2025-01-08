@@ -8,17 +8,17 @@
       <li
         v-for="(step, idx) in steps"
         :key="idx"
-        :aria-current="idx === currentStepIndex ? 'step' : null"
+        :aria-current="idx === currentStep ? 'step' : null"
       >
         <div
           class="ht-number-indicator"
-          :data-state="idx <= currentStepIndex ? 'completed' : null"
+          :data-state="idx <= currentStep ? 'completed' : null"
         >
           {{ idx + 1 }}
-          <span v-if="idx < currentStepIndex" class="ht-visually-hidden"
+          <span v-if="idx < currentStep" class="ht-visually-hidden"
             >Completed</span
           >
-          <span v-else-if="idx === currentStepIndex" class="ht-visually-hidden"
+          <span v-else-if="idx === currentStep" class="ht-visually-hidden"
             >Current</span
           >
           <small>{{ step }}</small>
@@ -36,7 +36,7 @@ export default {
   components: { HTProgress },
   props: {
     currentStep: {
-      type: String,
+      type: Number,
       required: true,
     },
     steps: {
@@ -48,9 +48,6 @@ export default {
     },
   },
   computed: {
-    currentStepIndex() {
-      return this.steps.indexOf(this.currentStep);
-    },
     nSteps() {
       return this.steps.length;
     },
@@ -59,7 +56,7 @@ export default {
 
       const stepWidthPercentage = 100 / nIntervals;
 
-      return this.currentStepIndex * stepWidthPercentage;
+      return this.currentStep * stepWidthPercentage;
     },
   },
 };
