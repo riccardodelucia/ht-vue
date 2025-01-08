@@ -73,7 +73,7 @@
           v-model="radioModelValue"
           name="test"
         ></ht-radio-group>
-        <!-- <p>radioModelValue: {{ radioModelValue }}</p> -->
+        <p>radioModelValue: {{ radioModelValue }}</p>
       </div>
     </section>
   </div>

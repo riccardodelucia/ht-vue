@@ -5,6 +5,7 @@
       :id="radioIdArray[idx]"
       :value="option"
       v-model="picked"
+      @change="onChange"
     />
     <label :for="radioIdArray[idx]">{{ option }}</label>
   </template>
@@ -39,6 +40,10 @@ for (let i = 0; i < props.options.length; i++) {
   radioIdArray.push(uuidv4());
 }
 
+const onChange = () => {
+  console.log('onChange');
+  emit('update:model-value', picked.value);
+};
 /* const radioIdArray = [];
 for (let i = 0; i < props.options.length; i++) {
   radioIdArray.push(uuidv4());
