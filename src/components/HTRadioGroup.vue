@@ -13,7 +13,7 @@
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 
 const props = defineProps({
   options: {
@@ -32,8 +32,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:model-value']);
 
-const options = ['One', 'Two'];
-const picked = ref(null);
+const picked = ref(toRaw(props.modelValue));
 
 const radioIdArray = [];
 for (let i = 0; i < props.options.length; i++) {

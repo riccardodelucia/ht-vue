@@ -71,6 +71,7 @@
         <ht-radio-group
           :options="radioOptions"
           v-model="radioModelValue"
+          name="test"
         ></ht-radio-group>
         <!-- <p>radioModelValue: {{ radioModelValue }}</p> -->
       </div>
@@ -92,14 +93,8 @@ const multipleSelectModelValue = ref([]);
 const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
 
-const radioOptions = [
-  { label: 'radio label 1', value: { key: 'radio value 1' } },
-  { label: 'radio label 2', value: { key: 'radio value 2' } },
-];
-const radioModelValue = ref({
-  label: 'radio label 1',
-  value: { key: 'radio value 1' },
-});
+const radioOptions = ['One', 'Two'];
+const radioModelValue = ref(radioOptions[0]);
 
 const searchModelValue = '';
 
