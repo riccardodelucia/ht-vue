@@ -2,11 +2,9 @@
   <label v-if="label" :for="id">{{ label }}</label>
   <select
     :id="id"
-    :value="selectedIdx"
-    v-bind="{
-      ...$attrs,
-      onChange,
-    }"
+    v-model="internalModelValue"
+    v-bind="$attrs"
+    :multiple="isMultiple"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `select-error-${id}` : null"
   >
@@ -24,17 +22,21 @@
     :id="`select-error-${uuid}`"
     class="ht-input-error-message"
     aria-live="assertive"
-    >{{ errorMessage }}</span
-  >
+    >{{ errorMessage }}
+  </span>
 </template>
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 
-import { computed, toRaw } from 'vue';
+import { toRaw, watch, ref } from 'vue';
 
 const props = defineProps({
-  label: { type: String, default: '' },
+  label: { type: String, default: null },
+  modelValue: {
+    type: [Object, String, Number, Array],
+    required: true,
+  },
   options: {
     type: Array,
     required: true,
@@ -43,10 +45,6 @@ const props = defineProps({
     type: String,
     default: null,
   },
-  modelValue: {
-    type: [Object, String, Number, null],
-    required: true,
-  },
   id: {
     type: String,
     default: () => uuidv4(),
@@ -54,22 +52,54 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:model-value']);
 
-const selectedIdx = computed(() => {
-  return props.options.findIndex((option) =>
-    props.valueKey
-      ? option[props.valueKey] === toRaw(props.modelValue)
-      : option === toRaw(props.modelValue),
-  );
-});
-
-const onChange = (e) => {
-  const idx = parseInt(e.target.value);
-  emit('update:model-value', props.options[idx]);
+const extractModelValueFromOption = (option) => {
+  if (typeof option === 'object' && option?.value) return option.value;
+  return option;
 };
+
+const compareOptionsToModelValue = (option, modelValue) => {
+  if (typeof option === 'object') {
+    return (
+      JSON.stringify(extractModelValueFromOption(option)) ===
+      JSON.stringify(toRaw(modelValue))
+    );
+  }
+  return extractModelValueFromOption(option) === toRaw(modelValue);
+};
+
+let internalModelValue;
+let isMultiple = null;
+
+if (Array.isArray(props.modelValue)) {
+  internalModelValue = ref([]);
+  isMultiple = true;
+} else {
+  const initialOptionIdx = props.options.findIndex((option) =>
+    compareOptionsToModelValue(option, props.modelValue),
+  );
+  internalModelValue = ref(initialOptionIdx);
+}
+
+watch(
+  internalModelValue,
+  () => {
+    if (Array.isArray(props.modelValue)) {
+      const selectedOptions = internalModelValue.value.map((idx) => {
+        return extractModelValueFromOption(props.options[idx]);
+      });
+      emit('update:model-value', selectedOptions);
+    } else {
+      emit(
+        'update:model-value',
+        extractModelValueFromOption(props.options[internalModelValue.value]),
+      );
+    }
+  },
+  { immediate: false }, // this is to avoid a recursive initial event emission that causes an overflow of events, warned by the Vue framework in the browser console
+);
 
 const parseOptionLabel = (option) => {
   if (typeof option === 'object' && option?.label) return option.label;
-
   return option;
 };
 </script>

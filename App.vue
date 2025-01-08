@@ -60,6 +60,13 @@
         ></ht-select>
         <p>selectModelValue: {{ selectModelValue }}</p>
       </div>
+      <div>
+        <ht-select
+          v-model="multipleSelectModelValue"
+          :options="multipleSelectOptions"
+        ></ht-select>
+        <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
+      </div>
     </section>
   </div>
 </template>
@@ -69,16 +76,17 @@ import { ref } from 'vue';
 const inputFieldModel = ref('');
 const inputTextareaModel = ref('');
 
-const selectOptions = [
-  { label: 'label 1', value: { key: 'value 1' } },
-  { label: 'label 2', value: { key: 'value 2' } },
-];
-const selectModelValue = ref(selectOptions[1]);
+const selectOptions = [1, { label: 'label 2', value: { key: 'value 2' } }];
+const selectModelValue = ref({ key: 'value 2' });
+
+const multipleSelectOptions = ['A', 'B', { label: 'C', value: { 3: 'c' } }];
+const multipleSelectModelValue = ref([]);
 
 const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
 
 const searchModelValue = '';
+
 const searchHints = [
   'Afghanistan',
   'Åland Islands',
