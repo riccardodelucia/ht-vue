@@ -77,7 +77,7 @@
       </div>
       <div>
         <ht-input-file v-model:files="file" label="File input"></ht-input-file>
-        <p>file: {{ file.name }}</p>
+        <p>file: {{ file?.name }}</p>
       </div>
     </section>
   </div>

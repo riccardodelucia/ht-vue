@@ -5,6 +5,7 @@
       :id="id"
       type="file"
       v-bind="$attrs"
+      :multiple="isMultiple ? true : null"
       :aria-invalid="errorMessage ? true : null"
       :aria-describedby="errorMessage ? `input-file-error-${id}` : null"
       @change="onChange"
@@ -20,56 +21,51 @@
   >
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-export default {
-  name: 'InputFile',
-  props: {
-    label: {
-      type: String,
-      default: '',
-    },
-    files: {
-      type: [File, Array, null],
-      default: undefined,
-    },
-    errorMessage: {
-      type: String,
-      default: null,
-    },
-    id: {
-      type: String,
-      default: () => uuidv4(),
-    },
+const props = defineProps({
+  label: {
+    type: String,
+    default: '',
   },
-  emits: { 'update:files': null },
-  setup(props, { emit, attrs }) {
-    const uuid = uuidv4();
-
-    const onChange = (event) => {
-      if (attrs?.multiple === '') {
-        const files = Array.from(event.target.files);
-        emit('update:files', files);
-      } else {
-        const file = event.target.files[0];
-        emit('update:files', file);
-      }
-    };
-
-    const filename = computed(() => {
-      if (Array.isArray(props.files) && props.files.length > 0) {
-        return `${props.files.length} file${props.files.length > 1 ? 's' : ''}`;
-      } else if (props.files?.name) {
-        return props.files.name;
-      }
-      return '';
-    });
-
-    return { onChange, uuid, filename };
+  files: {
+    type: [File, Array, null],
+    default: undefined,
   },
+  errorMessage: {
+    type: String,
+    default: null,
+  },
+  id: {
+    type: String,
+    default: () => uuidv4(),
+  },
+});
+
+const emit = defineEmits(['update:files']);
+
+const isMultiple = Array.isArray(props.files);
+
+const onChange = (event) => {
+  if (isMultiple) {
+    const files = Array.from(event.target.files);
+    emit('update:files', files);
+  } else {
+    const file = event.target.files[0];
+    emit('update:files', file);
+  }
 };
+
+const filename = computed(() => {
+  if (Array.isArray(props.files) && props.files.length > 0) {
+    return `${props.files.length} file${props.files.length > 1 ? 's' : ''}`;
+  } else if (props.files?.name) {
+    return props.files.name;
+  }
+  return '';
+});
 </script>
 
 <style lang="postcss" scoped>
