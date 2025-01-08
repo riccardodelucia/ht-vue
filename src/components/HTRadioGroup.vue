@@ -1,21 +1,51 @@
 <template>
   <template v-for="(option, idx) in options" :key="`radio-${idx}`">
     <input
-      :id="radioIdArray[idx]"
-      :value="option.value"
       type="radio"
-      :name="name"
-      :checked="modelValue === option.value"
-      @change="$emit('update:model-value', option.value)"
+      :id="radioIdArray[idx]"
+      :value="option"
+      v-model="picked"
     />
-    <label :for="radioIdArray[idx]">{{ option.label }}</label>
+    <label :for="radioIdArray[idx]">{{ option }}</label>
   </template>
+  <pre>{{ picked }}</pre>
 </template>
 
-<script>
+<script setup>
 import { v4 as uuidv4 } from 'uuid';
+import { ref } from 'vue';
 
-export default {
+const props = defineProps({
+  options: {
+    required: true,
+    type: Array,
+  },
+  modelValue: {
+    type: [Object, String, Boolean, Number],
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['update:model-value']);
+
+const options = ['One', 'Two'];
+const picked = ref(null);
+
+const radioIdArray = ['one', 'two'];
+/* for (let i = 0; i < props.options.length; i++) {
+  radioIdArray.push(uuidv4());
+} */
+
+/* const radioIdArray = [];
+for (let i = 0; i < props.options.length; i++) {
+  radioIdArray.push(uuidv4());
+} */
+
+/* export default {
   name: 'HTRadionButtonGroup',
   props: {
     options: {
@@ -39,7 +69,7 @@ export default {
     }
     return { radioIdArray };
   },
-};
+}; */
 </script>
 
 <style lang="postcss" scoped>
