@@ -13,6 +13,7 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { ref, toRaw, watch } from 'vue';
+import { extractModelValueFromOption, parseOptionLabel } from '../utilities.js';
 
 /*
  * Vue manages radio groups according to a single modelValue. In addition, its particular internal management via 'value' and 'v-bind' requires the same exact modelValue
@@ -35,16 +36,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const extractModelValueFromOption = (option) => {
-  if (typeof option === 'object' && option?.value) return option.value;
-  return option;
-};
-
-const parseOptionLabel = (option) => {
-  if (typeof option === 'object' && option?.label) return option.label;
-  return option;
-};
 
 const emit = defineEmits(['update:model-value']);
 

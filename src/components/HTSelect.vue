@@ -31,6 +31,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { toRaw, watch, ref } from 'vue';
 
+import { extractModelValueFromOption, parseOptionLabel } from '../utilities.js';
+
 const props = defineProps({
   label: { type: String, default: null },
   modelValue: {
@@ -51,11 +53,6 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(['update:model-value']);
-
-const extractModelValueFromOption = (option) => {
-  if (typeof option === 'object' && option?.value) return option.value;
-  return option;
-};
 
 const compareOptionsToModelValue = (option, modelValue) => {
   if (typeof option === 'object') {
@@ -97,9 +94,4 @@ watch(
   },
   { immediate: false }, // this is to avoid a recursive initial event emission that causes an overflow of events, warned by the Vue framework in the browser console
 );
-
-const parseOptionLabel = (option) => {
-  if (typeof option === 'object' && option?.label) return option.label;
-  return option;
-};
 </script>
