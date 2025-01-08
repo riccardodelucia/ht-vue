@@ -30,7 +30,7 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  files: {
+  modelValue: {
     type: [File, Array, null],
     default: undefined,
   },
@@ -44,25 +44,25 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:files']);
+const emit = defineEmits(['update:modelValue']);
 
-const isMultiple = Array.isArray(props.files);
+const isMultiple = Array.isArray(props.modelValue);
 
 const onChange = (event) => {
   if (isMultiple) {
     const files = Array.from(event.target.files);
-    emit('update:files', files);
+    emit('update:modelValue', files);
   } else {
     const file = event.target.files[0];
-    emit('update:files', file);
+    emit('update:modelValue', file);
   }
 };
 
 const filename = computed(() => {
-  if (Array.isArray(props.files) && props.files.length > 0) {
-    return `${props.files.length} file${props.files.length > 1 ? 's' : ''}`;
-  } else if (props.files?.name) {
-    return props.files.name;
+  if (Array.isArray(props.modelValue) && props.modelValue.length > 0) {
+    return `${props.modelValue.length} file${props.modelValue.length > 1 ? 's' : ''}`;
+  } else if (props.modelValue?.name) {
+    return props.modelValue.name;
   }
   return '';
 });

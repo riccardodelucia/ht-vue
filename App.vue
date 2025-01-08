@@ -76,12 +76,12 @@
         <p>radioModelValue: {{ radioModelValue }}</p>
       </div>
       <div>
-        <ht-input-file v-model:files="file" label="File input"></ht-input-file>
+        <ht-input-file v-model="file" label="File input"></ht-input-file>
         <p>file: {{ file?.name }}</p>
       </div>
       <div>
         <ht-input-file
-          v-model:files="multipleFiles"
+          v-model="multipleFiles"
           label="File input"
         ></ht-input-file>
         <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
