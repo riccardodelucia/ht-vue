@@ -23,29 +23,6 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 
-const isChecked = (modelValue, value) => {
-  if (Array.isArray(modelValue)) {
-    return modelValue.includes(value);
-  }
-  return modelValue;
-};
-
-const onChange = (event) => {
-  if (Array.isArray(props.modelValue)) {
-    const checked = event.target.checked;
-    if (checked) {
-      emit('update:modelValue', [...props.modelValue, props.value]);
-    } else {
-      emit(
-        'update:modelValue',
-        props.modelValue.filter((value) => value !== props.value),
-      );
-    }
-  } else emit('update:modelValue', event.target.checked);
-};
-
-const emit = defineEmits(['update:modelValue']);
-
 const props = defineProps({
   modelValue: {
     type: [Boolean, Array],
@@ -68,6 +45,29 @@ const props = defineProps({
     default: () => uuidv4(),
   },
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const isChecked = (modelValue, value) => {
+  if (Array.isArray(modelValue)) {
+    return modelValue.includes(value);
+  }
+  return modelValue;
+};
+
+const onChange = (event) => {
+  if (Array.isArray(props.modelValue)) {
+    const checked = event.target.checked;
+    if (checked) {
+      emit('update:modelValue', [...props.modelValue, props.value]);
+    } else {
+      emit(
+        'update:modelValue',
+        props.modelValue.filter((value) => value !== props.value),
+      );
+    }
+  } else emit('update:modelValue', event.target.checked);
+};
 </script>
 
 <style lang="postcss" scoped>
