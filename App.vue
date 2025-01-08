@@ -93,7 +93,7 @@ const multipleSelectModelValue = ref([]);
 const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
 
-const radioOptions = ['One', 'Two'];
+const radioOptions = [1, { label: 'two', value: { two: 2 } }];
 const radioModelValue = ref(radioOptions[0]);
 
 const searchModelValue = '';

@@ -5,7 +5,6 @@
       :id="radioIdArray[idx]"
       :value="extractModelValueFromOption(option)"
       v-model="internalModelValue"
-      @change="onChange(option)"
     />
     <label :for="radioIdArray[idx]">{{ parseOptionLabel(option) }}</label>
   </template>
@@ -51,10 +50,13 @@ for (let i = 0; i < props.options.length; i++) {
   radioIdArray.push(uuidv4());
 }
 
-const onChange = (option) => {
-  //internalModelValue.value = extractModelValueFromOption(option);
-  emit('update:model-value', extractModelValueFromOption(option));
-};
+watch(
+  internalModelValue,
+  () => {
+    emit('update:model-value', internalModelValue.value);
+  },
+  { immediate: false },
+);
 </script>
 
 <style lang="postcss" scoped>
