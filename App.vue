@@ -79,6 +79,13 @@
         <ht-input-file v-model:files="file" label="File input"></ht-input-file>
         <p>file: {{ file?.name }}</p>
       </div>
+      <div>
+        <ht-input-file
+          v-model:files="multipleFiles"
+          label="File input"
+        ></ht-input-file>
+        <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
+      </div>
     </section>
   </div>
 </template>
@@ -103,6 +110,8 @@ const radioModelValue = ref(radioOptions[0]);
 const searchModelValue = '';
 
 const file = ref(null);
+
+const multipleFiles = ref([]);
 
 const searchHints = [
   'Afghanistan',
