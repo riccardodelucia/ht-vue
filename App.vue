@@ -74,12 +74,22 @@
         ></ht-select>
         <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
       </div>
-      <div>
+      <!--       <div>
         <ht-radio-group
           :options="radioOptions"
           v-model="radioModelValue"
           name="test"
         ></ht-radio-group>
+        <p>radioModelValue: {{ radioModelValue }}</p>
+      </div> -->
+      <div>
+        <ht-radio v-model="radioModelValue" :value="radioOptions[0]"></ht-radio>
+        <!--         <ht-radio
+          v-model="radioModelValue"
+          :value="radioOptions[1]"
+          name="test"
+        ></ht-radio> -->
+
         <p>radioModelValue: {{ radioModelValue }}</p>
       </div>
       <div>

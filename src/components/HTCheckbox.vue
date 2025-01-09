@@ -26,7 +26,7 @@ import { ref, watch } from 'vue';
 
 const props = defineProps({
   modelValue: {
-    type: [Boolean, Array],
+    type: [String, Number, Boolean, Object, Array, null],
     required: true,
   },
   // value is used only for multiple checkboxes
