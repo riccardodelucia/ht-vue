@@ -1,16 +1,15 @@
 <template>
   <input
-    :id="uuid"
+    :id="id"
     role="switch"
-    :checked="checked"
+    v-model="toggle"
+    :true-value="trueValue"
+    :false-value="falseValue"
     type="checkbox"
-    :name="name"
-    :value="currentValue"
     :aria-invalid="errorMessage ? true : null"
-    :aria-describedby="errorMessage ? `input-error-${uuid}` : null"
-    @change="onChange"
+    :aria-describedby="errorMessage ? `input-error-${id}` : null"
   />
-  <label :for="uuid">{{ currentValue }}</label>
+  <label :for="id">{{ toggle }}</label>
   <span
     v-if="errorMessage"
     :id="`input-error-${uuid}`"
@@ -20,48 +19,53 @@
   </span>
 </template>
 
-<script>
+<script setup>
 import { v4 as uuidv4 } from 'uuid';
+import { ref, watch } from 'vue';
 
-import { ref } from 'vue';
-
-export default {
-  name: 'HTToggleSwitch',
-  props: {
-    label: {
-      type: String,
-      default: null,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    valueOn: { type: [String, Boolean, Number], required: true },
-    valueOff: { type: [String, Boolean, Number], required: true },
-    modelValue: {
-      type: [String, Boolean, Number],
-      required: true,
-    },
-    errorMessage: {
-      type: String,
-      default: null,
-    },
+const props = defineProps({
+  modelValue: {
+    type: [String, Number, Boolean, Object, Array],
+    required: true,
   },
-  emits: ['update:modelValue'],
-  setup(props, { emit }) {
-    const uuid = uuidv4();
-
-    const checked = props.modelValue === props.valueOn;
-
-    const currentValue = ref(checked ? props.valueOn : props.valueOff);
-
-    const onChange = (e) => {
-      currentValue.value = e.target.checked ? props.valueOn : props.valueOff;
-      emit('update:modelValue', currentValue.value);
-    };
-    return { onChange, uuid, checked, currentValue };
+  trueValue: {
+    type: [String, Number, Boolean, Object, Array],
+    default: () => true,
   },
-};
+  falseValue: {
+    type: [String, Number, Boolean, Object, Array],
+    default: () => false,
+  },
+  label: {
+    type: String,
+    default: null,
+  },
+  errorMessage: {
+    type: String,
+    default: null,
+  },
+  id: {
+    type: String,
+    default: () => uuidv4(),
+  },
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const toggle = ref(
+  props.modelValue === props.trueValue ? props.trueValue : props.falseValue,
+);
+
+/**
+ * For details about the reason behind the use of watch, look at ht-select
+ */
+watch(
+  toggle,
+  () => {
+    emit('update:modelValue', toggle.value);
+  },
+  { immediate: false },
+);
 </script>
 
 <style lang="postcss" scoped>

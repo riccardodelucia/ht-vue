@@ -29,6 +29,8 @@
         <ht-checkbox
           v-model="checkboxModelValue"
           label="Checkbox label"
+          :true-value="checkboxTrueValue"
+          :false-value="checkboxFalseValue"
         ></ht-checkbox>
         <p>checkboxModelValue: {{ checkboxModelValue }}</p>
       </div>
@@ -48,6 +50,15 @@
         ></ht-checkbox>
 
         <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
+      </div>
+      <div>
+        <ht-toggle-switch
+          v-model="toggleSwitchModelValue"
+          :true-value="toggleSwitchTrueValue"
+          :false-value="toggleSwitchFalseValue"
+          label="Toggle Switch label"
+        ></ht-toggle-switch>
+        <p>toggleSwitchModelValue: {{ toggleSwitchModelValue }}</p>
       </div>
       <div>
         <ht-select
@@ -97,8 +108,14 @@ const selectModelValue = ref({ key: 'value 2' });
 const multipleSelectOptions = ['A', 'B', { label: 'C', value: { 3: 'c' } }];
 const multipleSelectModelValue = ref([]);
 
-const checkboxModelValue = ref(true);
+const checkboxTrueValue = true;
+const checkboxFalseValue = null;
+const checkboxModelValue = ref(checkboxFalseValue);
 const checkboxMultipleModelValue = ref([]);
+
+const toggleSwitchTrueValue = 1;
+const toggleSwitchFalseValue = { value: 'false' };
+const toggleSwitchModelValue = ref(toggleSwitchTrueValue);
 
 const radioOptions = [1, { label: 'two', value: { two: 2 } }];
 const radioModelValue = ref(radioOptions[0]);

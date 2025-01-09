@@ -2,14 +2,14 @@
   <input
     :id="id"
     v-bind="$attrs"
-    :checked="isChecked(modelValue, value)"
+    v-model="toggle"
+    :true-value="trueValue"
+    :false-value="falseValue"
     type="checkbox"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `input-error-${id}` : null"
-    @change="onChange"
   />
   <label :for="id">{{ label }}</label>
-
   <span
     v-if="errorMessage"
     :id="`input-error-${id}`"
@@ -22,15 +22,27 @@
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   modelValue: {
     type: [Boolean, Array],
     required: true,
   },
+  // value is used only for multiple checkboxes
   value: {
     type: [String, Number, Boolean],
     default: null,
+  },
+  // trueValue is used only for single checkboxes
+  trueValue: {
+    type: [String, Number, Boolean, Object, Array, null],
+    default: () => true,
+  },
+  // falseValue is used only for single checkboxes
+  falseValue: {
+    type: [String, Number, Boolean, Object, Array, null],
+    default: () => false,
   },
   label: {
     type: String,
@@ -48,17 +60,23 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const isChecked = (modelValue, value) => {
-  if (Array.isArray(modelValue)) {
-    return modelValue.includes(value);
+const isChecked = () => {
+  if (Array.isArray(props.modelValue)) {
+    return props.modelValue.includes(props.value);
   }
-  return modelValue;
+  const toggle =
+    props.modelValue === props.trueValue ? props.trueValue : props.falseValue;
+  return toggle;
 };
 
-const onChange = (event) => {
+const toggle = ref(isChecked());
+
+/**
+ * For details about the reason behind the use of watch, look at ht-select
+ */
+watch(toggle, () => {
   if (Array.isArray(props.modelValue)) {
-    const checked = event.target.checked;
-    if (checked) {
+    if (!props.modelValue.includes(props.value)) {
       emit('update:modelValue', [...props.modelValue, props.value]);
     } else {
       emit(
@@ -66,8 +84,8 @@ const onChange = (event) => {
         props.modelValue.filter((value) => value !== props.value),
       );
     }
-  } else emit('update:modelValue', event.target.checked);
-};
+  } else emit('update:modelValue', toggle.value);
+});
 </script>
 
 <style lang="postcss" scoped>
