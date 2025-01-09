@@ -79,6 +79,7 @@
       <div>
         <ht-radio-group
           :options="radioOptions"
+          :option-labels="radioLabels"
           v-model="radioModelValue"
           name="test"
         ></ht-radio-group>
@@ -121,7 +122,8 @@ const toggleSwitchTrueValue = 1;
 const toggleSwitchFalseValue = { value: 'false' };
 const toggleSwitchModelValue = ref(toggleSwitchTrueValue);
 
-const radioOptions = [1, { label: 'two', value: { two: 2 } }];
+const radioOptions = [1, { two: 2 }];
+const radioLabels = [1, 2];
 const radioModelValue = ref(radioOptions[0]);
 
 const searchModelValue = '';

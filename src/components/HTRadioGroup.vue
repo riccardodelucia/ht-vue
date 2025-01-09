@@ -2,11 +2,12 @@
   <template v-for="(option, idx) in options" :key="`radio-${idx}`">
     <input
       type="radio"
+      v-bind="$attrs"
       :id="radioIdArray[idx]"
-      :value="extractModelValueFromOption(option)"
+      :value="option"
       v-model="internalModelValue"
     />
-    <label :for="radioIdArray[idx]">{{ parseOptionLabel(option) }}</label>
+    <label :for="radioIdArray[idx]">{{ labelize(option, idx) }}</label>
   </template>
 </template>
 
@@ -23,25 +24,29 @@ import { extractModelValueFromOption, parseOptionLabel } from '../utilities.js';
  */
 
 const props = defineProps({
-  options: {
-    required: true,
-    type: Array,
-  },
   modelValue: {
     type: [Object, String, Boolean, Number],
     required: true,
   },
-  name: {
-    type: String,
+  options: {
     required: true,
+    type: Array,
+  },
+  optionLabels: {
+    type: Array,
+    default: () => [],
   },
 });
 
 const emit = defineEmits(['update:model-value']);
 
-const internalModelValue = ref(
-  extractModelValueFromOption(toRaw(props.modelValue)),
-);
+const labelize = (option, idx) => {
+  const valueAtIndex = props.optionLabels.at(idx);
+  if (valueAtIndex !== undefined) return props.optionLabels[idx];
+  return option;
+};
+
+const internalModelValue = ref(toRaw(props.modelValue));
 
 const radioIdArray = [];
 for (let i = 0; i < props.options.length; i++) {

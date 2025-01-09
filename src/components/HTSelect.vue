@@ -80,6 +80,7 @@ const emit = defineEmits(['update:model-value']);
 let internalModelValue;
 let isMultiple = null;
 
+// Internally to the component, we use positional indexes as values for the select options
 if (Array.isArray(props.modelValue)) {
   internalModelValue = ref([]);
   isMultiple = true;
