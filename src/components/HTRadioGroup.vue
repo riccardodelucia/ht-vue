@@ -7,14 +7,17 @@
       :value="option"
       v-model="internalModelValue"
     />
-    <label :for="radioIdArray[idx]">{{ labelize(option, idx) }}</label>
+    <label :for="radioIdArray[idx]">{{
+      labelize(optionLabels, option, idx)
+    }}</label>
   </template>
 </template>
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { ref, toRaw, watch } from 'vue';
-import { extractModelValueFromOption, parseOptionLabel } from '../utilities.js';
+
+import { labelize } from '../utilities.js';
 
 /*
  * Vue manages radio groups according to a single modelValue. In addition, its particular internal management via 'value' and 'v-bind' requires the same exact modelValue
@@ -39,12 +42,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:model-value']);
-
-const labelize = (option, idx) => {
-  const valueAtIndex = props.optionLabels.at(idx);
-  if (valueAtIndex !== undefined) return props.optionLabels[idx];
-  return option;
-};
 
 const internalModelValue = ref(toRaw(props.modelValue));
 

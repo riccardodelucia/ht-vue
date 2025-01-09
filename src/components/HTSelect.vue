@@ -14,7 +14,7 @@
       :key="`option-${idx}`"
       :value="idx"
     >
-      {{ labelize(option, idx) }}
+      {{ labelize(optionLabels, option, idx) }}
     </option>
   </select>
   <span
@@ -49,6 +49,8 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { toRaw, watch, ref } from 'vue';
+
+import { labelize } from '../utilities.js';
 
 const props = defineProps({
   label: { type: String, default: null },
@@ -90,12 +92,6 @@ if (Array.isArray(props.modelValue)) {
   });
   internalModelValue = ref(initialOptionIdx);
 }
-
-const labelize = (option, idx) => {
-  const valueAtIndex = props.optionLabels.at(idx);
-  if (valueAtIndex !== undefined) return props.optionLabels[idx];
-  return option;
-};
 
 /**
  * We use watch for watching an internal modelValue which follows vue implementation of select input binding.
