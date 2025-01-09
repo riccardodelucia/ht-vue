@@ -39,16 +39,23 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  // SSR only
+  idArray: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(['update:model-value']);
 
 const internalModelValue = ref(toRaw(props.modelValue));
 
-const radioIdArray = [];
-for (let i = 0; i < props.options.length; i++) {
-  radioIdArray.push(uuidv4());
-}
+let radioIdArray = [];
+if (props.idArray.length !== props.options.length)
+  for (let i = 0; i < props.options.length; i++) {
+    radioIdArray.push(uuidv4());
+  }
+else radioIdArray = props.idArray;
 
 watch(
   internalModelValue,

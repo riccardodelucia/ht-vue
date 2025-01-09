@@ -30,6 +30,7 @@ defineProps({
     type: String,
     default: null,
   },
+  // SSR only
   id: {
     type: String,
     default: () => uuidv4(),
