@@ -64,6 +64,7 @@
         <ht-select
           v-model="selectModelValue"
           :options="selectOptions"
+          :option-labels="selectOptionLabels"
         ></ht-select>
         <p>selectModelValue: {{ selectModelValue }}</p>
       </div>
@@ -71,25 +72,16 @@
         <ht-select
           v-model="multipleSelectModelValue"
           :options="multipleSelectOptions"
+          :option-labels="multipleSelectOptionLabels"
         ></ht-select>
         <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
       </div>
-      <!--       <div>
+      <div>
         <ht-radio-group
           :options="radioOptions"
           v-model="radioModelValue"
           name="test"
         ></ht-radio-group>
-        <p>radioModelValue: {{ radioModelValue }}</p>
-      </div> -->
-      <div>
-        <ht-radio v-model="radioModelValue" :value="radioOptions[0]"></ht-radio>
-        <!--         <ht-radio
-          v-model="radioModelValue"
-          :value="radioOptions[1]"
-          name="test"
-        ></ht-radio> -->
-
         <p>radioModelValue: {{ radioModelValue }}</p>
       </div>
       <div>
@@ -112,10 +104,12 @@ import { ref } from 'vue';
 const inputFieldModel = ref('');
 const inputTextareaModel = ref('');
 
-const selectOptions = [1, { label: 'label 2', value: { key: 'value 2' } }];
-const selectModelValue = ref({ key: 'value 2' });
+const selectOptions = [1, { key: 2 }];
+const selectOptionLabels = ['A', 'B'];
+const selectModelValue = ref(selectOptions[1]);
 
-const multipleSelectOptions = ['A', 'B', { label: 'C', value: { 3: 'c' } }];
+const multipleSelectOptions = ['A', 'B', { value: 'C' }];
+const multipleSelectOptionLabels = ['A', 'B', 'C'];
 const multipleSelectModelValue = ref([]);
 
 const checkboxTrueValue = true;

@@ -14,7 +14,7 @@
       :key="`option-${idx}`"
       :value="idx"
     >
-      {{ parseOptionLabel(option) }}
+      {{ labelize(option, idx) }}
     </option>
   </select>
   <span
@@ -27,11 +27,28 @@
 </template>
 
 <script setup>
+/**
+ * Decoupling options from optionLabels has several benefits.
+ * Without option labels, we should use options to show the corresponding label.
+ * When options are objects, this entails the label is something not readable.
+ * One first alternative would be to use as option composite objects, where we provide both a label and a value,
+ * which in turns contain the real object. Proper logic could be written to show the label, and treat the
+ * modelValue as the content of the 'value' property. Nevertheless, this complicates the logic
+ * and exposes to misalignments between the real modelValue object and the object contain within the 'value'
+ * key of the corresponding option. If objects are not the same reference, this could cause misalignments.
+ * This can be ideally solved by a JSON.stringify comparison between modelValues and options 'value' properties,
+ * but again complicates the logic and can become inefficient for large objects.
+ *
+ * By having separate labels:
+ * - we ensure we have one unique source of truth for modelValue objects
+ * - we prevent the user to need to assenble complex objects to both show the label and the objectModelValue
+ * - we make more transparent what will be the emitted value, without further processing from the selected option
+ * - we avoid JSON string comparisons, which could cause lack of performances.
+ *
+ */
 import { v4 as uuidv4 } from 'uuid';
 
 import { toRaw, watch, ref } from 'vue';
-
-import { extractModelValueFromOption, parseOptionLabel } from '../utilities.js';
 
 const props = defineProps({
   label: { type: String, default: null },
@@ -39,9 +56,15 @@ const props = defineProps({
     type: [Object, String, Number, Array],
     required: true,
   },
+  // options refers to possible candidates values for the modelValue
   options: {
     type: Array,
     required: true,
+  },
+  // optionLabels refers to labels to be associated to the corresponding options
+  optionLabels: {
+    type: Array,
+    default: () => [],
   },
   errorMessage: {
     type: String,
@@ -54,16 +77,6 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:model-value']);
 
-const compareOptionsToModelValue = (option, modelValue) => {
-  if (typeof option === 'object') {
-    return (
-      JSON.stringify(extractModelValueFromOption(option)) ===
-      JSON.stringify(toRaw(modelValue))
-    );
-  }
-  return extractModelValueFromOption(option) === toRaw(modelValue);
-};
-
 let internalModelValue;
 let isMultiple = null;
 
@@ -71,11 +84,17 @@ if (Array.isArray(props.modelValue)) {
   internalModelValue = ref([]);
   isMultiple = true;
 } else {
-  const initialOptionIdx = props.options.findIndex((option) =>
-    compareOptionsToModelValue(option, props.modelValue),
-  );
+  const initialOptionIdx = props.options.findIndex((option) => {
+    return option === toRaw(props.modelValue);
+  });
   internalModelValue = ref(initialOptionIdx);
 }
+
+const labelize = (option, idx) => {
+  const valueAtIndex = props.optionLabels.at(idx);
+  if (valueAtIndex !== undefined) return props.optionLabels[idx];
+  return option;
+};
 
 /**
  * We use watch for watching an internal modelValue which follows vue implementation of select input binding.
@@ -90,14 +109,11 @@ watch(
   () => {
     if (Array.isArray(props.modelValue)) {
       const selectedOptions = internalModelValue.value.map((idx) => {
-        return extractModelValueFromOption(props.options[idx]);
+        return props.options[idx];
       });
       emit('update:model-value', selectedOptions);
     } else {
-      emit(
-        'update:model-value',
-        extractModelValueFromOption(props.options[internalModelValue.value]),
-      );
+      emit('update:model-value', props.options[internalModelValue.value]);
     }
   },
   { immediate: false }, // this is to avoid a recursive initial event emission that causes an overflow of events, warned by the Vue framework in the browser console
