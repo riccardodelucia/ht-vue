@@ -20,9 +20,9 @@ import { ref, toRaw, watch } from 'vue';
 import { labelize } from '../utilities.js';
 
 /*
- * Vue manages radio groups according to a single modelValue. In addition, its particular internal management via 'value' and 'v-bind' requires the same exact modelValue
- * to be used for a radio group. This means there is no possibility to split a single radio group in multiple components.
- * This would imply to use an internal modelValue for each component, to manage the v-model. By having separate modelValues for every radio component,
+ * Vue manages radio groups according to a single modelValue. In addition, its particular internal management via 'value' and 'v-model' requires the same exact modelValue
+ * to be used for a radio group. This means there is no possibility to split a single radio group into multiple components.
+ * This would imply to use a different internal modelValue for each component, to manage the v-model. By having separate internal modelValues for every radio component,
  * Vue would not be able to associate multiple radio inputs to the same modelValue, although we are using one single modelValue from the parent component.
  */
 
