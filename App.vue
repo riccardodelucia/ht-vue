@@ -103,6 +103,31 @@
       ></ht-pagination>
       <p>current page: {{ currentPage }}</p>
     </div>
+    <div>
+      <ht-table
+        :active-column-headers="columnHeaders"
+        :active-column-data="columnData"
+        :column-headers-reference="columnHeadersReference"
+      ></ht-table>
+      <ht-checkbox
+        v-model="columnHeaders"
+        name="country"
+        value="Italy"
+        label="Italy"
+      ></ht-checkbox>
+      <ht-checkbox
+        v-model="columnHeaders"
+        name="country"
+        value="France"
+        label="France"
+      ></ht-checkbox>
+      <ht-checkbox
+        v-model="columnHeaders"
+        name="country"
+        value="Germany"
+        label="Germany"
+      ></ht-checkbox>
+    </div>
   </section>
 </template>
 
@@ -153,6 +178,12 @@ const multipleFiles = ref([]);
 const numberOfPages = ref(10);
 const currentPage = ref(1);
 const displayedPages = ref(3);
+
+///////////////////////////////////
+// Table
+const columnHeadersReference = ['Italy', 'France', 'Germany'];
+const columnHeaders = ref([...columnHeadersReference]);
+const columnData = ref([1, 2, 3]);
 
 ///////////////////////////////////
 // Search Bar
