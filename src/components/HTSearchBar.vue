@@ -1,7 +1,7 @@
 <template>
-  <form class="search-bar" @submit.prevent="onSubmit">
+  <search class="search-bar">
     <!-- https://adrianroselli.com/2015/08/where-to-put-your-search-role.html -->
-    <div role="search">
+    <form @submit.prevent="onSubmit">
       <label :for="uuid" class="ht-visually-hidden">
         {{ label }}
       </label>
@@ -13,8 +13,9 @@
         type="search"
         @input="onInput"
       />
-      <HTButtonIcon type="submit" icon-type="search" label="Submit Search">
-      </HTButtonIcon>
+      <button type="submit" icon-type="search" label="Submit Search">
+        <VueFeather type="search" width="5"></VueFeather>
+      </button>
       <datalist :id="listId">
         <option
           v-for="(hint, id) in hints"
@@ -22,8 +23,8 @@
           :value="hint"
         ></option>
       </datalist>
-    </div>
-  </form>
+    </form>
+  </search>
 </template>
 
 <script>
@@ -51,6 +52,7 @@ export default {
       this.$emit('update:model-value', e.target.value);
     },
     onSubmit() {
+      console.log('submitted');
       this.$emit('submit', this.value);
     },
   },
@@ -58,25 +60,42 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+/**
+  Note: currently, there no way to style a datalist with pure CSS. The approach to style it requires a bunch of work with JS, which here is omitted for simplicity
+*/
 .search-bar {
-  position: relative;
   display: inline-block;
-  height: max-content;
-  width: max-content;
+}
 
-  input {
-    padding-right: 2.4rem;
-  }
+.search-bar form {
+  display: flex;
+  flex-wrap: nowrap;
+}
 
-  button {
-    position: absolute;
-    right: 0.5rem;
-    top: 0.6rem;
-    color: var(--ht-color-gray-3);
-  }
+input {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
 
-  input[list]::-webkit-calendar-picker-indicator {
-    display: none !important;
-  }
+input[list]::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  display: none;
+}
+
+button {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 4rem;
 }
 </style>

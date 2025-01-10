@@ -17,7 +17,7 @@
         {{ inputTextareaModel }}
       </div>
 
-      <div class="">
+      <div>
         <ht-search-bar
           v-model="searchModelValue"
           label="Country"
