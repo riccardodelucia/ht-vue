@@ -1,9 +1,22 @@
 <template>
   <table>
     <thead>
-      <template v-for="column in columnHeaders">
-        <th v-if="isColumnActive(column)" scope="col">
-          {{ column }}
+      <template v-for="columnInfo in columnHeadersInfo">
+        <th
+          v-if="isColumnActive(columnInfo.column)"
+          scope="col"
+          :data-sorting="
+            columnInfo?.isSortable
+              ? currentSortKey === columnInfo.column
+                ? sortOrders[column.name] > 0
+                  ? 'sorting-asc'
+                  : 'sorting-desc'
+                : 'sorting'
+              : ''
+          "
+          @click="columnInfo?.isSortable && sortBy(column.name)"
+        >
+          {{ columnInfo.column }}
         </th>
       </template>
     </thead>
@@ -36,7 +49,8 @@
 <script setup>
 import { computed } from 'vue';
 const props = defineProps({
-  columnHeaders: { type: Array, required: true },
+  // columnHeadersInfo must specify the column name and an option isSortable parameter
+  columnHeadersInfo: { type: Array, required: true },
   activeColumnHeaders: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
@@ -45,9 +59,13 @@ const props = defineProps({
 const nRows = computed(() => props.tableData.length);
 const nColumns = computed(() => props.tableData[0].length);
 
+const columnHeaders = computed(() =>
+  props.columnHeadersInfo.map(({ column }) => column),
+);
+
 const rowHeaderIndex = computed(() => {
   if (props.rowHeader) {
-    return props.columnHeaders.indexOf(props.rowHeader);
+    return columnHeaders.value.indexOf(props.rowHeader);
   }
   return -1;
 });
