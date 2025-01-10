@@ -109,7 +109,15 @@
         :table-data="tableData"
         :column-headers="columnHeaders"
         row-header="Italy"
-      ></ht-table>
+      >
+        <template v-slot="slotProps">
+          <template v-if="slotProps.column === 'Italy'"
+            ><button type="button">
+              Data: {{ slotProps.tableData }}
+            </button></template
+          >
+        </template>
+      </ht-table>
       <ht-checkbox
         v-model="activeColumnHeaders"
         name="country"

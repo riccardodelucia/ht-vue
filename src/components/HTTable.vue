@@ -11,10 +11,21 @@
       <tr v-for="rowIndex in nRows">
         <template v-for="columnIndex in nColumns">
           <template v-if="isColumnActive(columnHeaders[columnIndex - 1])">
-            <th v-if="columnIndex - 1 === rowHeaderIndex" role="row">
-              {{ tableData[rowIndex - 1][columnIndex - 1] }}
-            </th>
-            <td v-else>{{ tableData[rowIndex - 1][columnIndex - 1] }}</td>
+            <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
+             custom HTML-->
+            <slot
+              :column="columnHeaders[columnIndex - 1]"
+              :rowIndex="rowIndex"
+              :tableData="tableData[rowIndex - 1][columnIndex - 1]"
+            >
+              <!-- standard content, if not overrideen by the parent -->
+              <th v-if="columnIndex - 1 === rowHeaderIndex" role="row">
+                {{ tableData[rowIndex - 1][columnIndex - 1] }}
+              </th>
+              <td v-else>
+                {{ tableData[rowIndex - 1][columnIndex - 1] }}
+              </td>
+            </slot>
           </template>
         </template>
       </tr>
