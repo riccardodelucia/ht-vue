@@ -4,11 +4,11 @@
     <h2>Input Controls</h2>
     <div>
       <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
-      {{ inputFieldModel }}
+      <p>inputFieldModel: {{ inputFieldModel }}</p>
     </div>
     <div>
       <ht-textarea v-model="inputTextareaModel" label="Textarea"></ht-textarea>
-      {{ inputTextareaModel }}
+      <p>inputTextareaModel: {{ inputTextareaModel }}</p>
     </div>
 
     <div>
