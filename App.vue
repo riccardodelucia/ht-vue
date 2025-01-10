@@ -105,24 +105,24 @@
     </div>
     <div>
       <ht-table
-        :active-column-headers="columnHeaders"
-        :active-column-data="columnData"
-        :column-headers-reference="columnHeadersReference"
+        :active-column-headers="activeColumnHeaders"
+        :table-data="tableData"
+        :column-headers="columnHeaders"
       ></ht-table>
       <ht-checkbox
-        v-model="columnHeaders"
+        v-model="activeColumnHeaders"
         name="country"
         value="Italy"
         label="Italy"
       ></ht-checkbox>
       <ht-checkbox
-        v-model="columnHeaders"
+        v-model="activeColumnHeaders"
         name="country"
         value="France"
         label="France"
       ></ht-checkbox>
       <ht-checkbox
-        v-model="columnHeaders"
+        v-model="activeColumnHeaders"
         name="country"
         value="Germany"
         label="Germany"
@@ -181,9 +181,12 @@ const displayedPages = ref(3);
 
 ///////////////////////////////////
 // Table
-const columnHeadersReference = ['Italy', 'France', 'Germany'];
-const columnHeaders = ref([...columnHeadersReference]);
-const columnData = ref([1, 2, 3]);
+const columnHeaders = ['Italy', 'France', 'Germany'];
+const tableData = ref([
+  [1, 2, 3],
+  [4, 5, 6],
+]);
+const activeColumnHeaders = ref([...columnHeaders]);
 
 ///////////////////////////////////
 // Search Bar
