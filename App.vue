@@ -108,6 +108,7 @@
         :active-column-headers="activeColumnHeaders"
         :table-data="tableData"
         :column-headers="columnHeaders"
+        row-header="Italy"
       ></ht-table>
       <ht-checkbox
         v-model="activeColumnHeaders"
