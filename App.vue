@@ -1,118 +1,121 @@
 <template>
-  <div class="ht-container ht-wrapper ht-layout-stack">
-    <section>
-      <h1>HT Vue Components</h1>
-    </section>
-    <section class="ht-layout-stack">
-      <h2>Input Controls</h2>
-      <div>
-        <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
-        {{ inputFieldModel }}
-      </div>
-      <div>
-        <ht-textarea
-          v-model="inputTextareaModel"
-          label="Textarea"
-        ></ht-textarea>
-        {{ inputTextareaModel }}
-      </div>
+  <section class="ht-container ht-wrapper ht-layout-stack">
+    <h1>HT Vue Components</h1>
+    <h2>Input Controls</h2>
+    <div>
+      <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
+      {{ inputFieldModel }}
+    </div>
+    <div>
+      <ht-textarea v-model="inputTextareaModel" label="Textarea"></ht-textarea>
+      {{ inputTextareaModel }}
+    </div>
 
-      <div>
-        <ht-search-bar
-          v-model="searchModelValue"
-          label="Search bar reactive"
-          :hints="searchHints"
-        ></ht-search-bar>
-        <p>searchModelValue: {{ searchModelValue }}</p>
-      </div>
-      <div>
-        <ht-search-bar
-          label="Search bar with submit"
-          :hints="searchHints"
-          @submit="onSearchSubmit"
-        ></ht-search-bar>
-        <p>searchModelValue: {{ searchModelValue }}</p>
-      </div>
-      <div>
-        <ht-checkbox
-          v-model="checkboxModelValue"
-          label="Checkbox label"
-          :true-value="checkboxTrueValue"
-          :false-value="checkboxFalseValue"
-        ></ht-checkbox>
-        <p>checkboxModelValue: {{ checkboxModelValue }}</p>
-      </div>
+    <div>
+      <ht-search-bar
+        v-model="searchModelValue"
+        label="Search bar reactive"
+        :hints="searchHints"
+      ></ht-search-bar>
+      <p>searchModelValue: {{ searchModelValue }}</p>
+    </div>
+    <div>
+      <ht-search-bar
+        label="Search bar with submit"
+        :hints="searchHints"
+        @submit="onSearchSubmit"
+      ></ht-search-bar>
+      <p>searchModelValue: {{ searchModelValue }}</p>
+    </div>
+    <div>
+      <ht-checkbox
+        v-model="checkboxModelValue"
+        label="Checkbox label"
+        :true-value="checkboxTrueValue"
+        :false-value="checkboxFalseValue"
+      ></ht-checkbox>
+      <p>checkboxModelValue: {{ checkboxModelValue }}</p>
+    </div>
 
-      <div>
-        <ht-checkbox
-          v-model="checkboxMultipleModelValue"
-          name="country"
-          value="italy"
-          label="Italy"
-        ></ht-checkbox>
-        <ht-checkbox
-          v-model="checkboxMultipleModelValue"
-          name="country"
-          value="france"
-          label="France"
-        ></ht-checkbox>
+    <div>
+      <ht-checkbox
+        v-model="checkboxMultipleModelValue"
+        name="country"
+        value="italy"
+        label="Italy"
+      ></ht-checkbox>
+      <ht-checkbox
+        v-model="checkboxMultipleModelValue"
+        name="country"
+        value="france"
+        label="France"
+      ></ht-checkbox>
 
-        <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
-      </div>
-      <div>
-        <ht-toggle-switch
-          v-model="toggleSwitchModelValue"
-          :true-value="toggleSwitchTrueValue"
-          :false-value="toggleSwitchFalseValue"
-          label="Toggle Switch label"
-        ></ht-toggle-switch>
-        <p>toggleSwitchModelValue: {{ toggleSwitchModelValue }}</p>
-      </div>
-      <div>
-        <ht-select
-          v-model="selectModelValue"
-          :options="selectOptions"
-          :option-labels="selectOptionLabels"
-        ></ht-select>
-        <p>selectModelValue: {{ selectModelValue }}</p>
-      </div>
-      <div>
-        <ht-select
-          v-model="multipleSelectModelValue"
-          :options="multipleSelectOptions"
-          :option-labels="multipleSelectOptionLabels"
-        ></ht-select>
-        <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
-      </div>
-      <div>
-        <ht-radio-group
-          :options="radioOptions"
-          :option-labels="radioLabels"
-          v-model="radioModelValue"
-          name="test"
-        ></ht-radio-group>
-        <p>radioModelValue: {{ radioModelValue }}</p>
-      </div>
-      <div>
-        <ht-input-file v-model="file" label="File input"></ht-input-file>
-        <p>file: {{ file?.name }}</p>
-      </div>
-      <div>
-        <ht-input-file
-          v-model="multipleFiles"
-          label="File input"
-        ></ht-input-file>
-        <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
-      </div>
-    </section>
-  </div>
+      <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
+    </div>
+    <div>
+      <ht-toggle-switch
+        v-model="toggleSwitchModelValue"
+        :true-value="toggleSwitchTrueValue"
+        :false-value="toggleSwitchFalseValue"
+        label="Toggle Switch label"
+      ></ht-toggle-switch>
+      <p>toggleSwitchModelValue: {{ toggleSwitchModelValue }}</p>
+    </div>
+    <div>
+      <ht-select
+        v-model="selectModelValue"
+        :options="selectOptions"
+        :option-labels="selectOptionLabels"
+      ></ht-select>
+      <p>selectModelValue: {{ selectModelValue }}</p>
+    </div>
+    <div>
+      <ht-select
+        v-model="multipleSelectModelValue"
+        :options="multipleSelectOptions"
+        :option-labels="multipleSelectOptionLabels"
+      ></ht-select>
+      <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
+    </div>
+    <div>
+      <ht-radio-group
+        :options="radioOptions"
+        :option-labels="radioLabels"
+        v-model="radioModelValue"
+        name="test"
+      ></ht-radio-group>
+      <p>radioModelValue: {{ radioModelValue }}</p>
+    </div>
+    <div>
+      <ht-input-file v-model="file" label="File input"></ht-input-file>
+      <p>file: {{ file?.name }}</p>
+    </div>
+    <div>
+      <ht-input-file v-model="multipleFiles" label="File input"></ht-input-file>
+      <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
+    </div>
+    <div>
+      <ht-pagination
+        :number-of-pages="numberOfPages"
+        v-model:page="currentPage"
+        :displayed-pages="displayedPages"
+      ></ht-pagination>
+      <p>current page: {{ currentPage }}</p>
+    </div>
+  </section>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+
+///////////////////////////////////
+// Input Field
 const inputFieldModel = ref('');
 const inputTextareaModel = ref('');
 
+///////////////////////////////////
+// Select
 const selectOptions = [1, { key: 2 }];
 const selectOptionLabels = ['A', 'B'];
 const selectModelValue = ref(selectOptions[1]);
@@ -121,25 +124,39 @@ const multipleSelectOptions = ['A', 'B', { value: 'C' }];
 const multipleSelectOptionLabels = ['A', 'B', 'C'];
 const multipleSelectModelValue = ref([]);
 
+///////////////////////////////////
+// Checkbox
 const checkboxTrueValue = true;
 const checkboxFalseValue = null;
 const checkboxModelValue = ref(checkboxFalseValue);
 const checkboxMultipleModelValue = ref([]);
 
+///////////////////////////////////
+// Toggle Switch
 const toggleSwitchTrueValue = 1;
 const toggleSwitchFalseValue = { value: 'false' };
 const toggleSwitchModelValue = ref(toggleSwitchTrueValue);
 
+///////////////////////////////////
+// Radio Group
 const radioOptions = [1, { two: 2 }];
 const radioLabels = [1, 2];
 const radioModelValue = ref(radioOptions[0]);
 
-const searchModelValue = ref('');
-
+///////////////////////////////////
+// Input File
 const file = ref(null);
-
 const multipleFiles = ref([]);
 
+///////////////////////////////////
+// Pagination
+const numberOfPages = ref(10);
+const currentPage = ref(1);
+const displayedPages = ref(3);
+
+///////////////////////////////////
+// Search Bar
+const searchModelValue = ref('');
 const onSearchSubmit = (value) => {
   searchModelValue.value = value;
 };
@@ -398,6 +415,10 @@ const searchHints = [
 </script>
 
 <style lang="postcss">
+section {
+  margin-bottom: 20rem;
+}
+
 h1 {
   font-size: var(--font-size-8);
 }
