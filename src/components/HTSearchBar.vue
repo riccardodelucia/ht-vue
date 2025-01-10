@@ -1,17 +1,15 @@
 <template>
   <search class="search-bar">
-    <!-- https://adrianroselli.com/2015/08/where-to-put-your-search-role.html -->
     <form @submit.prevent="onSubmit">
       <label :for="uuid" class="ht-visually-hidden">
         {{ label }}
       </label>
       <input
         :id="uuid"
-        :value="modelValue"
+        v-model="model"
         :placeholder="label"
         :list="listId"
         type="search"
-        @input="onInput"
       />
       <button type="submit" icon-type="search" label="Submit Search">
         <VueFeather type="search" width="5"></VueFeather>
@@ -27,35 +25,27 @@
   </search>
 </template>
 
-<script>
+<script setup>
+/**
+ * Note: Vue still doesn't recognise native HTML search element. This causes many warning on the console during development, which can be ignored
+ */
 import { v4 as uuidv4 } from 'uuid';
-import HTButtonIcon from './HTButtonIcon.vue';
 
-export default {
-  name: 'HTSearchBar',
-  components: { HTButtonIcon },
-  props: {
-    label: { type: String, required: true },
-    modelValue: { type: [String, Number], default: undefined },
-    hints: { type: Array, default: () => [] },
-  },
-  emits: ['update:model-value', 'submit'],
-  data() {
-    const uuid = uuidv4();
-    const listId = uuidv4();
-    const value = this.modelValue;
-    return { uuid, value, listId };
-  },
-  methods: {
-    onInput(e) {
-      this.value = e.target.value;
-      this.$emit('update:model-value', e.target.value);
-    },
-    onSubmit() {
-      console.log('submitted');
-      this.$emit('submit', this.value);
-    },
-  },
+const props = defineProps({
+  label: { type: String, required: true },
+  hints: { type: Array, default: () => [] },
+});
+
+// you can either decide to constantly map search input to the parent, via optional v-model, or update the parent only after submit events, registering to the submit event
+const model = defineModel({ type: [String, Number, null], required: false });
+
+const emit = defineEmits(['submit']);
+
+const uuid = uuidv4();
+const listId = uuidv4();
+
+const onSubmit = () => {
+  emit('submit', model.value);
 };
 </script>
 

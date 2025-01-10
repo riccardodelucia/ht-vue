@@ -20,8 +20,16 @@
       <div>
         <ht-search-bar
           v-model="searchModelValue"
-          label="Country"
+          label="Search bar reactive"
           :hints="searchHints"
+        ></ht-search-bar>
+        <p>searchModelValue: {{ searchModelValue }}</p>
+      </div>
+      <div>
+        <ht-search-bar
+          label="Search bar with submit"
+          :hints="searchHints"
+          @submit="onSearchSubmit"
         ></ht-search-bar>
         <p>searchModelValue: {{ searchModelValue }}</p>
       </div>
@@ -126,11 +134,15 @@ const radioOptions = [1, { two: 2 }];
 const radioLabels = [1, 2];
 const radioModelValue = ref(radioOptions[0]);
 
-const searchModelValue = '';
+const searchModelValue = ref('');
 
 const file = ref(null);
 
 const multipleFiles = ref([]);
+
+const onSearchSubmit = (value) => {
+  searchModelValue.value = value;
+};
 
 const searchHints = [
   'Afghanistan',
