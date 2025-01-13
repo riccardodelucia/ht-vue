@@ -109,6 +109,7 @@
         :table-data="tableData"
         :columns="columns"
         row-header="Italy"
+        @sort="sortTable"
       >
         <template v-slot="slotProps">
           <template v-if="slotProps.column === 'Italy'"
@@ -141,6 +142,7 @@
 </template>
 
 <script setup>
+import { sort } from 'd3';
 import { ref } from 'vue';
 
 ///////////////////////////////////
@@ -200,6 +202,19 @@ const tableData = ref([
   [4, 5, 6],
 ]);
 const activeColumnNames = ref([...columns.map(({ name }) => name)]);
+
+const sortTable = (sortColumn) => {
+  const sortColumnIndex = sortColumn.columnIndex;
+  const orderMultiplier = sortColumn.sortOrder === 'ascending' ? 1 : -1;
+
+  const sortedData = tableData.value.sort((a, b) => {
+    const columnA = a[sortColumnIndex];
+    const columnB = b[sortColumnIndex];
+    return (columnA - columnB) * orderMultiplier;
+  });
+
+  tableData.value = sortedData;
+};
 
 ///////////////////////////////////
 // Search Bar

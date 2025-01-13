@@ -12,7 +12,7 @@
             class="sort-button"
             type="button"
             :aria-label="`Sort toggle for column ${column.name}`"
-            @click="setCurrentSortColumn(column.name)"
+            @click="onSortColumn(column.name)"
           >
             {{ column.name }}
           </button>
@@ -56,6 +56,12 @@ const props = defineProps({
   tableData: { type: Array, required: true },
 });
 
+/**
+ * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and paginate events, the parent can implement both
+ * client side and server side sorting+paginating solutions
+ */
+const emit = defineEmits(['sort']);
+
 /////////////////////////////////////////////////////
 // Sorting columns logic
 const initialSortColumn = props.columns.find(
@@ -80,7 +86,7 @@ const sortableColumns = computed(() => {
   });
 });
 
-const setCurrentSortColumn = (columnName) => {
+const onSortColumn = (columnName) => {
   const isColumnSortable = props.columns.find(
     (column) => column.name === columnName && column?.sortable === true,
   );
@@ -96,7 +102,10 @@ const setCurrentSortColumn = (columnName) => {
       currentSortColumn.value = { name: columnName, sortOrder: 'ascending' };
     }
   }
+  const columnIndex = props.columns.map(({ name }) => name).indexOf(columnName);
+  emit('sort', { ...currentSortColumn.value, columnIndex });
 };
+
 /////////////////////////////////////////////////////
 
 const nRows = computed(() => props.tableData.length);
