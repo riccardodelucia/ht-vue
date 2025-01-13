@@ -3,31 +3,31 @@
     <thead>
       <template v-for="column in sortableColumns">
         <th
-          v-if="isColumnActive(column.header)"
+          v-if="isColumnActive(column.name)"
           scope="col"
           :aria-sort="column.sortOrder"
         >
           <button
-            v-if="isSortable(column.header)"
+            v-if="column.sortOrder"
             class="sort-button"
             type="button"
-            :aria-label="`Sort toggle for column ${column.header}`"
-            @click="setCurrentSortColumn(column.header)"
+            :aria-label="`Sort toggle for column ${column.name}`"
+            @click="setCurrentSortColumn(column.name)"
           >
-            {{ column.header }}
+            {{ column.name }}
           </button>
-          <template v-else>{{ column.header }}</template>
+          <template v-else>{{ column.name }}</template>
         </th>
       </template>
     </thead>
     <tbody>
       <tr v-for="rowIndex in nRows">
         <template v-for="columnIndex in nColumns">
-          <template v-if="isColumnActive(columnHeaders[columnIndex - 1])">
+          <template v-if="isColumnActive(columnNames[columnIndex - 1])">
             <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
              custom HTML-->
             <slot
-              :column="columnHeaders[columnIndex - 1]"
+              :column="columnNames[columnIndex - 1]"
               :rowIndex="rowIndex"
               :tableData="tableData[rowIndex - 1][columnIndex - 1]"
             >
@@ -49,9 +49,9 @@
 <script setup>
 import { computed, ref } from 'vue';
 const props = defineProps({
-  // columns must specify the column header name, an optional sortable parameter and an optional sorting function
+  // columns must specify the column name, an optional sortable parameter and an optional sorting function
   columns: { type: Array, required: true },
-  activeColumnHeaders: { type: Array, required: true },
+  activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
 });
@@ -64,30 +64,28 @@ const initialSortColumn = props.columns.find(
 
 const currentSortColumn = ref(
   initialSortColumn
-    ? { header: initialSortColumn.header, sortOrder: 'none' }
+    ? { name: initialSortColumn.name, sortOrder: 'none' }
     : undefined,
 );
-
-const isSortable = (columnHeader) =>
-  props.columns.find(
-    (column) => column.header === columnHeader && column?.sortable === true,
-  );
 
 const sortableColumns = computed(() => {
   return props.columns.map((column) => {
     let sortOrder = null; // null is used for non sortable columns, to remove ARIA-attribute from the corresponding HTML tag
     if (column?.sortable) {
-      if (column.header === currentSortColumn.value?.header)
+      if (column.name === currentSortColumn.value?.name)
         sortOrder = currentSortColumn.value.sortOrder;
       else sortOrder = 'none'; // "none" is use to express a sortable column which is not the currently sorting column
     }
-    return { header: column.header, sortOrder };
+    return { name: column.name, sortOrder };
   });
 });
 
-const setCurrentSortColumn = (value) => {
-  if (isSortable(value)) {
-    if (currentSortColumn.value.header === value) {
+const setCurrentSortColumn = (columnName) => {
+  const isColumnSortable = props.columns.find(
+    (column) => column.name === columnName && column?.sortable === true,
+  );
+  if (isColumnSortable) {
+    if (currentSortColumn.value.name === columnName) {
       currentSortColumn.value.sortOrder =
         currentSortColumn.value.sortOrder === 'none'
           ? 'ascending'
@@ -95,7 +93,7 @@ const setCurrentSortColumn = (value) => {
             ? 'descending'
             : 'ascending';
     } else {
-      currentSortColumn.value = { header: value, sortOrder: 'ascending' };
+      currentSortColumn.value = { name: columnName, sortOrder: 'ascending' };
     }
   }
 };
@@ -104,18 +102,18 @@ const setCurrentSortColumn = (value) => {
 const nRows = computed(() => props.tableData.length);
 const nColumns = computed(() => props.tableData[0].length);
 
-const columnHeaders = computed(() => props.columns.map(({ header }) => header));
+const columnNames = computed(() => props.columns.map(({ name }) => name));
 
 const rowHeaderIndex = computed(() => {
-  // it computes the cell index of the column which acts as the header for every row
+  // it computes the cell index of the column which acts as the name for every row
   if (props.rowHeader) {
-    return columnHeaders.value.indexOf(props.rowHeader);
+    return columnNames.value.indexOf(props.rowHeader);
   }
   return -1;
 });
 
 // used to compute if the current cell must be shown or not.
-const isColumnActive = (header) => props.activeColumnHeaders.includes(header);
+const isColumnActive = (name) => props.activeColumnNames.includes(name);
 
 /////////////////////////////////////////////
 </script>

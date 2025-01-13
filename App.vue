@@ -105,7 +105,7 @@
     </div>
     <div>
       <ht-table
-        :active-column-headers="activeColumnHeaders"
+        :active-column-names="activeColumnNames"
         :table-data="tableData"
         :columns="columns"
         row-header="Italy"
@@ -119,19 +119,19 @@
         </template>
       </ht-table>
       <ht-checkbox
-        v-model="activeColumnHeaders"
+        v-model="activeColumnNames"
         name="country"
         value="Italy"
         label="Italy"
       ></ht-checkbox>
       <ht-checkbox
-        v-model="activeColumnHeaders"
+        v-model="activeColumnNames"
         name="country"
         value="France"
         label="France"
       ></ht-checkbox>
       <ht-checkbox
-        v-model="activeColumnHeaders"
+        v-model="activeColumnNames"
         name="country"
         value="Germany"
         label="Germany"
@@ -191,15 +191,15 @@ const displayedPages = ref(3);
 ///////////////////////////////////
 // Table
 const columns = [
-  { header: 'Italy', sortable: true },
-  { header: 'France', sortable: true },
-  { header: 'Germany' },
+  { name: 'Italy', sortable: true },
+  { name: 'France', sortable: true },
+  { name: 'Germany' },
 ];
 const tableData = ref([
   [1, 2, 3],
   [4, 5, 6],
 ]);
-const activeColumnHeaders = ref([...columns.map(({ header }) => header)]);
+const activeColumnNames = ref([...columns.map(({ name }) => name)]);
 
 ///////////////////////////////////
 // Search Bar
