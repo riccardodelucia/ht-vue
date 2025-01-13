@@ -1,6 +1,4 @@
 <template>
-  {{ sortableColumns }}<br />
-  {{ currentSortKey }}
   <table>
     <thead>
       <template v-for="column in sortableColumns">
@@ -14,7 +12,7 @@
             class="sort-button"
             type="button"
             :aria-label="`Sort toggle for column ${column.header}`"
-            @click="onClick(column.header)"
+            @click="setCurrentSortColumn(column.header)"
           >
             {{ column.header }}
           </button>
@@ -51,7 +49,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 const props = defineProps({
-  // columns must specify the column header name and an optional isSortable parameter
+  // columns must specify the column header name, an optional sortable parameter and an optional sorting function
   columns: { type: Array, required: true },
   activeColumnHeaders: { type: Array, required: true },
   rowHeader: { type: String, default: null },
@@ -60,13 +58,13 @@ const props = defineProps({
 
 /////////////////////////////////////////////////////
 // Sorting columns logic
-const initialSortKeyHeader = props.columns.find(
+const initialSortColumn = props.columns.find(
   (column) => column?.sortable === true,
 );
 
-const currentSortKey = ref(
-  initialSortKeyHeader
-    ? { header: initialSortKeyHeader.header, sortOrder: 'none' }
+const currentSortColumn = ref(
+  initialSortColumn
+    ? { header: initialSortColumn.header, sortOrder: 'none' }
     : undefined,
 );
 
@@ -75,35 +73,32 @@ const isSortable = (columnHeader) =>
     (column) => column.header === columnHeader && column?.sortable === true,
   );
 
-const sortableColumns = computed({
-  get() {
-    return props.columns.map((column) => {
-      let sortOrder = null; // null is used for non sortable columns, to remove ARIA-attribute from the corresponding HTML tag
-      if (column?.sortable) {
-        if (column.header === currentSortKey.value?.header)
-          sortOrder = currentSortKey.value.sortOrder;
-        else sortOrder = 'none'; // "none" is use to express a sortable column which is not the currently sorting column
-      }
-      return { header: column.header, sortOrder };
-    });
-  },
-  set(value) {
-    if (isSortable(value)) {
-      if (currentSortKey.value.header === value) {
-        currentSortKey.value.sortOrder =
-          currentSortKey.value.sortOrder === 'none'
-            ? 'ascending'
-            : currentSortKey.value.sortOrder === 'ascending'
-              ? 'descending'
-              : 'ascending';
-      } else {
-        currentSortKey.value = { header: value, sortOrder: 'ascending' };
-      }
+const sortableColumns = computed(() => {
+  return props.columns.map((column) => {
+    let sortOrder = null; // null is used for non sortable columns, to remove ARIA-attribute from the corresponding HTML tag
+    if (column?.sortable) {
+      if (column.header === currentSortColumn.value?.header)
+        sortOrder = currentSortColumn.value.sortOrder;
+      else sortOrder = 'none'; // "none" is use to express a sortable column which is not the currently sorting column
     }
-  },
+    return { header: column.header, sortOrder };
+  });
 });
 
-const onClick = (value) => (sortableColumns.value = value);
+const setCurrentSortColumn = (value) => {
+  if (isSortable(value)) {
+    if (currentSortColumn.value.header === value) {
+      currentSortColumn.value.sortOrder =
+        currentSortColumn.value.sortOrder === 'none'
+          ? 'ascending'
+          : currentSortColumn.value.sortOrder === 'ascending'
+            ? 'descending'
+            : 'ascending';
+    } else {
+      currentSortColumn.value = { header: value, sortOrder: 'ascending' };
+    }
+  }
+};
 /////////////////////////////////////////////////////
 
 const nRows = computed(() => props.tableData.length);
