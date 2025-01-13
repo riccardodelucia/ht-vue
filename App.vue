@@ -107,7 +107,7 @@
       <ht-table
         :active-column-headers="activeColumnHeaders"
         :table-data="tableData"
-        :column-headers-info="columnHeadersInfo"
+        :columns="columns"
         row-header="Italy"
       >
         <template v-slot="slotProps">
@@ -190,18 +190,16 @@ const displayedPages = ref(3);
 
 ///////////////////////////////////
 // Table
-const columnHeadersInfo = [
-  { column: 'Italy', isSortable: true },
-  { column: 'France' },
-  { column: 'Germany' },
+const columns = [
+  { header: 'Italy', sortable: true },
+  { header: 'France', sortable: true },
+  { header: 'Germany' },
 ];
 const tableData = ref([
   [1, 2, 3],
   [4, 5, 6],
 ]);
-const activeColumnHeaders = ref([
-  ...columnHeadersInfo.map(({ column }) => column),
-]);
+const activeColumnHeaders = ref([...columns.map(({ header }) => header)]);
 
 ///////////////////////////////////
 // Search Bar
