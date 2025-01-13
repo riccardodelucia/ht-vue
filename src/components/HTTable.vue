@@ -49,7 +49,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 const props = defineProps({
-  // columns must specify the column name, an optional sortable parameter and an optional sorting function
+  // columns must specify the column name and an optional sortable parameter
   columns: { type: Array, required: true },
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
