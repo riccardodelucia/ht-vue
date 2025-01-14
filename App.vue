@@ -109,7 +109,6 @@
         :table-data="tableData"
         :columns="columns"
         row-header="Italy"
-        @sort="sortTable"
       >
         <template v-slot="slotProps">
           <template v-if="slotProps.column === 'Italy'"
@@ -193,7 +192,7 @@ const displayedPages = ref(3);
 ///////////////////////////////////
 // Table
 const columns = [
-  { name: 'Italy', sortable: true },
+  { name: 'Italy', sortable: true, sortFn: (a, b) => a - b },
   { name: 'France', sortable: true },
   { name: 'Germany' },
 ];

@@ -5,10 +5,10 @@
         <th
           v-if="isColumnActive(column.name)"
           scope="col"
-          :aria-sort="column.sortOrder"
+          :aria-sort="column.sortDirection"
         >
           <button
-            v-if="column.sortOrder"
+            v-if="column.sortDirection"
             class="sort-button"
             type="button"
             :aria-label="`Sort toggle for column ${column.name}`"
@@ -29,14 +29,14 @@
             <slot
               :column="columnNames[columnIndex - 1]"
               :rowIndex="rowIndex"
-              :tableData="tableData[rowIndex - 1][columnIndex - 1]"
+              :tableData="sortedData[rowIndex - 1][columnIndex - 1]"
             >
               <!-- standard content, if not overrideen by the parent -->
               <th v-if="columnIndex - 1 === rowHeaderIndex" role="row">
-                {{ tableData[rowIndex - 1][columnIndex - 1] }}
+                {{ sortedData[rowIndex - 1][columnIndex - 1] }}
               </th>
               <td v-else>
-                {{ tableData[rowIndex - 1][columnIndex - 1] }}
+                {{ sortedData[rowIndex - 1][columnIndex - 1] }}
               </td>
             </slot>
           </template>
@@ -47,13 +47,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 const props = defineProps({
   // columns must specify the column name and an optional sortable parameter
   columns: { type: Array, required: true },
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
+  server: { type: Boolean, default: false },
 });
 
 /**
@@ -65,65 +66,76 @@ const emit = defineEmits(['sort']);
 /////////////////////////////////////////////////////
 // Sorting columns logic
 
-/**
- * Props are not modifiable from the component, so here we assign the received columns to a computed value.
- * In order to change the computed value according to the table control, we insert an external ref currentSortColumn.
- * Therefore, by triggering modifications on this parameter, the computed properties is recomputed with the information about the sorting.
- * */
-const currentSortColumn = ref({}); //initialized on the very first required sort
-const sortableColumns = computed(() => {
-  return props.columns.map((column) => {
-    let sortOrder = null; // null is used for non sortable columns. This removes the aria-sort attribute from the corresponding HTML tag
-    if (column?.sortable) {
-      if (column.name === currentSortColumn.value?.name)
-        sortOrder = currentSortColumn.value.sortOrder;
-      else sortOrder = 'none'; // "none" is use to express a sortable column which is not the currently sorting column
-    }
-    return { name: column.name, sortOrder };
+const sortableColumns = ref(null);
+const sortedData = ref(null);
+
+watchEffect(() => {
+  sortableColumns.value = props.columns.map((column) => {
+    return {
+      ...column,
+      sortDirection: column?.sortable ? 'none' : null,
+    };
   });
 });
+watchEffect(() => {
+  sortedData.value = props.tableData.map((row) => row);
+});
 
-const onSortColumn = (column) => {
-  // action triggered only for sortable columns
-  if (column.sortOrder) {
-    if (currentSortColumn.value.name === column.name) {
-      currentSortColumn.value.sortOrder =
-        currentSortColumn.value.sortOrder === 'none'
-          ? 'ascending'
-          : currentSortColumn.value.sortOrder === 'ascending'
-            ? 'descending'
-            : 'ascending';
+const updateSortableColumns = (sortingColumn, columns) => {
+  return columns.map((column) => {
+    let sortDirection = null;
+    if (column.name === sortingColumn.name) {
+      if (sortingColumn.sortDirection === 'ascending')
+        sortDirection = 'descending';
+      else sortDirection = 'ascending';
     } else {
-      currentSortColumn.value = { name: column.name, sortOrder: 'ascending' };
+      sortDirection = column?.sortable ? 'none' : null;
     }
-    const columnIndex = props.columns
-      .map(({ name }) => name)
-      .indexOf(column.name);
-
-    sort(column, columnIndex);
-
-    emit('sort', { ...currentSortColumn.value, columnIndex });
-  }
+    return { ...column, sortDirection };
+  });
 };
 
-const sort = (column, columnIndex) => {
-  const orderMultiplier = column.sortOrder === 'ascending' ? 1 : -1;
+const onSortColumn = (sortingColumn) => {
+  sortableColumns.value = updateSortableColumns(sortingColumn, props.columns);
 
-  const columnSortFn = column.sortFn ? column.sortFn : (a, b) => a - b;
+  const columnIndex = sortableColumns.value
+    .map(({ name }) => name)
+    .indexOf(sortingColumn.name);
+
+  if (!props.server) {
+    const { sortDirection, sortFn } = sortableColumns.value[columnIndex];
+    sortedData.value = sortData(
+      props.tableData,
+      columnIndex,
+      sortDirection,
+      sortFn,
+    );
+  }
+
+  emit('sort', { ...sortingColumn, columnIndex });
+};
+
+const sortData = (
+  tableData,
+  columnIndex,
+  sortDirection,
+  columnSortFn = (a, b) => a - b,
+) => {
+  const directionMultiplier = sortDirection === 'ascending' ? 1 : -1;
 
   const sortFn = (a, b) => {
     const order = columnSortFn(a, b);
-    return order * orderMultiplier;
+    return order * directionMultiplier;
   };
 
-  const sortedColumnData = props.tableData
+  const sortedColumnData = tableData
     .map((row, idx) => ({
       idx,
       value: row[columnIndex],
     }))
     .sort((a, b) => sortFn(a.value, b.value));
 
-  return sortedColumnData.map(({ idx }) => props.tableData[idx]);
+  return sortedColumnData.map(({ idx }) => tableData[idx]);
 };
 
 /////////////////////////////////////////////////////
