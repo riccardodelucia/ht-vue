@@ -1,7 +1,7 @@
 <template>
   <ht-table-server
     :active-column-names="activeColumnNames"
-    :table-data="sortedTableData"
+    :table-data="paginatedData"
     :columns="columns"
     row-header="Italy"
     :available-pages="availablePages"
@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { watchEffect, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 const props = defineProps({
   columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
   activeColumnNames: { type: Array, required: true },
@@ -31,33 +31,24 @@ const props = defineProps({
       return value > 0 && value % 2 === 1;
     },
   },
-  // total number of pages according to the size of data
-  availablePages: {
-    type: Number,
-    default: 0,
-    validator(value) {
-      return value >= 0;
-    },
-  },
 });
 
 ///////////////////////////////////////////////
 // Client-side pagination
 const currentPage = ref(1);
-watch(currentPage, () => {
-  paginate(currentPage.value);
+
+const availablePages = computed(() => {
+  return Math.ceil(props.tableData.length / props.displayablePages) || 1;
 });
 
-const paginate = () => {
-  console.log(currentPage.value);
+const paginate = (items, pageSize, currentPage) => {
+  const stopIndex = Math.min(currentPage * pageSize, items.length);
+  return items.slice((currentPage - 1) * pageSize, stopIndex);
 };
 
 ///////////////////////////////////////////////
 // Client-side sorting
-const sortedTableData = ref(null);
-watchEffect(() => {
-  sortedTableData.value = props.tableData.map((row) => row);
-});
+const sortedTableData = ref([...props.tableData]);
 
 const sortData = ({ sortDirection, sortFn: columnSortFn, columnIndex }) => {
   const directionMultiplier = sortDirection === 'ascending' ? 1 : -1;
@@ -80,91 +71,13 @@ const sortData = ({ sortDirection, sortFn: columnSortFn, columnIndex }) => {
   );
 };
 
-/* const onSortColumn = (sortingColumn) => {
-  debugger;
-
-  const { sortDirection, sortFn } = sortingColumn;
-  sortedTableData.value = sortData(
-    props.tableData,
-    columnIndex,
-    sortDirection,
-    sortFn,
+const paginatedData = computed(() => {
+  return paginate(
+    sortedTableData.value,
+    props.displayablePages,
+    currentPage.value,
   );
-}; */
-
-/////////////////////////////////////////////////////
-// Sorting logic
-
-/* const sortableColumns = ref(null);
-const sortedTableData = ref(null);
-
-watchEffect(() => {
-  sortableColumns.value = props.columns.map((column) => {
-    return {
-      ...column,
-      sortDirection: column?.sortable ? 'none' : null,
-    };
-  });
 });
-watchEffect(() => {
-  sortedTableData.value = props.tableData.map((row) => row);
-});
-
-const updateSortableColumns = (sortingColumn, columns) => {
-  return columns.map((column) => {
-    let sortDirection = null;
-    if (column.name === sortingColumn.name) {
-      if (sortingColumn.sortDirection === 'ascending')
-        sortDirection = 'descending';
-      else sortDirection = 'ascending';
-    } else {
-      sortDirection = column?.sortable ? 'none' : null;
-    }
-    return { ...column, sortDirection };
-  });
-};
-
-const onSortColumn = (sortingColumn) => {
-  sortableColumns.value = updateSortableColumns(sortingColumn, props.columns);
-
-  const columnIndex = sortableColumns.value
-    .map(({ name }) => name)
-    .indexOf(sortingColumn.name);
-
-  if (!props.server) {
-    // client side sorting
-    const { sortDirection, sortFn } = sortableColumns.value[columnIndex];
-    sortedTableData.value = sortData(
-      props.tableData,
-      columnIndex,
-      sortDirection,
-      sortFn,
-    );
-  } else emit('sort', { ...sortingColumn, columnIndex });
-};
-
-const sortData = (
-  tableData,
-  columnIndex,
-  sortDirection,
-  columnSortFn = (a, b) => a - b,
-) => {
-  const directionMultiplier = sortDirection === 'ascending' ? 1 : -1;
-
-  const sortFn = (a, b) => {
-    const order = columnSortFn(a, b);
-    return order * directionMultiplier;
-  };
-
-  const sortedColumnData = tableData
-    .map((row, idx) => ({
-      idx,
-      value: row[columnIndex],
-    }))
-    .sort((a, b) => sortFn(a.value, b.value));
-
-  return sortedColumnData.map(({ idx }) => tableData[idx]);
-}; */
 </script>
 
 <style lang="postcss" scoped>

@@ -29,6 +29,7 @@
              custom HTML-->
               <slot
                 :column="columnNames[columnIndex - 1]"
+                :columnIndex="columnIndex"
                 :rowIndex="rowIndex"
                 :tableData="tableData[rowIndex - 1][columnIndex - 1]"
               >
@@ -91,7 +92,7 @@ const page = defineModel('page', { type: Number });
 /////////////////////////////////////////////////////
 // General logic
 const nRows = computed(() => props.tableData.length);
-const nColumns = computed(() => props.tableData[0].length);
+const nColumns = computed(() => props.columns.length);
 
 const columnNames = computed(() => props.columns.map(({ name }) => name));
 

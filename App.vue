@@ -133,34 +133,33 @@
         :table-data="tableData"
         :columns="columns"
         row-header="Italy"
-        :available-pages="5"
         :displayable-pages="3"
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps.column === 'Italy'"
+          <template v-if="slotProps.column === 'Action'"
             ><button type="button">
-              Data: {{ slotProps.tableData }}
+              Action: {{ slotProps.tableData }}
             </button></template
           >
         </template></ht-table-client
       >
       <ht-checkbox
         v-model="activeColumnNames"
-        name="country"
-        value="Italy"
-        label="Italy"
+        name="column-group"
+        value="Country"
+        label="Country"
       ></ht-checkbox>
       <ht-checkbox
         v-model="activeColumnNames"
-        name="country"
-        value="France"
-        label="France"
+        name="column-group"
+        value="Capital"
+        label="Capital"
       ></ht-checkbox>
       <ht-checkbox
         v-model="activeColumnNames"
-        name="country"
-        value="Germany"
-        label="Germany"
+        name="column-group"
+        value="Inhabitants (Millions)"
+        label="Inhabitants (Millions)"
       ></ht-checkbox>
     </div>
   </section>
@@ -210,15 +209,30 @@ const multipleFiles = ref([]);
 
 ///////////////////////////////////
 // Table
+
+function sortStrings(str1, str2) {
+  return str1.localeCompare(str2);
+}
 const columns = [
-  { name: 'Italy', sortable: true, sortFn: (a, b) => a - b },
-  { name: 'France', sortable: true },
-  { name: 'Germany' },
+  { name: 'Country', sortable: true, sortFn: sortStrings },
+  { name: 'Capital' },
+  { name: 'Inhabitants (Millions)', sortable: true },
+  { name: 'Action', sortable: false },
 ];
-const tableData = ref([
-  [1, 2, 3],
-  [4, 5, 6],
-]);
+
+const tableData = [
+  ['Germany', 'Berlin', 83.24],
+  ['France', 'Paris', 67.39],
+  ['Italy', 'Rome', 59.11],
+  ['Spain', 'Madrid', 47.45],
+  ['Poland', 'Warsaw', 37.95],
+  ['Netherlands', 'Amsterdam', 17.28],
+  ['Greece', 'Athens', 10.42],
+  ['Portugal', 'Lisbon', 10.33],
+  ['Sweden', 'Stockholm', 10.52],
+  ['Austria', 'Vienna', 9.01],
+];
+
 const activeColumnNames = ref([...columns.map(({ name }) => name)]);
 
 // Server side table
