@@ -57,7 +57,7 @@
 <script setup>
 import { computed, ref, watchEffect } from 'vue';
 const props = defineProps({
-  columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
+  columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable'
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
@@ -141,7 +141,7 @@ const onSortColumn = (sortingColumn, columnIndex) => {
    * Note: the received sortingColumn contains the outdated column sorting info.
    * We therefore extract the updated column info from the just updated sortableColumns
    */
-  emit('sort', { ...sortableColumns.value[columnIndex] });
+  emit('sort', { ...sortableColumns.value[columnIndex], columnIndex });
 };
 </script>
 
