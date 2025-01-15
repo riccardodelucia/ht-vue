@@ -56,6 +56,11 @@
 </template>
 
 <script setup>
+/**
+ * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and paginate events, the parent can implement both
+ * client side and server side sorting+paginating solutions
+ */
+
 import { computed, ref, watchEffect } from 'vue';
 const props = defineProps({
   columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable'
@@ -80,13 +85,9 @@ const props = defineProps({
   },
 });
 
-/**
- * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and paginate events, the parent can implement both
- * client side and server side sorting+paginating solutions
- */
 const emit = defineEmits(['sort']);
 
-// The page is linked to a model which in turns emits a page event to the parent. This allow to query the specified page data on the server and sync the current page to the pagination component.
+// The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the page back to the pagination component.
 const page = defineModel('page', { type: Number });
 
 /////////////////////////////////////////////////////
@@ -108,7 +109,7 @@ const rowHeaderIndex = computed(() => {
 const isColumnActive = (name) => props.activeColumnNames.includes(name);
 
 /////////////////////////////////////////////////////
-// Sorting logic
+// Sort columns state display logic
 
 const sortableColumns = ref(null);
 

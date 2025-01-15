@@ -132,8 +132,7 @@
         :active-column-names="activeColumnNames"
         :table-data="tableData"
         :columns="columns"
-        row-header="Italy"
-        :displayable-pages="3"
+        row-header="Country"
       >
         <template v-slot="slotProps">
           <template v-if="slotProps.column === 'Action'"

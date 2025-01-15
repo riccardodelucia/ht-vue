@@ -3,7 +3,7 @@
     :active-column-names="activeColumnNames"
     :table-data="paginatedData"
     :columns="columns"
-    row-header="Italy"
+    :row-header="rowHeader"
     :available-pages="availablePages"
     :displayable-pages="displayablePages"
     v-model:page="currentPage"
@@ -17,7 +17,11 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, watchEffect } from 'vue';
+/**
+ * Note: ht-table-client is implemented as a wrapper on ht-server-component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
+ * over props.tableData
+ */
+import { computed, ref } from 'vue';
 const props = defineProps({
   columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
   activeColumnNames: { type: Array, required: true },
@@ -26,7 +30,7 @@ const props = defineProps({
   // max number of pages to be displayed
   displayablePages: {
     type: Number,
-    default: 5,
+    required: false,
     validator(value) {
       return value > 0 && value % 2 === 1;
     },
@@ -38,6 +42,7 @@ const props = defineProps({
 const currentPage = ref(1);
 
 const availablePages = computed(() => {
+  if (!props.displayablePages) return 0; // this means no pagination has been activated for the component
   return Math.ceil(props.tableData.length / props.displayablePages) || 1;
 });
 
@@ -45,6 +50,17 @@ const paginate = (items, pageSize, currentPage) => {
   const stopIndex = Math.min(currentPage * pageSize, items.length);
   return items.slice((currentPage - 1) * pageSize, stopIndex);
 };
+
+const paginatedData = computed(() => {
+  if (!availablePages.value) {
+    return sortedTableData.value;
+  }
+  return paginate(
+    sortedTableData.value,
+    props.displayablePages,
+    currentPage.value,
+  );
+});
 
 ///////////////////////////////////////////////
 // Client-side sorting
@@ -70,14 +86,6 @@ const sortData = ({ sortDirection, sortFn: columnSortFn, columnIndex }) => {
     ({ idx }) => props.tableData[idx],
   );
 };
-
-const paginatedData = computed(() => {
-  return paginate(
-    sortedTableData.value,
-    props.displayablePages,
-    currentPage.value,
-  );
-});
 </script>
 
 <style lang="postcss" scoped>
