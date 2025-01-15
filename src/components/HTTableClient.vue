@@ -20,7 +20,7 @@
 
 <script setup>
 /**
- * Note: ht-table-client is implemented as a wrapper on ht-server-component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
+ * Note: ht-table-client is implemented as a wrapper on ht-table-server component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
  * over props.tableData
  */
 import { computed, ref } from 'vue';
