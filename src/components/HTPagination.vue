@@ -5,7 +5,7 @@
         <button
           v-if="currentPage > 1"
           class="chevron"
-          @click="paginate(currentPage - 1)"
+          @click="setCurrentPage(currentPage - 1)"
         >
           <VueFeather type="chevron-left"></VueFeather>
         </button>
@@ -18,7 +18,7 @@
         <button
           class="page number-indicator"
           :aria-current="page === currentPage ? 'page' : null"
-          @click="paginate(page)"
+          @click="setCurrentPage(page)"
         >
           {{ page }}
         </button>
@@ -27,7 +27,7 @@
         <button
           v-if="currentPage < numberOfPages"
           class="chevron"
-          @click="paginate(currentPage + 1)"
+          @click="setCurrentPage(currentPage + 1)"
         >
           <VueFeather type="chevron-right"></VueFeather>
         </button>
@@ -47,18 +47,12 @@
  * either provided links or a linkResolving function which extrapolates the link for each page.
  *
  */
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 import VueFeather from 'vue-feather';
 
 const props = defineProps({
-  numberOfPages: {
-    type: Number,
-    default: 20,
-    validator(value) {
-      return value > 0;
-    },
-  },
-  displayedPages: {
+  server: { type: Boolean, default: false }, // server side pagination. Pagination logic is demanded to the server. The component only sends pagination events and shows the current active page
+  numberOfDisplayedPages: {
     type: Number,
     default: 5,
     validator(value) {
@@ -66,16 +60,51 @@ const props = defineProps({
       return value > 0 && value % 2 === 1;
     },
   },
+  // number of pages must be provided for server side pagination only to know the number of available pages
+  numberOfPages: {
+    type: Number,
+    required: false,
+    validator(value) {
+      return value > 0;
+    },
+  },
+  // knowing the data is mandatory for client side pagination to know the number of available pages
+  data: {
+    required: false,
+    type: Array,
+  },
 });
 
-const emit = defineEmits(['paginate']);
-
+// update:page event is alsow used for server side to communicate the selected page. The parent must then avoid v-model and register to @update:page event, and then make the API call to the server
 const currentPage = defineModel('page', { type: Number, required: true });
 
-const paginate = (page) => {
+const availablePages = ref(0);
+
+watchEffect(() => {
+  if (!props.server) {
+    availablePages.value = props.numberOfPages;
+  } else {
+    availablePages.value =
+      Math.ceil(props.data.length / props.numberOfPages) || 1;
+  }
+});
+
+const setCurrentPage = (page) => {
   currentPage.value = page;
+
+  if (!props.server) {
+    // compute the start and stop indexes for data to be shown according to the selected page
+    const startIndex = (currentPage.value - 1) * pageSize;
+    const stopIndex = Math.min(startIndex, items.length);
+    items.slice((currentPage - 1) * pageSize, stopIndex);
+  }
 };
 
+///////////////////////////////////////////
+// pagination render algorithm
+
+// creates an array of integers of length (stop - start) / step + 1, starting from start index and up to the stop index
+// e.g: arrayRange(18, 20, 1) >> [18, 19, 20]
 const arrayRange = (start, stop, step) =>
   Array.from(
     { length: (stop - start) / step + 1 },
@@ -83,38 +112,34 @@ const arrayRange = (start, stop, step) =>
   );
 
 const pages = computed(() => {
-  // the window indicates the range of pages to be displayed (could be greater than the number of available pages)
-  const windowMiddlePoint = Math.ceil(props.displayedPages / 2); // middle point in the window, use to decide how to shift the window among the available pages
+  const pageWindowLength = props.numberOfDisplayedPages; // number of pages to display (it could be greater than the available pages)
+  const windowCentralIdx = Math.ceil(pageWindowLength / 2); // index of middle point in the window. Note: the window must be an odd number value
+  const halfWindowSpan = (pageWindowLength - 1) / 2; // number of page elements for each side of the window, from the central index
 
-  const windowRightHalf = props.displayedPages - windowMiddlePoint; // right part of the window, from windowMiddlePoint to end
-  const windowLeftHalf = windowMiddlePoint - 1; // left part of the window, from start to windowMiddlePoint excluded
+  const K = props.numberOfPages - halfWindowSpan; // for lack of a better name. This stores the pages belonging to the right part of the window, when using the last window (i.e. the very last pages of the list)
 
-  const K = props.numberOfPages - windowRightHalf; // for lack of a better name. This stores the pages belonging to the right part of the window, when using the last window (i.e. the very last pages of the list)
-
-  const WStart = arrayRange(1, props.displayedPages, 1); // first window, spanning from the first page until window length
-  const WEnd = arrayRange(
-    props.numberOfPages - props.displayedPages + 1,
-    props.numberOfPages,
-    1,
-  );
-
-  // Algorithm
-  if (props.numberOfPages <= props.displayedPages) {
-    // show all pages
+  // Algorithm for choosing the window
+  if (props.numberOfPages <= pageWindowLength) {
+    // the available number of pages is lower than the pages to be displayed -> show only available pages
     return arrayRange(1, props.numberOfPages, 1);
   }
-  // choose correct window
-  if (currentPage.value <= windowMiddlePoint) {
-    return WStart;
+
+  if (currentPage.value <= windowCentralIdx) {
+    return arrayRange(1, pageWindowLength, 1); // first window, spanning from the first page until window length
   }
 
   if (currentPage.value >= K) {
-    return WEnd;
+    // last window, spanning a window up to the last available page
+    return arrayRange(
+      props.numberOfPages - pageWindowLength + 1,
+      props.numberOfPages,
+      1,
+    );
   }
-  //sliding window, center currentPage.value in windowMiddlePoint
+  //standard sliding window, where currentPage is centered
   return arrayRange(
-    currentPage.value - windowLeftHalf,
-    currentPage.value + windowRightHalf,
+    currentPage.value - halfWindowSpan,
+    currentPage.value + halfWindowSpan,
     1,
   );
 });

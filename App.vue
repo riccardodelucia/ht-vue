@@ -141,7 +141,6 @@
 </template>
 
 <script setup>
-import { sort } from 'd3';
 import { ref } from 'vue';
 
 ///////////////////////////////////

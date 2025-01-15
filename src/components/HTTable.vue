@@ -1,60 +1,68 @@
 <template>
-  <table>
-    <thead>
-      <template v-for="column in sortableColumns">
-        <th
-          v-if="isColumnActive(column.name)"
-          scope="col"
-          :aria-sort="column.sortDirection"
-        >
-          <button
-            v-if="column.sortDirection"
-            class="sort-button"
-            type="button"
-            :aria-label="`Sort toggle for column ${column.name}`"
-            @click="onSortColumn(column)"
+  <div>
+    <table>
+      <thead>
+        <template v-for="column in sortableColumns">
+          <th
+            v-if="isColumnActive(column.name)"
+            scope="col"
+            :aria-sort="column.sortDirection"
           >
-            {{ column.name }}
-          </button>
-          <template v-else>{{ column.name }}</template>
-        </th>
-      </template>
-    </thead>
-    <tbody>
-      <tr v-for="rowIndex in nRows">
-        <template v-for="columnIndex in nColumns">
-          <template v-if="isColumnActive(columnNames[columnIndex - 1])">
-            <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
-             custom HTML-->
-            <slot
-              :column="columnNames[columnIndex - 1]"
-              :rowIndex="rowIndex"
-              :tableData="sortedData[rowIndex - 1][columnIndex - 1]"
+            <button
+              v-if="column.sortDirection"
+              class="sort-button"
+              type="button"
+              :aria-label="`Sort toggle for column ${column.name}`"
+              @click="onSortColumn(column)"
             >
-              <!-- standard content, if not overrideen by the parent -->
-              <th v-if="columnIndex - 1 === rowHeaderIndex" role="row">
-                {{ sortedData[rowIndex - 1][columnIndex - 1] }}
-              </th>
-              <td v-else>
-                {{ sortedData[rowIndex - 1][columnIndex - 1] }}
-              </td>
-            </slot>
-          </template>
+              {{ column.name }}
+            </button>
+            <template v-else>{{ column.name }}</template>
+          </th>
         </template>
-      </tr>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <tr v-for="rowIndex in nRows">
+          <template v-for="columnIndex in nColumns">
+            <template v-if="isColumnActive(columnNames[columnIndex - 1])">
+              <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
+             custom HTML-->
+              <slot
+                :column="columnNames[columnIndex - 1]"
+                :rowIndex="rowIndex"
+                :tableData="sortedData[rowIndex - 1][columnIndex - 1]"
+              >
+                <!-- standard content, if not overrideen by the parent -->
+                <th v-if="columnIndex - 1 === rowHeaderIndex" role="row">
+                  {{ sortedData[rowIndex - 1][columnIndex - 1] }}
+                </th>
+                <td v-else>
+                  {{ sortedData[rowIndex - 1][columnIndex - 1] }}
+                </td>
+              </slot>
+            </template>
+          </template>
+        </tr>
+      </tbody>
+    </table>
+    <ht-pagination
+      :number-of-pages="numberOfPages"
+      v-model:page="currentPage"
+      :displayed-pages="displayedPages"
+    ></ht-pagination>
+  </div>
 </template>
 
 <script setup>
 import { computed, ref, watchEffect } from 'vue';
 const props = defineProps({
-  // columns must specify the column name and an optional sortable parameter
-  columns: { type: Array, required: true },
+  server: { type: Boolean, default: false },
+  columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
-  server: { type: Boolean, default: false },
+  //page: { type: Number, default: null }, // pass a valid number to both 'page' and 'pageSize' to enable pagination
+  //pageSize: { type: Number, default: null },
 });
 
 /**
@@ -64,7 +72,25 @@ const props = defineProps({
 const emit = defineEmits(['sort']);
 
 /////////////////////////////////////////////////////
-// Sorting columns logic
+// General logic
+const nRows = computed(() => props.tableData.length);
+const nColumns = computed(() => props.tableData[0].length);
+
+const columnNames = computed(() => props.columns.map(({ name }) => name));
+
+const rowHeaderIndex = computed(() => {
+  // it computes the cell index of the column which acts as the name for every row
+  if (props.rowHeader) {
+    return columnNames.value.indexOf(props.rowHeader);
+  }
+  return -1;
+});
+
+// used to compute if the current cell must be shown or not.
+const isColumnActive = (name) => props.activeColumnNames.includes(name);
+
+/////////////////////////////////////////////////////
+// Sorting logic
 
 const sortableColumns = ref(null);
 const sortedData = ref(null);
@@ -103,6 +129,7 @@ const onSortColumn = (sortingColumn) => {
     .indexOf(sortingColumn.name);
 
   if (!props.server) {
+    // client side sorting
     const { sortDirection, sortFn } = sortableColumns.value[columnIndex];
     sortedData.value = sortData(
       props.tableData,
@@ -110,9 +137,7 @@ const onSortColumn = (sortingColumn) => {
       sortDirection,
       sortFn,
     );
-  }
-
-  emit('sort', { ...sortingColumn, columnIndex });
+  } else emit('sort', { ...sortingColumn, columnIndex });
 };
 
 const sortData = (
@@ -137,26 +162,6 @@ const sortData = (
 
   return sortedColumnData.map(({ idx }) => tableData[idx]);
 };
-
-/////////////////////////////////////////////////////
-
-const nRows = computed(() => props.tableData.length);
-const nColumns = computed(() => props.tableData[0].length);
-
-const columnNames = computed(() => props.columns.map(({ name }) => name));
-
-const rowHeaderIndex = computed(() => {
-  // it computes the cell index of the column which acts as the name for every row
-  if (props.rowHeader) {
-    return columnNames.value.indexOf(props.rowHeader);
-  }
-  return -1;
-});
-
-// used to compute if the current cell must be shown or not.
-const isColumnActive = (name) => props.activeColumnNames.includes(name);
-
-/////////////////////////////////////////////
 </script>
 
 <style lang="postcss" scoped>
