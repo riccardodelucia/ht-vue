@@ -23,7 +23,7 @@
       <ht-search-bar
         label="Search bar with submit"
         :hints="searchHints"
-        @submit="onSearchSubmit"
+        @search="onSearchSubmit"
       ></ht-search-bar>
       <p>searchModelValue: {{ searchModelValue }}</p>
     </div>
@@ -112,6 +112,12 @@
         row-header="Italy"
         v-model:page="currentPage"
         :available-pages="10"
+        @search="
+          (value) => {
+            console.log('search');
+            console.log(value);
+          }
+        "
         @sort="
           (column) => {
             console.log('sorting');

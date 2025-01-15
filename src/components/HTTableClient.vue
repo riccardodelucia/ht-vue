@@ -7,7 +7,8 @@
     :available-pages="availablePages"
     :displayable-pages="displayablePages"
     v-model:page="currentPage"
-    @sort="sortData"
+    @sort="setSortColumn"
+    @search="setFilterValue"
   >
     <!-- This allows to pass the slot of the inner server table up to the parent -->
     <template v-slot="slotProps">
@@ -37,21 +38,81 @@ const props = defineProps({
   },
 });
 
+/**
+ * data processing is implemented as the following block processing: filtering -> sorting -> paginating
+ * Each block is activated only if a corresponding parameter is valid (e.g. there is an active filter value).
+ * Computed properties are computed on top of each previous stage.
+ * This implementation, although possibly not optimized, makes the code easier to understand.
+ */
+
+///////////////////////////////////////////////
+// Client side filtering
+const filterValue = ref(null);
+
+const setFilterValue = (value) => {
+  //debugger;
+  filterValue.value = value;
+  resetPagination();
+};
+
+const filteredTableData = computed(() => {
+  //debugger;
+  if (!filterValue.value) return props.tableData;
+  return props.tableData.filter((row) => {
+    return row[0].startsWith('S');
+  });
+});
+
+///////////////////////////////////////////////
+// Client-side sorting
+const currentSortColumn = ref(null);
+
+const setSortColumn = (sortColumn) => {
+  currentSortColumn.value = sortColumn;
+};
+
+const sortedTableData = computed(() => {
+  if (!currentSortColumn.value) return filteredTableData.value;
+  const {
+    sortDirection,
+    sortFn: columnSortFn,
+    columnIndex,
+  } = currentSortColumn.value;
+
+  const directionMultiplier = sortDirection === 'ascending' ? 1 : -1;
+
+  const sortFn = (a, b) => {
+    // standard sorting function is: a - b
+    const order = columnSortFn ? columnSortFn(a, b) : a - b;
+    return order * directionMultiplier;
+  };
+
+  const sortedColumnData = filteredTableData.value
+    .map((row, idx) => ({
+      idx,
+      value: row[columnIndex],
+    }))
+    .sort((a, b) => sortFn(a.value, b.value));
+
+  return sortedColumnData.map(({ idx }) => filteredTableData.value[idx]);
+});
+
 ///////////////////////////////////////////////
 // Client-side pagination
 const currentPage = ref(1);
 
-const availablePages = computed(() => {
-  if (!props.displayablePages) return 0; // this means no pagination has been activated for the component
-  return Math.ceil(props.tableData.length / props.displayablePages) || 1;
-});
-
-const paginate = (items, pageSize, currentPage) => {
-  const stopIndex = Math.min(currentPage * pageSize, items.length);
-  return items.slice((currentPage - 1) * pageSize, stopIndex);
+const resetPagination = () => {
+  currentPage.value = 1;
 };
 
+const availablePages = computed(() => {
+  //debugger;
+  if (!props.displayablePages) return 0; // this means no pagination has been activated for the component
+  return Math.ceil(sortedTableData.value.length / props.displayablePages) || 1;
+});
+
 const paginatedData = computed(() => {
+  //debugger;
   if (!availablePages.value) {
     return sortedTableData.value;
   }
@@ -62,29 +123,9 @@ const paginatedData = computed(() => {
   );
 });
 
-///////////////////////////////////////////////
-// Client-side sorting
-const sortedTableData = ref([...props.tableData]);
-
-const sortData = ({ sortDirection, sortFn: columnSortFn, columnIndex }) => {
-  const directionMultiplier = sortDirection === 'ascending' ? 1 : -1;
-
-  const sortFn = (a, b) => {
-    // standard sorting function is: a - b
-    const order = columnSortFn ? columnSortFn(a, b) : a - b;
-    return order * directionMultiplier;
-  };
-
-  const sortedColumnData = props.tableData
-    .map((row, idx) => ({
-      idx,
-      value: row[columnIndex],
-    }))
-    .sort((a, b) => sortFn(a.value, b.value));
-
-  sortedTableData.value = sortedColumnData.map(
-    ({ idx }) => props.tableData[idx],
-  );
+const paginate = (items, pageSize, currentPage) => {
+  const stopIndex = Math.min(currentPage * pageSize, items.length);
+  return items.slice((currentPage - 1) * pageSize, stopIndex);
 };
 </script>
 

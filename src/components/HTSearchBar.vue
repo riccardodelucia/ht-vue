@@ -39,13 +39,13 @@ const props = defineProps({
 // you can either decide to constantly map search input to the parent, via optional v-model, or update the parent only after submit events, registering to the submit event
 const model = defineModel({ type: [String, Number, null], required: false });
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['search']);
 
 const uuid = uuidv4();
 const listId = uuidv4();
 
 const onSubmit = () => {
-  emit('submit', model.value);
+  emit('search', model.value);
 };
 </script>
 

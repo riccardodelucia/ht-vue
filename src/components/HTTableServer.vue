@@ -1,5 +1,9 @@
 <template>
   <div>
+    <ht-search-bar
+      label="Search data"
+      @search="$emit('search', $event)"
+    ></ht-search-bar>
     <table>
       <thead>
         <template v-for="(column, idx) in sortableColumns">
@@ -85,7 +89,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['sort']);
+const emit = defineEmits(['sort', 'search']);
 
 // The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the page back to the pagination component.
 const page = defineModel('page', { type: Number });
