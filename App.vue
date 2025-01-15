@@ -133,6 +133,7 @@
         :table-data="tableData"
         :columns="columns"
         row-header="Country"
+        :displayable-pages="3"
       >
         <template v-slot="slotProps">
           <template v-if="slotProps.column === 'Action'"
