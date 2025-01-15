@@ -25,7 +25,7 @@
       </li>
       <li>
         <button
-          v-if="currentPage < numberOfPages"
+          v-if="currentPage < availablePages"
           class="chevron"
           @click="setCurrentPage(currentPage + 1)"
         >
@@ -45,59 +45,39 @@
  * The reason is that this component actually doesn't navigate anywhere, but just manages the pagination logic. Such component therefore has a
  * non accessible nav, where internal elements do not navigate anywhere. Proper logic should be integrated to switch between buttons and anchors, in presence of
  * either provided links or a linkResolving function which extrapolates the link for each page.
- *
  */
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 import VueFeather from 'vue-feather';
 
 const props = defineProps({
-  server: { type: Boolean, default: false }, // server side pagination. Pagination logic is demanded to the server. The component only sends pagination events and shows the current active page
-  numberOfDisplayedPages: {
+  // max number of pages to be displayed
+  displayablePages: {
     type: Number,
     default: 5,
     validator(value) {
-      // must be a positive odd number
       return value > 0 && value % 2 === 1;
     },
   },
-  // number of pages must be provided for server side pagination only to know the number of available pages
-  numberOfPages: {
+  // total number of pages according to the size of data
+  availablePages: {
     type: Number,
-    required: false,
+    default: 10,
     validator(value) {
       return value > 0;
     },
   },
-  // knowing the data is mandatory for client side pagination to know the number of available pages
-  data: {
-    required: false,
-    type: Array,
-  },
 });
 
-// update:page event is alsow used for server side to communicate the selected page. The parent must then avoid v-model and register to @update:page event, and then make the API call to the server
+/**
+ * This component defines a model to update the page. Getting the page to be shown by a props is more robust than setting up the page in the component, starting from 1.
+ * This is especially true when server side pagination is used. Since the server request for the page could fail, we need a way to tell the pagination component to change the page to the fallback page
+ * designated after the server query has failed.
+ * If the page is not passed as a props, this would be impossible, and we risk to misalign the data of the current page with the current page indicated by the pagination component.
+ */
 const currentPage = defineModel('page', { type: Number, required: true });
-
-const availablePages = ref(0);
-
-watchEffect(() => {
-  if (!props.server) {
-    availablePages.value = props.numberOfPages;
-  } else {
-    availablePages.value =
-      Math.ceil(props.data.length / props.numberOfPages) || 1;
-  }
-});
 
 const setCurrentPage = (page) => {
   currentPage.value = page;
-
-  if (!props.server) {
-    // compute the start and stop indexes for data to be shown according to the selected page
-    const startIndex = (currentPage.value - 1) * pageSize;
-    const stopIndex = Math.min(startIndex, items.length);
-    items.slice((currentPage - 1) * pageSize, stopIndex);
-  }
 };
 
 ///////////////////////////////////////////
@@ -112,16 +92,16 @@ const arrayRange = (start, stop, step) =>
   );
 
 const pages = computed(() => {
-  const pageWindowLength = props.numberOfDisplayedPages; // number of pages to display (it could be greater than the available pages)
+  const pageWindowLength = props.displayablePages; // number of pages to display (it could be greater than the available pages)
   const windowCentralIdx = Math.ceil(pageWindowLength / 2); // index of middle point in the window. Note: the window must be an odd number value
   const halfWindowSpan = (pageWindowLength - 1) / 2; // number of page elements for each side of the window, from the central index
 
-  const K = props.numberOfPages - halfWindowSpan; // for lack of a better name. This stores the pages belonging to the right part of the window, when using the last window (i.e. the very last pages of the list)
+  const K = props.availablePages - halfWindowSpan; // for lack of a better name. This stores the pages belonging to the right part of the window, when using the last window (i.e. the very last pages of the list)
 
   // Algorithm for choosing the window
-  if (props.numberOfPages <= pageWindowLength) {
+  if (props.availablePages <= pageWindowLength) {
     // the available number of pages is lower than the pages to be displayed -> show only available pages
-    return arrayRange(1, props.numberOfPages, 1);
+    return arrayRange(1, props.availablePages, 1);
   }
 
   if (currentPage.value <= windowCentralIdx) {
@@ -131,8 +111,8 @@ const pages = computed(() => {
   if (currentPage.value >= K) {
     // last window, spanning a window up to the last available page
     return arrayRange(
-      props.numberOfPages - pageWindowLength + 1,
-      props.numberOfPages,
+      props.availablePages - pageWindowLength + 1,
+      props.availablePages,
       1,
     );
   }
