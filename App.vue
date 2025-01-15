@@ -95,20 +95,29 @@
       <ht-input-file v-model="multipleFiles" label="File input"></ht-input-file>
       <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
     </div>
-    <div>
+    <!--     <div>
       <ht-pagination
         :number-of-pages="numberOfPages"
         v-model:page="currentPage"
         :displayed-pages="displayedPages"
       ></ht-pagination>
       <p>current page: {{ currentPage }}</p>
-    </div>
+    </div> -->
     <div>
-      <ht-table
+      <h2>Server side table</h2>
+      <ht-table-server
         :active-column-names="activeColumnNames"
         :table-data="tableData"
         :columns="columns"
         row-header="Italy"
+        v-model:page="currentPage"
+        :available-pages="10"
+        @sort="
+          (column) => {
+            console.log('sorting');
+            console.log(column);
+          }
+        "
       >
         <template v-slot="slotProps">
           <template v-if="slotProps.column === 'Italy'"
@@ -117,7 +126,24 @@
             </button></template
           >
         </template>
-      </ht-table>
+      </ht-table-server>
+      <h2>Client side table</h2>
+      <ht-table-client
+        :active-column-names="activeColumnNames"
+        :table-data="tableData"
+        :columns="columns"
+        row-header="Italy"
+        :available-pages="5"
+        :displayable-pages="3"
+      >
+        <template v-slot="slotProps">
+          <template v-if="slotProps.column === 'Italy'"
+            ><button type="button">
+              Data: {{ slotProps.tableData }}
+            </button></template
+          >
+        </template></ht-table-client
+      >
       <ht-checkbox
         v-model="activeColumnNames"
         name="country"
@@ -183,12 +209,6 @@ const file = ref(null);
 const multipleFiles = ref([]);
 
 ///////////////////////////////////
-// Pagination
-const numberOfPages = ref(10);
-const currentPage = ref(1);
-const displayedPages = ref(3);
-
-///////////////////////////////////
 // Table
 const columns = [
   { name: 'Italy', sortable: true, sortFn: (a, b) => a - b },
@@ -201,6 +221,10 @@ const tableData = ref([
 ]);
 const activeColumnNames = ref([...columns.map(({ name }) => name)]);
 
+// Server side table
+const currentPage = ref(1);
+
+// client side table
 const sortTable = (sortColumn) => {
   const sortColumnIndex = sortColumn.columnIndex;
   const orderMultiplier = sortColumn.sortOrder === 'ascending' ? 1 : -1;

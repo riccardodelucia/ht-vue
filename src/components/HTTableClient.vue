@@ -1,79 +1,64 @@
 <template>
-  <div>
-    <table>
-      <thead>
-        <template v-for="column in sortableColumns">
-          <th
-            v-if="isColumnActive(column.name)"
-            scope="col"
-            :aria-sort="column.sortDirection"
-          >
-            <button
-              v-if="column.sortDirection"
-              class="sort-button"
-              type="button"
-              :aria-label="`Sort toggle for column ${column.name}`"
-              @click="onSortColumn(column)"
-            >
-              {{ column.name }}
-            </button>
-            <template v-else>{{ column.name }}</template>
-          </th>
-        </template>
-      </thead>
-      <tbody>
-        <tr v-for="rowIndex in nRows">
-          <template v-for="columnIndex in nColumns">
-            <template v-if="isColumnActive(columnNames[columnIndex - 1])">
-              <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
-             custom HTML-->
-              <slot
-                :column="columnNames[columnIndex - 1]"
-                :rowIndex="rowIndex"
-                :tableData="sortedData[rowIndex - 1][columnIndex - 1]"
-              >
-                <!-- standard content, if not overrideen by the parent -->
-                <th v-if="columnIndex - 1 === rowHeaderIndex" role="row">
-                  {{ sortedData[rowIndex - 1][columnIndex - 1] }}
-                </th>
-                <td v-else>
-                  {{ sortedData[rowIndex - 1][columnIndex - 1] }}
-                </td>
-              </slot>
-            </template>
-          </template>
-        </tr>
-      </tbody>
-    </table>
-    <!--     <ht-pagination
-      :number-of-pages="numberOfPages"
-      v-model:page="currentPage"
-      :displayed-pages="displayedPages"
-    ></ht-pagination> -->
-  </div>
+  <ht-table-server
+    :active-column-names="activeColumnNames"
+    :table-data="tableData"
+    :columns="columns"
+    row-header="Italy"
+    :available-pages="availablePages"
+    :displayable-pages="displayablePages"
+    v-model:page="currentPage"
+    @sort="
+      (column) => {
+        console.log('sorting');
+        console.log(column);
+      }
+    "
+  >
+    <!-- This allows to pass the slot of the inner server table up to the parent -->
+    <template v-slot="slotProps">
+      <slot v-bind="slotProps"></slot>
+    </template>
+  </ht-table-server>
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 const props = defineProps({
-  server: { type: Boolean, default: false },
   columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
-  //page: { type: Number, default: null }, // pass a valid number to both 'page' and 'pageSize' to enable pagination
-  //pageSize: { type: Number, default: null },
+  // max number of pages to be displayed
+  displayablePages: {
+    type: Number,
+    default: 5,
+    validator(value) {
+      return value > 0 && value % 2 === 1;
+    },
+  },
+  // total number of pages according to the size of data
+  availablePages: {
+    type: Number,
+    default: 0,
+    validator(value) {
+      return value >= 0;
+    },
+  },
 });
 
+const currentPage = ref(1);
+watch(currentPage, () => {
+  console.log(currentPage.value);
+});
 /**
  * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and paginate events, the parent can implement both
  * client side and server side sorting+paginating solutions
  */
-const emit = defineEmits(['sort']);
+// const emit = defineEmits(['sort']);
 
 /////////////////////////////////////////////////////
 // General logic
-const nRows = computed(() => props.tableData.length);
+/* const nRows = computed(() => props.tableData.length);
 const nColumns = computed(() => props.tableData[0].length);
 
 const columnNames = computed(() => props.columns.map(({ name }) => name));
@@ -84,15 +69,15 @@ const rowHeaderIndex = computed(() => {
     return columnNames.value.indexOf(props.rowHeader);
   }
   return -1;
-});
+}); */
 
 // used to compute if the current cell must be shown or not.
-const isColumnActive = (name) => props.activeColumnNames.includes(name);
+//const isColumnActive = (name) => props.activeColumnNames.includes(name);
 
 /////////////////////////////////////////////////////
 // Sorting logic
 
-const sortableColumns = ref(null);
+/* const sortableColumns = ref(null);
 const sortedData = ref(null);
 
 watchEffect(() => {
@@ -161,7 +146,7 @@ const sortData = (
     .sort((a, b) => sortFn(a.value, b.value));
 
   return sortedColumnData.map(({ idx }) => tableData[idx]);
-};
+}; */
 </script>
 
 <style lang="postcss" scoped>

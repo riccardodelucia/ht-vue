@@ -48,6 +48,8 @@
     <ht-pagination
       v-if="availablePages > 0"
       v-model:page="page"
+      :available-pages="availablePages"
+      :displayable-pages="displayablePages"
     ></ht-pagination>
   </div>
 </template>
@@ -70,7 +72,7 @@ const props = defineProps({
   // total number of pages according to the size of data
   availablePages: {
     type: Number,
-    required: true,
+    default: 0,
     validator(value) {
       return value >= 0;
     },
@@ -137,7 +139,7 @@ const onSortColumn = (sortingColumn, columnIndex) => {
 
   /**
    * Note: the received sortingColumn contains the outdated column sorting info.
-   * We therefore extract the updated column info from sortableColumns
+   * We therefore extract the updated column info from the just updated sortableColumns
    */
   emit('sort', { ...sortableColumns.value[columnIndex] });
 };
