@@ -124,6 +124,12 @@
             console.log(column);
           }
         "
+        @page-size="
+          (size) => {
+            console.log('page-size');
+            console.log(size);
+          }
+        "
       >
         <template v-slot="slotProps">
           <template v-if="slotProps.column === 'Italy'"
@@ -237,6 +243,37 @@ const tableData = [
   ['Portugal', 'Lisbon', 10.33],
   ['Sweden', 'Stockholm', 10.52],
   ['Austria', 'Vienna', 9.01],
+  ['United States', 'Washington, D.C.', 331.9],
+  ['Canada', 'Ottawa', 38.25],
+  ['Mexico', 'Mexico City', 126.01],
+  ['Brazil', 'Brasilia', 214.33],
+  ['Argentina', 'Buenos Aires', 45.81],
+  ['United Kingdom', 'London', 67.84],
+  ['Ireland', 'Dublin', 5.33],
+  ['Norway', 'Oslo', 5.4],
+  ['Switzerland', 'Bern', 8.74],
+  ['Russia', 'Moscow', 143.4],
+  ['China', 'Beijing', 1411.75],
+  ['India', 'New Delhi', 1406.1],
+  ['Japan', 'Tokyo', 125.71],
+  ['South Korea', 'Seoul', 51.74],
+  ['Australia', 'Canberra', 26.4],
+  ['New Zealand', 'Wellington', 5.12],
+  ['South Africa', 'Pretoria', 59.39],
+  ['Egypt', 'Cairo', 109.26],
+  ['Nigeria', 'Abuja', 223.8],
+  ['Kenya', 'Nairobi', 55.61],
+  ['Turkey', 'Ankara', 85.34],
+  ['Iran', 'Tehran', 87.92],
+  ['Saudi Arabia', 'Riyadh', 36.33],
+  ['Pakistan', 'Islamabad', 240.48],
+  ['Bangladesh', 'Dhaka', 169.44],
+  ['Vietnam', 'Hanoi', 100.62],
+  ['Thailand', 'Bangkok', 71.89],
+  ['Indonesia', 'Jakarta', 276.36],
+  ['Philippines', 'Manila', 114.05],
+  ['Malaysia', 'Kuala Lumpur', 34.12],
+  ['Singapore', 'Singapore', 5.64],
 ];
 
 const activeColumnNames = ref([...columns.map(({ name }) => name)]);

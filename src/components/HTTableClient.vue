@@ -9,6 +9,7 @@
     v-model:page="currentPage"
     @sort="setSortColumn"
     @search="setFilterValue"
+    @page-size="setPageSize"
   >
     <!-- This allows to pass the slot of the inner server table up to the parent -->
     <template v-slot="slotProps">
@@ -100,15 +101,20 @@ const sortedTableData = computed(() => {
 ///////////////////////////////////////////////
 // Client-side pagination
 const currentPage = ref(1);
+const pageSize = ref(5);
+
+const setPageSize = (value) => {
+  pageSize.value = value;
+  resetPagination();
+};
 
 const resetPagination = () => {
   currentPage.value = 1;
 };
 
 const availablePages = computed(() => {
-  //debugger;
   if (!props.displayablePages) return 0; // this means no pagination has been activated for the component
-  return Math.ceil(sortedTableData.value.length / props.displayablePages) || 1;
+  return Math.ceil(sortedTableData.value.length / pageSize.value) || 1;
 });
 
 const paginatedData = computed(() => {
@@ -116,11 +122,7 @@ const paginatedData = computed(() => {
   if (!availablePages.value) {
     return sortedTableData.value;
   }
-  return paginate(
-    sortedTableData.value,
-    props.displayablePages,
-    currentPage.value,
-  );
+  return paginate(sortedTableData.value, pageSize.value, currentPage.value);
 });
 
 const paginate = (items, pageSize, currentPage) => {

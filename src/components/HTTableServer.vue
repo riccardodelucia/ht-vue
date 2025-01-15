@@ -50,6 +50,11 @@
         </tr>
       </tbody>
     </table>
+    <ht-select
+      :modelValue="pageSize"
+      :options="[5, 10, 20, 30]"
+      @update:modelValue="$emit('page-size', $event)"
+    ></ht-select>
     <ht-pagination
       v-if="availablePages > 0"
       v-model:page="page"
@@ -89,10 +94,12 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['sort', 'search']);
+const emit = defineEmits(['sort', 'search', 'page-size']);
 
 // The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the page back to the pagination component.
 const page = defineModel('page', { type: Number });
+
+const pageSize = ref(5);
 
 /////////////////////////////////////////////////////
 // General logic
