@@ -53,6 +53,12 @@ const props = defineProps({
  */
 
 ///////////////////////////////////////////////
+// Utilities
+const findColumnIndex = (columnName, columns) => {
+  return columns.findIndex((column) => column.name === columnName);
+};
+
+///////////////////////////////////////////////
 // Client side filtering
 const searchFilter = ref({ searchValue: '', searchColumn: '' });
 
@@ -65,15 +71,23 @@ const setFilterValue = (value) => {
 
 const filteredTableData = computed(() => {
   const { searchValue, searchColumn } = searchFilter.value;
-  if (!searchValue || !props.useSearch) return props.tableData;
+  if (!searchValue || !searchColumn || !props.useSearch) return props.tableData;
 
-  const fruits = ['apple', 'orange', 'banana', 'pear'];
-  const fuse = new Fuse(fruits);
-  const result = fuse.search('banana');
+  // TODO: change logic to accomodate for other possible names for expressing the all columns based sorting
+  let candidates;
+  if (searchColumn === 'All') {
+    // TODO
+    return;
+  }
 
-  return props.tableData.filter((row) => {
-    return row[0].startsWith('S');
-  });
+  const columnIndex = findColumnIndex(searchColumn, props.columns);
+  candidates = props.tableData.map((row) => row[columnIndex]);
+  console.log(candidates);
+  const fuse = new Fuse(candidates);
+  const resultIndexes = fuse
+    .search(searchValue)
+    .map(({ refIndex }) => refIndex);
+  return resultIndexes.map((index) => props.tableData[index]);
 });
 
 ///////////////////////////////////////////////
