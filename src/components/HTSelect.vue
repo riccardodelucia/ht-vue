@@ -69,6 +69,7 @@ const isMultiple = computed(() => {
 // Cannot directly watch props. Therefore, we create a computed property on it.
 const options = computed(() => props.options);
 watch(options, () => {
+  // this is used to reset the assigned selection if options change during the component lifecycle.
   model.value = undefined;
 });
 </script>

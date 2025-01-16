@@ -64,12 +64,13 @@ const setFilterValue = (value) => {
 };
 
 const filteredTableData = computed(() => {
+  const { searchValue, searchColumn } = searchFilter.value;
+  if (!searchValue || !props.useSearch) return props.tableData;
+
   const fruits = ['apple', 'orange', 'banana', 'pear'];
   const fuse = new Fuse(fruits);
   const result = fuse.search('banana');
-  const { searchValue } = searchFilter.value;
 
-  if (!searchValue || !props.useSearch) return props.tableData;
   return props.tableData.filter((row) => {
     return row[0].startsWith('S');
   });
