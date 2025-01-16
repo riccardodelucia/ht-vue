@@ -51,15 +51,10 @@
         </tr>
       </tbody>
     </table>
-    <ht-select
-      v-if="usePagination"
-      :modelValue="pageSize"
-      :options="[5, 10, 20, 30]"
-      @update:modelValue="$emit('page-size', $event)"
-    ></ht-select>
     <ht-pagination
       v-if="usePagination"
       v-model:page="page"
+      @page-size="emit('page-size', $event)"
       :available-pages="availablePages"
       :displayable-pages="displayablePages"
     ></ht-pagination>
@@ -81,21 +76,13 @@ const props = defineProps({
   useSearch: { type: Boolean, default: true },
   useSort: { type: Boolean, default: true },
   usePagination: { type: Boolean, default: true },
-  // max number of pages to be displayed
   displayablePages: {
     type: Number,
-    default: 5,
-    validator(value) {
-      return value > 0 && value % 2 === 1;
-    },
+    required: false,
   },
-  // total number of pages according to the size of data
   availablePages: {
     type: Number,
-    default: 0,
-    validator(value) {
-      return value >= 0;
-    },
+    required: false,
   },
 });
 
@@ -104,8 +91,9 @@ const emit = defineEmits(['sort', 'search', 'page-size']);
 // The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the page back to the pagination component.
 const page = defineModel('page', { type: Number });
 
-const pageSize = ref(5);
-
+/* const onPageSize = (pageSize) => {
+  console.log(pageSize);
+}; */
 /////////////////////////////////////////////////////
 // General logic
 const nRows = computed(() => props.tableData.length);

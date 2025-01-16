@@ -1,42 +1,49 @@
 <template>
-  <nav class="pagination-nav" aria-label="pagination">
-    <ul class="pagination">
-      <li>
-        <button
-          v-if="currentPage > 1"
-          class="chevron"
-          @click="setCurrentPage(currentPage - 1)"
-        >
-          <VueFeather type="chevron-left"></VueFeather>
-        </button>
-        <button v-else class="chevron" aria-disabled="true">
-          <VueFeather type="chevron-left"></VueFeather>
-        </button>
-      </li>
+  <div>
+    <ht-select
+      :modelValue="pageSize"
+      :options="[5, 10, 20, 30]"
+      @update:modelValue="emit('page-size', $event)"
+    ></ht-select>
+    <nav class="pagination-nav" aria-label="pagination">
+      <ul class="pagination">
+        <li>
+          <button
+            v-if="currentPage > 1"
+            class="chevron"
+            @click="setCurrentPage(currentPage - 1)"
+          >
+            <VueFeather type="chevron-left"></VueFeather>
+          </button>
+          <button v-else class="chevron" aria-disabled="true">
+            <VueFeather type="chevron-left"></VueFeather>
+          </button>
+        </li>
 
-      <li v-for="page in pages" :key="page">
-        <button
-          class="page number-indicator"
-          :aria-current="page === currentPage ? 'page' : null"
-          @click="setCurrentPage(page)"
-        >
-          {{ page }}
-        </button>
-      </li>
-      <li>
-        <button
-          v-if="currentPage < availablePages"
-          class="chevron"
-          @click="setCurrentPage(currentPage + 1)"
-        >
-          <VueFeather type="chevron-right"></VueFeather>
-        </button>
-        <button v-else class="chevron" aria-disabled="true">
-          <VueFeather type="chevron-right"></VueFeather>
-        </button>
-      </li>
-    </ul>
-  </nav>
+        <li v-for="page in pages" :key="page">
+          <button
+            class="page number-indicator"
+            :aria-current="page === currentPage ? 'page' : null"
+            @click="setCurrentPage(page)"
+          >
+            {{ page }}
+          </button>
+        </li>
+        <li>
+          <button
+            v-if="currentPage < availablePages"
+            class="chevron"
+            @click="setCurrentPage(currentPage + 1)"
+          >
+            <VueFeather type="chevron-right"></VueFeather>
+          </button>
+          <button v-else class="chevron" aria-disabled="true">
+            <VueFeather type="chevron-right"></VueFeather>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </template>
 
 <script setup>
@@ -46,7 +53,7 @@
  * non accessible nav, where internal elements do not navigate anywhere. Proper logic should be integrated to switch between buttons and anchors, in presence of
  * either provided links or a linkResolving function which extrapolates the link for each page.
  */
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import VueFeather from 'vue-feather';
 
 const props = defineProps({
@@ -61,7 +68,7 @@ const props = defineProps({
   // total number of pages according to the size of data
   availablePages: {
     type: Number,
-    default: 10,
+    default: 1,
     validator(value) {
       return value > 0;
     },
@@ -73,12 +80,17 @@ const props = defineProps({
  * This is especially true when server side pagination is used. Since the server request for the page could fail, we need a way to tell the pagination component to change the page to the fallback page
  * designated after the server query has failed.
  * If the page is not passed as a props, this would be impossible, and we risk to misalign the data of the current page with the current page indicated by the pagination component.
+ * Note: since we use defineModel, an internal ref is created which is used to modify the page and implicitly emit the event. This is just a byproduct of the usage of defineModel, and the page must be enforced by the props value.
  */
 const currentPage = defineModel('page', { type: Number, required: true });
 
 const setCurrentPage = (page) => {
   currentPage.value = page;
 };
+
+const emit = defineEmits(['page-size']);
+
+const pageSize = ref(5);
 
 ///////////////////////////////////////////
 // pagination render algorithm

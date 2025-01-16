@@ -129,6 +129,7 @@
         "
         @page-size="
           (size) => {
+            debugger;
             console.log('page-size');
             console.log(size);
           }
