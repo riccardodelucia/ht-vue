@@ -112,6 +112,9 @@
         row-header="Italy"
         v-model:page="currentPage"
         :available-pages="10"
+        :use-sort="false"
+        :use-search="false"
+        :use-pagination="true"
         @search="
           (value) => {
             console.log('search');
@@ -132,10 +135,8 @@
         "
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps.column === 'Italy'"
-            ><button type="button">
-              Data: {{ slotProps.tableData }}
-            </button></template
+          <template v-if="slotProps.column === 'Action'"
+            ><button type="button">Action</button></template
           >
         </template>
       </ht-table-server>
@@ -145,6 +146,9 @@
         :table-data="tableData"
         :columns="columns"
         row-header="Country"
+        :use-search="true"
+        :use-sort="true"
+        :use-pagination="true"
         :displayable-pages="3"
       >
         <template v-slot="slotProps">

@@ -7,6 +7,9 @@
     :available-pages="availablePages"
     :displayable-pages="displayablePages"
     v-model:page="currentPage"
+    :use-search="useSearch"
+    :use-sort="useSort"
+    :use-pagination="usePagination"
     @sort="setSortColumn"
     @search="setFilterValue"
     @page-size="setPageSize"
@@ -24,11 +27,17 @@
  * over props.tableData
  */
 import { computed, ref } from 'vue';
+
+import Fuse from 'fuse.js';
+
 const props = defineProps({
   columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
+  useSearch: { type: Boolean, default: true },
+  useSort: { type: Boolean, default: true },
+  usePagination: { type: Boolean, default: true },
   // max number of pages to be displayed
   displayablePages: {
     type: Number,
@@ -51,14 +60,14 @@ const props = defineProps({
 const filterValue = ref(null);
 
 const setFilterValue = (value) => {
-  //debugger;
-  filterValue.value = value;
-  resetPagination();
+  if (props.useSearch) {
+    filterValue.value = value;
+    resetPagination();
+  }
 };
 
 const filteredTableData = computed(() => {
-  //debugger;
-  if (!filterValue.value) return props.tableData;
+  if (!filterValue.value || !props.useSearch) return props.tableData;
   return props.tableData.filter((row) => {
     return row[0].startsWith('S');
   });
@@ -69,11 +78,13 @@ const filteredTableData = computed(() => {
 const currentSortColumn = ref(null);
 
 const setSortColumn = (sortColumn) => {
-  currentSortColumn.value = sortColumn;
+  if (props.useSort) currentSortColumn.value = sortColumn;
 };
 
 const sortedTableData = computed(() => {
-  if (!currentSortColumn.value) return filteredTableData.value;
+  if (!currentSortColumn.value || !props.useSort)
+    return filteredTableData.value;
+
   const {
     sortDirection,
     sortFn: columnSortFn,
@@ -104,8 +115,10 @@ const currentPage = ref(1);
 const pageSize = ref(5);
 
 const setPageSize = (value) => {
-  pageSize.value = value;
-  resetPagination();
+  if (props.usePagination) {
+    pageSize.value = value;
+    resetPagination();
+  }
 };
 
 const resetPagination = () => {
@@ -113,13 +126,12 @@ const resetPagination = () => {
 };
 
 const availablePages = computed(() => {
-  if (!props.displayablePages) return 0; // this means no pagination has been activated for the component
+  if (!props.usePagination) return 0;
   return Math.ceil(sortedTableData.value.length / pageSize.value) || 1;
 });
 
 const paginatedData = computed(() => {
-  //debugger;
-  if (!availablePages.value) {
+  if (!props.usePagination) {
     return sortedTableData.value;
   }
   return paginate(sortedTableData.value, pageSize.value, currentPage.value);

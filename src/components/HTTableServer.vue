@@ -1,6 +1,7 @@
 <template>
   <div>
     <ht-search-bar
+      v-if="useSearch"
       label="Search data"
       @search="$emit('search', $event)"
     ></ht-search-bar>
@@ -51,12 +52,13 @@
       </tbody>
     </table>
     <ht-select
+      v-if="usePagination"
       :modelValue="pageSize"
       :options="[5, 10, 20, 30]"
       @update:modelValue="$emit('page-size', $event)"
     ></ht-select>
     <ht-pagination
-      v-if="availablePages > 0"
+      v-if="usePagination"
       v-model:page="page"
       :available-pages="availablePages"
       :displayable-pages="displayablePages"
@@ -76,6 +78,9 @@ const props = defineProps({
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
+  useSearch: { type: Boolean, default: true },
+  useSort: { type: Boolean, default: true },
+  usePagination: { type: Boolean, default: true },
   // max number of pages to be displayed
   displayablePages: {
     type: Number,
@@ -125,12 +130,22 @@ const isColumnActive = (name) => props.activeColumnNames.includes(name);
 const sortableColumns = ref(null);
 
 watchEffect(() => {
-  sortableColumns.value = props.columns.map((column) => {
-    return {
-      ...column,
-      sortDirection: column?.sortable ? 'none' : null,
-    };
-  });
+  if (!props.useSort) {
+    // disable all sorting by putting every element's sortDirection to null
+    sortableColumns.value = props.columns.map((column) => {
+      return {
+        ...column,
+        sortDirection: null,
+      };
+    });
+  } else {
+    sortableColumns.value = props.columns.map((column) => {
+      return {
+        ...column,
+        sortDirection: column?.sortable ? 'none' : null,
+      };
+    });
+  }
 });
 
 const updateSortableColumns = (sortingColumn, columns) => {
