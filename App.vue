@@ -73,10 +73,17 @@
     <div>
       <ht-select
         v-model="multipleSelectModelValue"
-        :options="multipleSelectOptions"
-        :option-labels="multipleSelectOptionLabels"
+        :options="activeOptions"
       ></ht-select>
       <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
+      <ht-checkbox
+        v-for="option in multipleSelectOptions"
+        v-model="activeOptions"
+        name="select-group"
+        :value="option"
+        :label="option"
+      ></ht-checkbox>
+      <p>activeOptions: {{ activeOptions }}</p>
     </div>
     <div>
       <ht-radio-group
@@ -95,14 +102,6 @@
       <ht-input-file v-model="multipleFiles" label="File input"></ht-input-file>
       <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
     </div>
-    <!--     <div>
-      <ht-pagination
-        :number-of-pages="numberOfPages"
-        v-model:page="currentPage"
-        :displayed-pages="displayedPages"
-      ></ht-pagination>
-      <p>current page: {{ currentPage }}</p>
-    </div> -->
     <div>
       <h2>Server side table</h2>
       <ht-table-server
@@ -184,9 +183,11 @@ const selectOptions = [1, { key: 2 }];
 const selectOptionLabels = ['A', 'B'];
 const selectModelValue = ref(undefined);
 
-const multipleSelectOptions = ['A', 'B', { value: 'C' }];
+const multipleSelectOptions = ['A', 'B', 'C'];
 const multipleSelectOptionLabels = ['A', 'B', 'C'];
 const multipleSelectModelValue = ref([]);
+
+const activeOptions = ref(multipleSelectOptions);
 
 ///////////////////////////////////
 // Checkbox

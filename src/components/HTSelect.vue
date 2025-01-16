@@ -69,7 +69,12 @@ const isMultiple = computed(() => {
 // Cannot directly watch props. Therefore, we create a computed property on it.
 const options = computed(() => props.options);
 watch(options, () => {
-  if (!props.options.includes(model.value))
+  if (isMultiple.value) {
+    const newSelections = props.options.filter((newOption) => {
+      return props.modelValue.includes(newOption);
+    });
+    model.value = newSelections;
+  } else if (!props.options.includes(model.value))
     // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
     model.value = undefined;
 });
