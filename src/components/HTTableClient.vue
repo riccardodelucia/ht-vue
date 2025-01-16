@@ -54,17 +54,22 @@ const props = defineProps({
 
 ///////////////////////////////////////////////
 // Client side filtering
-const filterValue = ref(null);
+const searchFilter = ref({ searchValue: '', searchColumn: '' });
 
 const setFilterValue = (value) => {
   if (props.useSearch) {
-    filterValue.value = value;
+    searchFilter.value = value;
     resetPagination();
   }
 };
 
 const filteredTableData = computed(() => {
-  if (!filterValue.value || !props.useSearch) return props.tableData;
+  const fruits = ['apple', 'orange', 'banana', 'pear'];
+  const fuse = new Fuse(fruits);
+  const result = fuse.search('banana');
+  const { searchValue } = searchFilter.value;
+
+  if (!searchValue || !props.useSearch) return props.tableData;
   return props.tableData.filter((row) => {
     return row[0].startsWith('S');
   });

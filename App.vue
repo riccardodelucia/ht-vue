@@ -113,7 +113,7 @@
         v-model:page="currentPage"
         :available-pages="10"
         :use-sort="false"
-        :use-search="false"
+        :use-search="true"
         :use-pagination="true"
         @search="
           (value) => {
@@ -129,14 +129,13 @@
         "
         @page-size="
           (size) => {
-            debugger;
             console.log('page-size');
             console.log(size);
           }
         "
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps.column === 'Action'"
+          <template v-if="slotProps.column.name === 'Action'"
             ><button type="button">Action</button></template
           >
         </template>
@@ -153,30 +152,19 @@
         :displayable-pages="3"
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps.column === 'Action'"
+          <template v-if="slotProps.column.name === 'Action'"
             ><button type="button">
-              Action: {{ slotProps.tableData }}
+              Action: {{ slotProps.dataValue }}
             </button></template
           >
-        </template></ht-table-client
-      >
+        </template>
+      </ht-table-client>
       <ht-checkbox
+        v-for="column in columns"
         v-model="activeColumnNames"
         name="column-group"
-        value="Country"
-        label="Country"
-      ></ht-checkbox>
-      <ht-checkbox
-        v-model="activeColumnNames"
-        name="column-group"
-        value="Capital"
-        label="Capital"
-      ></ht-checkbox>
-      <ht-checkbox
-        v-model="activeColumnNames"
-        name="column-group"
-        value="Inhabitants (Millions)"
-        label="Inhabitants (Millions)"
+        :value="column.name"
+        :label="column.name"
       ></ht-checkbox>
     </div>
   </section>
@@ -194,7 +182,7 @@ const inputTextareaModel = ref('');
 // Select
 const selectOptions = [1, { key: 2 }];
 const selectOptionLabels = ['A', 'B'];
-const selectModelValue = ref(selectOptions[1]);
+const selectModelValue = ref(undefined);
 
 const multipleSelectOptions = ['A', 'B', { value: 'C' }];
 const multipleSelectOptionLabels = ['A', 'B', 'C'];
@@ -234,54 +222,59 @@ const columns = [
   { name: 'Country', sortable: true, sortFn: sortStrings },
   { name: 'Capital' },
   { name: 'Inhabitants (Millions)', sortable: true },
-  { name: 'Action', sortable: false },
+  { name: 'Action', sortable: false, fixed: true },
 ];
 
 const tableData = [
-  ['Germany', 'Berlin', 83.24],
-  ['France', 'Paris', 67.39],
-  ['Italy', 'Rome', 59.11],
-  ['Spain', 'Madrid', 47.45],
-  ['Poland', 'Warsaw', 37.95],
-  ['Netherlands', 'Amsterdam', 17.28],
-  ['Greece', 'Athens', 10.42],
-  ['Portugal', 'Lisbon', 10.33],
-  ['Sweden', 'Stockholm', 10.52],
-  ['Austria', 'Vienna', 9.01],
-  ['United States', 'Washington, D.C.', 331.9],
-  ['Canada', 'Ottawa', 38.25],
-  ['Mexico', 'Mexico City', 126.01],
-  ['Brazil', 'Brasilia', 214.33],
-  ['Argentina', 'Buenos Aires', 45.81],
-  ['United Kingdom', 'London', 67.84],
-  ['Ireland', 'Dublin', 5.33],
-  ['Norway', 'Oslo', 5.4],
-  ['Switzerland', 'Bern', 8.74],
-  ['Russia', 'Moscow', 143.4],
-  ['China', 'Beijing', 1411.75],
-  ['India', 'New Delhi', 1406.1],
-  ['Japan', 'Tokyo', 125.71],
-  ['South Korea', 'Seoul', 51.74],
-  ['Australia', 'Canberra', 26.4],
-  ['New Zealand', 'Wellington', 5.12],
-  ['South Africa', 'Pretoria', 59.39],
-  ['Egypt', 'Cairo', 109.26],
-  ['Nigeria', 'Abuja', 223.8],
-  ['Kenya', 'Nairobi', 55.61],
-  ['Turkey', 'Ankara', 85.34],
-  ['Iran', 'Tehran', 87.92],
-  ['Saudi Arabia', 'Riyadh', 36.33],
-  ['Pakistan', 'Islamabad', 240.48],
-  ['Bangladesh', 'Dhaka', 169.44],
-  ['Vietnam', 'Hanoi', 100.62],
-  ['Thailand', 'Bangkok', 71.89],
-  ['Indonesia', 'Jakarta', 276.36],
-  ['Philippines', 'Manila', 114.05],
-  ['Malaysia', 'Kuala Lumpur', 34.12],
-  ['Singapore', 'Singapore', 5.64],
+  ['Germany', 'Berlin', 83.24, 'Germany'],
+  ['France', 'Paris', 67.39, 'France'],
+  ['Italy', 'Rome', 59.11, 'Italy'],
+  ['Spain', 'Madrid', 47.45, 'Spain'],
+  ['Poland', 'Warsaw', 37.95, 'Poland'],
+  ['Netherlands', 'Amsterdam', 17.28, 'Netherlands'],
+  ['Greece', 'Athens', 10.42, 'Greece'],
+  ['Portugal', 'Lisbon', 10.33, 'Portugal'],
+  ['Sweden', 'Stockholm', 10.52, 'Sweden'],
+  ['Austria', 'Vienna', 9.01, 'Austria'],
+  ['United States', 'Washington, D.C.', 331.9, 'United States'],
+  ['Canada', 'Ottawa', 38.25, 'Canada'],
+  ['Mexico', 'Mexico City', 126.01, 'Mexico'],
+  ['Brazil', 'Brasilia', 214.33, 'Brazil'],
+  ['Argentina', 'Buenos Aires', 45.81, 'Argentina'],
+  ['United Kingdom', 'London', 67.84, 'United Kingdom'],
+  ['Ireland', 'Dublin', 5.33, 'Ireland'],
+  ['Norway', 'Oslo', 5.4, 'Norway'],
+  ['Switzerland', 'Bern', 8.74, 'Switzerland'],
+  ['Russia', 'Moscow', 143.4, 'Russia'],
+  ['China', 'Beijing', 1411.75, 'China'],
+  ['India', 'New Delhi', 1406.1, 'India'],
+  ['Japan', 'Tokyo', 125.71, 'Japan'],
+  ['South Korea', 'Seoul', 51.74, 'South Korea'],
+  ['Australia', 'Canberra', 26.4, 'Australia'],
+  ['New Zealand', 'Wellington', 5.12, 'New Zealand'],
+  ['South Africa', 'Pretoria', 59.39, 'South Africa'],
+  ['Egypt', 'Cairo', 109.26, 'Egypt'],
+  ['Nigeria', 'Abuja', 223.8, 'Nigeria'],
+  ['Kenya', 'Nairobi', 55.61, 'Kenya'],
+  ['Turkey', 'Ankara', 85.34, 'Turkey'],
+  ['Iran', 'Tehran', 87.92, 'Iran'],
+  ['Saudi Arabia', 'Riyadh', 36.33, 'Saudi Arabia'],
+  ['Pakistan', 'Islamabad', 240.48, 'Pakistan'],
+  ['Bangladesh', 'Dhaka', 169.44, 'Bangladesh'],
+  ['Vietnam', 'Hanoi', 100.62, 'Vietnam'],
+  ['Thailand', 'Bangkok', 71.89, 'Thailand'],
+  ['Indonesia', 'Jakarta', 276.36, 'Indonesia'],
+  ['Philippines', 'Manila', 114.05, 'Philippines'],
+  ['Malaysia', 'Kuala Lumpur', 34.12, 'Malaysia'],
+  ['Singapore', 'Singapore', 5.64, 'Singapore'],
 ];
 
-const activeColumnNames = ref([...columns.map(({ name }) => name)]);
+const activeColumnNames = ref([
+  'Country',
+  'Capital',
+  'Inhabitants (Millions)',
+  'Action',
+]);
 
 // Server side table
 const currentPage = ref(1);

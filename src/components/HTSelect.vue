@@ -29,7 +29,7 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 import { labelize } from '../utilities.js';
 
@@ -64,5 +64,11 @@ const model = defineModel();
 
 const isMultiple = computed(() => {
   return Array.isArray(model.value);
+});
+
+// Cannot directly watch props. Therefore, we create a computed property on it.
+const options = computed(() => props.options);
+watch(options, () => {
+  model.value = undefined;
 });
 </script>
