@@ -8,7 +8,7 @@
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `select-error-${id}` : null"
   >
-    <option disabled :value="undefined">Please select one</option>
+    <option disabled :value="disabledValue">Please select one</option>
     <option
       v-for="(option, idx) in options"
       :key="`option-${idx}`"
@@ -39,6 +39,8 @@ const props = defineProps({
     type: [Object, String, Number, Array],
     required: true,
   },
+  // if, by any chance, we need to use null as part of our options, we can override the disabled option value with something else
+  disabledValue: { default: null },
   // options refers to possible candidates values for the modelValue
   options: {
     type: Array,
@@ -76,6 +78,6 @@ watch(options, () => {
     model.value = newSelections;
   } else if (!props.options.includes(model.value))
     // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
-    model.value = undefined;
+    model.value = null;
 });
 </script>
