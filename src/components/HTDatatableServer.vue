@@ -6,47 +6,54 @@
       v-model:search-column="searchColumn"
       v-model:search-value="searchValue"
     ></ht-datatable-search>
-    <table>
-      <thead>
-        <template v-for="column in displayableColumns">
-          <th scope="col" :aria-sort="column.sortDirection">
-            <button
-              v-if="column.sortDirection"
-              class="sort-button"
-              type="button"
-              :aria-label="`Sort toggle for column ${column.name}`"
-              @click="onSortColumn(column)"
-            >
-              {{ column.name }}
-            </button>
-            <template v-else>{{ column.name }}</template>
-          </th>
-        </template>
-      </thead>
-      <tbody>
-        <!-- with this syntax, the Vue index starts from 1-->
-        <tr v-for="rowIndex in nRows">
+    <div class="datatable-container">
+      <table class="datatable">
+        <thead>
           <template v-for="column in displayableColumns">
-            <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
+            <th scope="col" :aria-sort="column.sortDirection">
+              <button
+                v-if="column.sortDirection"
+                class="sort-button"
+                type="button"
+                :aria-label="`Sort toggle for column ${column.name}`"
+                @click="onSortColumn(column)"
+              >
+                {{ column.name }}
+              </button>
+              <template v-else>{{ column.name }}</template>
+            </th>
+          </template>
+        </thead>
+        <tbody>
+          <!-- with this syntax, the Vue index starts from 1-->
+          <tr v-for="rowIndex in nRows">
+            <template v-for="column in displayableColumns">
+              <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
              custom HTML-->
-            <slot
-              :column="column"
-              :columnIndex="column.columnIndex"
-              :rowIndex="rowIndex"
-              :dataValue="tableData[rowIndex - 1][column.columnIndex]"
-            >
-              <!-- standard content, if not overrideen by the parent -->
-              <th v-if="column.name === rowHeader" role="row">
-                {{ tableData[rowIndex - 1][column.columnIndex] }}
+
+              <th v-if="column.name === rowHeader" scope="row">
+                <slot
+                  :column="column"
+                  :columnIndex="column.columnIndex"
+                  :rowIndex="rowIndex"
+                  :dataValue="tableData[rowIndex - 1][column.columnIndex]"
+                  >{{ tableData[rowIndex - 1][column.columnIndex] }}</slot
+                >
               </th>
               <td v-else>
-                {{ tableData[rowIndex - 1][column.columnIndex] }}
+                <slot
+                  :column="column"
+                  :columnIndex="column.columnIndex"
+                  :rowIndex="rowIndex"
+                  :dataValue="tableData[rowIndex - 1][column.columnIndex]"
+                  >{{ tableData[rowIndex - 1][column.columnIndex] }}</slot
+                >
               </td>
-            </slot>
-          </template>
-        </tr>
-      </tbody>
-    </table>
+            </template>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <ht-datatable-pagination
       v-if="usePagination"
       v-model:page="page"
@@ -74,7 +81,7 @@ const props = defineProps({
    * }
    *
    */
-  columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable'
+  columns: { type: Array, required: true },
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   /**
@@ -221,5 +228,39 @@ th[aria-sort='ascending'] .sort-button:before {
 th[aria-sort='descending'] .sort-button:after {
   border-top-color: var(--ht-color-gray-3);
   margin-top: 1px;
+}
+
+th,
+td {
+  padding-block: var(--size-2);
+  padding-inline: var(--size-1);
+  text-align: center;
+  border: 1px solid var(--ht-color-gray-3);
+  min-width: 10rem;
+  max-width: 25rem;
+}
+
+td {
+  overflow: auto;
+}
+
+th[scope='row'] {
+  font-weight: inherit;
+  overflow: auto;
+}
+
+tr:nth-child(even) {
+  background-color: var(--ht-surface-3);
+}
+
+.datatable {
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+}
+.datatable-container {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 </style>
