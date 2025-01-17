@@ -1,4 +1,6 @@
 <template>
+  {{ searchValue }}
+  {{ searchColumn }}
   <ht-datatable-server
     :active-column-names="activeColumnNames"
     :table-data="paginatedData"
@@ -7,11 +9,12 @@
     :available-pages="availablePages"
     :displayable-pages="displayablePages"
     v-model:page="currentPage"
+    v-model:search-value="searchValue"
+    v-model:search-column="searchColumn"
     :use-search="useSearch"
     :use-sort="useSort"
     :use-pagination="usePagination"
     @sort="setSortColumn"
-    @search="setFilterValue"
     @page-size="setPageSize"
   >
     <!-- This allows to pass the slot of the inner server table up to the parent -->
@@ -26,7 +29,7 @@
  * Note: ht-table-client is implemented as a wrapper around ht-table-server component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
  * over props.tableData
  */
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import Fuse from 'fuse.js';
 
@@ -53,39 +56,40 @@ const props = defineProps({
  */
 
 ///////////////////////////////////////////////
-// Utilities
-const findColumnIndex = (columnName, columns) => {
-  return columns.findIndex((column) => column.name === columnName);
-};
-
-///////////////////////////////////////////////
 // Client side filtering
-const searchFilter = ref({ searchValue: '', searchColumn: '' });
+const allColumnsLabel = 'All Columns';
+const searchValue = ref('');
+const searchColumn = ref(allColumnsLabel);
 
-const setFilterValue = (value) => {
-  if (props.useSearch) {
-    searchFilter.value = value;
-    resetPagination();
-  }
-};
+watch([searchColumn, searchValue], () => {
+  resetPagination();
+});
 
 const filteredTableData = computed(() => {
-  const { searchValue, searchColumn } = searchFilter.value;
-  if (!searchValue || !searchColumn || !props.useSearch) return props.tableData;
+  if (!props.useSearch || !searchValue.value) return props.tableData;
 
-  // TODO: change logic to accomodate for other possible names for expressing the all columns based sorting
   let candidates;
-  if (searchColumn === 'All') {
+  if (searchColumn.value === allColumnsLabel) {
     // TODO
+    debugger;
+    candidates = props.tableData.reduce((acc, row) => {
+      acc.push(...row);
+      return acc;
+    }, []);
+    const fuse = new Fuse(candidates);
+
     return;
   }
 
-  const columnIndex = findColumnIndex(searchColumn, props.columns);
+  const columnIndex = props.columns.findIndex(
+    (column) => column.name === searchColumn.value,
+  );
+
   candidates = props.tableData.map((row) => row[columnIndex]);
-  console.log(candidates);
+
   const fuse = new Fuse(candidates);
   const resultIndexes = fuse
-    .search(searchValue)
+    .search(searchValue.value)
     .map(({ refIndex }) => refIndex);
   return resultIndexes.map((index) => props.tableData[index]);
 });

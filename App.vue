@@ -181,7 +181,7 @@ const inputTextareaModel = ref('');
 // Select
 const selectOptions = [1, { key: 2 }];
 const selectOptionLabels = ['A', 'B'];
-const selectModelValue = ref(undefined);
+const selectModelValue = ref(null);
 
 const multipleSelectOptions = ['A', 'B', 'C'];
 const multipleSelectOptionLabels = ['A', 'B', 'C'];

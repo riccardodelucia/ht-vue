@@ -2,12 +2,9 @@
   <div>
     <ht-datatable-search
       v-if="useSearch"
-      :columns="displayableColumnNames"
-      @search="
-        (value) => {
-          console.log(value);
-        }
-      "
+      :column-options="searchableColumns"
+      v-model:search-column="searchColumn"
+      v-model:search-value="searchValue"
     ></ht-datatable-search>
     <table>
       <thead>
@@ -98,10 +95,12 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['sort', 'search', 'page-size']);
+const emit = defineEmits(['sort', 'page-size']);
 
-// The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the retrieved page back to the pagination component.
 const page = defineModel('page', { type: Number });
+
+const searchColumn = defineModel('search-column', { type: String });
+const searchValue = defineModel('search-value', { type: String });
 
 /////////////////////////////////////////////////////
 // General logic
@@ -133,7 +132,6 @@ const setCurrentSortColumn = (column) => {
 
 const onSortColumn = (column) => {
   setCurrentSortColumn(column);
-
   emit('sort', currentSortColumn.value);
 };
 
@@ -175,9 +173,10 @@ const displayableColumns = computed(() => {
   );
 });
 
-const displayableColumnNames = computed(() =>
-  displayableColumns.value.map(({ name }) => name),
-);
+const searchableColumns = computed(() => [
+  'All Columns',
+  ...displayableColumns.value.map(({ name }) => name),
+]);
 </script>
 
 <style lang="postcss" scoped>
