@@ -104,7 +104,7 @@
     </div>
     <div>
       <h2>Server side table</h2>
-      <ht-table-server
+      <ht-datatable-server
         :active-column-names="activeColumnNames"
         :table-data="tableData"
         :columns="columns"
@@ -138,9 +138,9 @@
             ><button type="button">Action</button></template
           >
         </template>
-      </ht-table-server>
+      </ht-datatable-server>
       <h2>Client side table</h2>
-      <ht-table-client
+      <ht-datatable-client
         :active-column-names="activeColumnNames"
         :table-data="tableData"
         :columns="columns"
@@ -157,7 +157,7 @@
             </button></template
           >
         </template>
-      </ht-table-client>
+      </ht-datatable-client>
       <ht-checkbox
         v-for="column in columns"
         v-model="activeColumnNames"

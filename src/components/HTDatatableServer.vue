@@ -101,7 +101,7 @@ const props = defineProps({
 
 const emit = defineEmits(['sort', 'search', 'page-size']);
 
-// The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the page back to the pagination component.
+// The page is linked to a model which in turns emits an'update:page' event to the parent. This allows the parent to query the specified page data on the server and sync the retrieved page back to the pagination component.
 const page = defineModel('page', { type: Number });
 
 /////////////////////////////////////////////////////

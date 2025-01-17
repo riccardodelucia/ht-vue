@@ -1,5 +1,5 @@
 <template>
-  <ht-table-server
+  <ht-datatable-server
     :active-column-names="activeColumnNames"
     :table-data="paginatedData"
     :columns="columns"
@@ -18,7 +18,7 @@
     <template v-slot="slotProps">
       <slot v-bind="slotProps"></slot>
     </template>
-  </ht-table-server>
+  </ht-datatable-server>
 </template>
 
 <script setup>
