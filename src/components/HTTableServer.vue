@@ -12,7 +12,7 @@
     ></ht-select>
     <table>
       <thead>
-        <template v-for="(column, idx) in displayableColumns">
+        <template v-for="column in displayableColumns">
           <th scope="col" :aria-sort="column.sortDirection">
             <button
               v-if="column.sortDirection"
@@ -28,6 +28,7 @@
         </template>
       </thead>
       <tbody>
+        <!-- with this syntax, the Vue index starts from 1-->
         <tr v-for="rowIndex in nRows">
           <template v-for="column in displayableColumns">
             <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
@@ -53,7 +54,7 @@
     <ht-pagination
       v-if="usePagination"
       v-model:page="page"
-      @page-size="emit('page-size', $event)"
+      @page-size="onPageSizeChange"
       :available-pages="availablePages"
       :displayable-pages="displayablePages"
     ></ht-pagination>
@@ -107,6 +108,12 @@ const page = defineModel('page', { type: Number });
 // General logic
 const nRows = computed(() => props.tableData.length);
 
+const onPageSizeChange = (pageSize) => {
+  // different page sizes can mess with the sorting. Therefore, we keep the current sorting but we inform that the column is not sorted anymore.
+  setCurrentSortColumn(null);
+  emit('page-size', pageSize);
+};
+
 /////////////////////////////////////////////////////
 // Search logic
 const searchColumn = ref(undefined);
@@ -151,22 +158,32 @@ watchEffect(() => {
 
 const currentSortColumn = ref(null);
 
-const onSortColumn = (column) => {
-  let { sortDirection } = column;
-  if (!props.useSort || !column.sortable) {
+const setCurrentSortColumn = (column) => {
+  if (!column || !props.useSort || !column?.sortable) {
     currentSortColumn.value = null;
     return;
   }
 
+  let { sortDirection } = column;
   if (sortDirection === 'ascending') sortDirection = 'descending';
   else sortDirection = 'ascending';
 
   currentSortColumn.value = { ...column, sortDirection };
+};
+
+const onSortColumn = (column) => {
+  setCurrentSortColumn(column);
 
   emit('sort', currentSortColumn.value);
 };
 
-// sortableColumns
+/**
+ * sortableColumns is crucial to make the table work proerly. It must contain the info about all original columns, not only active ones.
+ * In addition, the column data must include new info compared to props.columns:
+ * - the columnIndex, which is used to retrieve the corresponding table value, on each row
+ * - the column sort state, according to the current selected sorting column. If the column doesn't match the current sorting column,
+ * its sorting state is reset to the initial condition (either 'none' or null)
+ */
 const sortableColumns = computed(() => {
   if (!props.useSort) {
     // disable all sorting by putting every element's sortDirection to null
@@ -192,7 +209,6 @@ const sortableColumns = computed(() => {
 });
 
 /////////////////////////////////////////////////////
-// Display columns logic
 const displayableColumns = computed(() => {
   return sortableColumns.value.filter(
     (column) => props.activeColumnNames.includes(column.name) || column.fixed,
