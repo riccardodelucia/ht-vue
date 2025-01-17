@@ -83,6 +83,7 @@ const props = defineProps({
    */
   tableData: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
+  searchAllColumnsLabel: { Type: String, default: 'All Columns' },
   useSort: { type: Boolean, default: true },
   usePagination: { type: Boolean, default: true },
   displayablePages: {
@@ -169,12 +170,12 @@ const sortableColumns = computed(() => {
 /////////////////////////////////////////////////////
 const displayableColumns = computed(() => {
   return sortableColumns.value.filter(
-    (column) => props.activeColumnNames.includes(column.name) || column.fixed,
+    (column) => props.activeColumnNames.includes(column.name), // || column.fixed,
   );
 });
 
 const searchableColumns = computed(() => [
-  'All Columns',
+  props.searchAllColumnsLabel,
   ...displayableColumns.value.map(({ name }) => name),
 ]);
 </script>

@@ -11,6 +11,7 @@
     v-model:page="currentPage"
     v-model:search-value="searchValue"
     v-model:search-column="searchColumn"
+    :search-all-columns-label="searchAllColumnsLabel"
     :use-search="useSearch"
     :use-sort="useSort"
     :use-pagination="usePagination"
@@ -39,6 +40,7 @@ const props = defineProps({
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
+  searchAllColumnsLabel: { Type: String, default: 'All Columns' },
   useSort: { type: Boolean, default: true },
   usePagination: { type: Boolean, default: true },
   // max number of pages to be displayed
@@ -57,9 +59,8 @@ const props = defineProps({
 
 ///////////////////////////////////////////////
 // Client side filtering
-const allColumnsLabel = 'All Columns';
 const searchValue = ref('');
-const searchColumn = ref(allColumnsLabel);
+const searchColumn = ref(props.searchAllColumnsLabel);
 
 watch([searchColumn, searchValue], () => {
   resetPagination();

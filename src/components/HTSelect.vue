@@ -44,6 +44,7 @@ const props = defineProps({
   showDisabledOption: { default: true },
   disabledOptionLabel: { type: String, default: 'Please select one' },
   // options refers to possible candidates values for the modelValue
+  // Note: options cannot be null, which is used for the disabled option
   options: {
     type: Array,
     required: true,
@@ -79,7 +80,9 @@ watch(options, () => {
     });
     model.value = newSelections;
   } else if (!props.options.includes(model.value))
-    // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
-    model.value = null;
+    if (props.showDisabledOption)
+      // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
+      model.value = null;
+    else model.value = props.options[0];
 });
 </script>
