@@ -1,7 +1,5 @@
 <template>
   <div>
-    {{ searchColumn }}<br />
-    {{ searchActiveColumnNames }}
     <ht-search-bar
       v-if="useSearch"
       label="Search data"
@@ -14,18 +12,14 @@
     ></ht-select>
     <table>
       <thead>
-        <template v-for="(column, idx) in sortableColumns">
-          <th
-            v-if="isColumnActive(column)"
-            scope="col"
-            :aria-sort="column.sortDirection"
-          >
+        <template v-for="(column, idx) in displayableColumns">
+          <th scope="col" :aria-sort="column.sortDirection">
             <button
               v-if="column.sortDirection"
               class="sort-button"
               type="button"
               :aria-label="`Sort toggle for column ${column.name}`"
-              @click="onSortColumn(column, idx)"
+              @click="onSortColumn(column)"
             >
               {{ column.name }}
             </button>
@@ -35,25 +29,23 @@
       </thead>
       <tbody>
         <tr v-for="rowIndex in nRows">
-          <template v-for="(column, columnIndex) in columns">
-            <template v-if="isColumnActive(column)">
-              <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
+          <template v-for="column in displayableColumns">
+            <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
              custom HTML-->
-              <slot
-                :column="column"
-                :columnIndex="columnIndex"
-                :rowIndex="rowIndex"
-                :dataValue="tableData[rowIndex - 1][columnIndex]"
-              >
-                <!-- standard content, if not overrideen by the parent -->
-                <th v-if="columnIndex === rowHeaderIndex" role="row">
-                  {{ tableData[rowIndex - 1][columnIndex] }}
-                </th>
-                <td v-else>
-                  {{ tableData[rowIndex - 1][columnIndex] }}
-                </td>
-              </slot>
-            </template>
+            <slot
+              :column="column"
+              :columnIndex="column.columnIndex"
+              :rowIndex="rowIndex"
+              :dataValue="tableData[rowIndex - 1][column.columnIndex]"
+            >
+              <!-- standard content, if not overrideen by the parent -->
+              <th v-if="column.name === rowHeader" role="row">
+                {{ tableData[rowIndex - 1][column.columnIndex] }}
+              </th>
+              <td v-else>
+                {{ tableData[rowIndex - 1][column.columnIndex] }}
+              </td>
+            </slot>
           </template>
         </tr>
       </tbody>
@@ -115,20 +107,6 @@ const page = defineModel('page', { type: Number });
 // General logic
 const nRows = computed(() => props.tableData.length);
 
-const rowHeaderIndex = computed(() => {
-  // it computes the cell index of the column which acts as the name for every row
-  if (props.rowHeader) {
-    return props.columns.map(({ name }) => name).indexOf(props.rowHeader);
-  }
-  return -1;
-});
-
-// used to compute if the current column must be shown or not.
-const isColumnActive = (column) => {
-  if (column?.fixed) return true;
-  return props.activeColumnNames.includes(column.name);
-};
-
 /////////////////////////////////////////////////////
 // Search logic
 const searchColumn = ref(undefined);
@@ -170,50 +148,56 @@ watchEffect(() => {
 
 /////////////////////////////////////////////////////
 // Sort columns state logic
-const sortableColumns = ref(null);
 
-watchEffect(() => {
+const currentSortColumn = ref(null);
+
+const onSortColumn = (column) => {
+  let { sortDirection } = column;
+  if (!props.useSort || !column.sortable) {
+    currentSortColumn.value = null;
+    return;
+  }
+
+  if (sortDirection === 'ascending') sortDirection = 'descending';
+  else sortDirection = 'ascending';
+
+  currentSortColumn.value = { ...column, sortDirection };
+
+  emit('sort', currentSortColumn.value);
+};
+
+// sortableColumns
+const sortableColumns = computed(() => {
   if (!props.useSort) {
     // disable all sorting by putting every element's sortDirection to null
-    sortableColumns.value = props.columns.map((column) => {
+    return props.columns.map((column, idx) => {
       return {
         ...column,
         sortDirection: null,
+        columnIndex: idx,
       };
     });
   } else {
-    sortableColumns.value = props.columns.map((column) => {
+    return props.columns.map((column, idx) => {
+      if (column.name === currentSortColumn.value?.name) {
+        return currentSortColumn.value;
+      }
       return {
         ...column,
         sortDirection: column?.sortable ? 'none' : null,
+        columnIndex: idx,
       };
     });
   }
 });
 
-const updateSortableColumns = (sortingColumn, columns) => {
-  return columns.map((column) => {
-    let sortDirection = null;
-    if (column.name === sortingColumn.name) {
-      if (sortingColumn.sortDirection === 'ascending')
-        sortDirection = 'descending';
-      else sortDirection = 'ascending';
-    } else {
-      sortDirection = column?.sortable ? 'none' : null;
-    }
-    return { ...column, sortDirection };
-  });
-};
-
-const onSortColumn = (sortingColumn, columnIndex) => {
-  sortableColumns.value = updateSortableColumns(sortingColumn, props.columns);
-
-  /**
-   * Note: the received sortingColumn contains the outdated column sorting info.
-   * We therefore extract the updated column info from the just updated sortableColumns
-   */
-  emit('sort', { ...sortableColumns.value[columnIndex], columnIndex });
-};
+/////////////////////////////////////////////////////
+// Display columns logic
+const displayableColumns = computed(() => {
+  return sortableColumns.value.filter(
+    (column) => props.activeColumnNames.includes(column.name) || column.fixed,
+  );
+});
 </script>
 
 <style lang="postcss" scoped>
