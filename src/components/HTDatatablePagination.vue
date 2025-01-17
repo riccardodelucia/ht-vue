@@ -1,12 +1,16 @@
 <template>
-  <div>
-    <ht-select
-      :modelValue="pageSize"
-      :options="[5, 10, 20, 30]"
-      @update:modelValue="emit('page-size', $event)"
-    ></ht-select>
+  <div class="pagination">
+    <div class="page-size-select">
+      <ht-select
+        :modelValue="pageSize"
+        :options="[5, 10, 20, 30]"
+        @update:modelValue="emit('page-size', $event)"
+        label="Page Size"
+      ></ht-select>
+    </div>
+
     <nav class="pagination-nav" aria-label="pagination">
-      <ul class="pagination">
+      <ul>
         <li>
           <button
             v-if="currentPage > 1"
@@ -137,11 +141,26 @@ const pages = computed(() => {
 });
 </script>
 
-<style lang="postcss">
-.pagination-nav {
-  width: max-content;
-}
+<style lang="postcss" scoped>
 .pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-4);
+  justify-content: space-between;
+}
+
+.page-size-select {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: var(--size-4);
+}
+
+.page-size-select :deep(select) {
+  width: 3.8rem;
+}
+
+.pagination-nav > ul {
   padding: 0;
   margin: 0;
   display: inline-flex;
@@ -149,40 +168,39 @@ const pages = computed(() => {
   align-items: center;
   list-style: none;
   gap: var(--size-3);
+}
+.page,
+.chevron {
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
 
-  .page,
-  .chevron {
-    display: grid;
-    place-items: center;
-    text-decoration: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    background-color: transparent;
-    border: none;
-    padding: 0;
-  }
+.chevron {
+  color: var(--ht-color-primary);
+}
 
-  .chevron {
-    color: var(--ht-color-primary);
-  }
+.chevron[aria-disabled='true'] {
+  cursor: not-allowed;
+  color: var(--ht-color-gray-1);
+}
 
-  .chevron[aria-disabled='true'] {
-    cursor: not-allowed;
-    color: var(--ht-color-gray-1);
-  }
+.page {
+  color: var(--ht-color-primary);
+  border-radius: var(--radius-round);
+  border: 1px solid var(--ht-color-primary);
+  aspect-ratio: 1;
+  width: 2.5em;
+}
 
-  .page {
-    color: var(--ht-color-primary);
-    border-radius: var(--radius-round);
-    border: 1px solid var(--ht-color-primary);
-    aspect-ratio: 1;
-    width: 2.5em;
-  }
-
-  .page[aria-current='page'] {
-    background-color: var(--ht-color-primary);
-    color: white;
-  }
+.page[aria-current='page'] {
+  background-color: var(--ht-color-primary);
+  color: white;
 }
 </style>

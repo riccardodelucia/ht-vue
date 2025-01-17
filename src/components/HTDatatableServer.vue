@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div class="datatable">
     <ht-datatable-search
       v-if="useSearch"
       :column-options="searchableColumns"
       v-model:search-column="searchColumn"
       v-model:search-value="searchValue"
     ></ht-datatable-search>
-    <div class="datatable-container">
-      <table class="datatable">
+    <div class="table-container">
+      <table>
         <thead>
           <template v-for="column in displayableColumns">
             <th scope="col" :aria-sort="column.sortDirection">
@@ -253,14 +253,20 @@ tr:nth-child(even) {
   background-color: var(--ht-surface-3);
 }
 
-.datatable {
+table {
   table-layout: auto;
   width: 100%;
   border-collapse: collapse;
 }
-.datatable-container {
+.table-container {
   max-width: 100%;
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.datatable {
+  display: grid;
+  grid-row-gap: var(--size-5);
+  max-width: 1000px;
 }
 </style>
