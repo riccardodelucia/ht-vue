@@ -1,6 +1,4 @@
 <template>
-  {{ searchValue }}
-  {{ searchColumn }}
   <ht-datatable-server
     :active-column-names="activeColumnNames"
     :table-data="paginatedData"
@@ -32,10 +30,8 @@
  */
 import { computed, ref, watch } from 'vue';
 
-import Fuse from 'fuse.js';
-
 const props = defineProps({
-  columns: { type: Array, required: true }, // columns must specify the column name 'name' and optionally a sortable parameter 'sortable' and a sort function 'sortFn'
+  columns: { type: Array, required: true },
   activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
@@ -43,7 +39,6 @@ const props = defineProps({
   searchAllColumnsLabel: { Type: String, default: 'All Columns' },
   useSort: { type: Boolean, default: true },
   usePagination: { type: Boolean, default: true },
-  // max number of pages to be displayed
   displayablePages: {
     type: Number,
     required: false,
@@ -52,47 +47,49 @@ const props = defineProps({
 
 /**
  * data processing is implemented as the following block processing: filtering -> sorting -> paginating
- * Each block is activated only if a corresponding parameter is valid (e.g. there is an active filter value).
+ * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
  * Computed properties are computed on top of each previous stage.
- * This implementation, although possibly not optimized, makes the code easier to understand.
+ * This implementation, although possibly not optimized, should make the code easier to understand.
  */
 
 ///////////////////////////////////////////////
 // Client side filtering
 const searchValue = ref('');
 const searchColumn = ref(props.searchAllColumnsLabel);
+const searchColumnIndex = computed(() => {
+  const columnIndex = props.columns.findIndex(
+    (column) => column.name === searchColumn.value,
+  );
+  if (columnIndex === -1)
+    throw new Error('The column you are saerching on cannot be found');
+  return columnIndex;
+});
 
 watch([searchColumn, searchValue], () => {
   resetPagination();
 });
 
 const filteredTableData = computed(() => {
-  if (!props.useSearch || !searchValue.value) return props.tableData;
+  if (!props.useSearch || !searchValue.value || searchColumnIndex.value === -1)
+    return props.tableData;
 
-  let candidates;
-  if (searchColumn.value === allColumnsLabel) {
-    // TODO
-    debugger;
-    candidates = props.tableData.reduce((acc, row) => {
-      acc.push(...row);
-      return acc;
-    }, []);
-    const fuse = new Fuse(candidates);
-
-    return;
+  if (searchColumn.value === props.searchAllColumnsLabel) {
+    return props.tableData.filter((row) =>
+      row.some(
+        (elem) =>
+          String(elem)
+            .toLocaleLowerCase()
+            .indexOf(searchValue.value.toLowerCase()) > -1,
+      ),
+    );
   }
 
-  const columnIndex = props.columns.findIndex(
-    (column) => column.name === searchColumn.value,
+  return props.tableData.filter(
+    (row) =>
+      String(row[searchColumnIndex.value])
+        .toLocaleLowerCase()
+        .indexOf(searchValue.value.toLowerCase()) > -1,
   );
-
-  candidates = props.tableData.map((row) => row[columnIndex]);
-
-  const fuse = new Fuse(candidates);
-  const resultIndexes = fuse
-    .search(searchValue.value)
-    .map(({ refIndex }) => refIndex);
-  return resultIndexes.map((index) => props.tableData[index]);
 });
 
 ///////////////////////////////////////////////

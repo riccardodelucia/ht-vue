@@ -63,7 +63,7 @@
  * client side and server side sorting+paginating solutions
  */
 
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref } from 'vue';
 const props = defineProps({
   /**
    * column_item_example = {
