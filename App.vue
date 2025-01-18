@@ -156,6 +156,17 @@
         :labels="columns.map(({ name }) => name)"
       ></ht-checkbox-multiple>
     </div>
+    <div>
+      <ht-modal v-model:show="showModal">
+        <div class="modal-content">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+          minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+          cum laudantium laborum minima similique eaque alias labore ea omnis
+          earum placeat?
+        </div>
+      </ht-modal>
+      <ht-checkbox v-model="showModal" label="Show Modal"></ht-checkbox>
+    </div>
   </section>
 </template>
 
@@ -200,6 +211,10 @@ const radioModelValue = ref(radioOptions[0]);
 // Input File
 const file = ref(null);
 const multipleFiles = ref([]);
+
+///////////////////////////////////
+// Modal Dialog
+const showModal = ref(false);
 
 ///////////////////////////////////
 // Table
@@ -573,5 +588,9 @@ h3 {
 
 .ht-layout-stack {
   --stack-space: 3em;
+}
+
+.modal-content {
+  width: 40rem;
 }
 </style>
