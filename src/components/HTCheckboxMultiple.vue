@@ -1,16 +1,18 @@
 <template>
-  <template v-for="(value, index) in values" :key="`checkbox-${index}`">
-    <input
-      :id="`${id}-${index}`"
-      v-bind="$attrs"
-      v-model="model"
-      :value="value"
-      type="checkbox"
-      :aria-invalid="errorMessage ? true : null"
-      :aria-describedby="errorMessage ? `input-error-${id}` : null"
-    />
-    <label :for="`${id}-${index}`">{{ labels[index] || value }}</label>
-  </template>
+  <div>
+    <template v-for="(value, index) in values" :key="`checkbox-${index}`">
+      <input
+        :id="`${id}-${index}`"
+        v-bind="$attrs"
+        v-model="model"
+        :value="value"
+        type="checkbox"
+        :aria-invalid="errorMessage ? true : null"
+        :aria-describedby="errorMessage ? `input-error-${id}` : null"
+      />
+      <label :for="`${id}-${index}`">{{ labels[index] || value }}</label>
+    </template>
+  </div>
   <span
     v-if="errorMessage"
     :id="`input-error-${id}`"
@@ -31,7 +33,7 @@ const props = defineProps({
   },
   labels: {
     type: Array,
-    default: null,
+    default: () => [],
   },
   errorMessage: {
     type: String,

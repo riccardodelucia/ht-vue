@@ -68,13 +68,11 @@
         :options="activeOptions"
       ></ht-select>
       <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
-      <ht-checkbox
-        v-for="option in multipleSelectOptions"
+
+      <ht-checkbox-multiple
         v-model="activeOptions"
-        name="select-group"
-        :value="option"
-        :label="option"
-      ></ht-checkbox>
+        :values="multipleSelectOptions"
+      ></ht-checkbox-multiple>
       <p>activeOptions: {{ activeOptions }}</p>
     </div>
     <div>
@@ -94,7 +92,7 @@
       <ht-input-file v-model="multipleFiles" label="File input"></ht-input-file>
       <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
     </div>
-    <div>
+    <div class="ht-layout-stack">
       <h2>Server side table</h2>
       <ht-datatable-server
         :active-column-names="activeColumnNames"
@@ -157,6 +155,7 @@
       ></ht-checkbox-multiple>
     </div>
     <div>
+      <h2>Modal Dialog</h2>
       <ht-modal v-model:show="showModal">
         <div class="modal-content">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis

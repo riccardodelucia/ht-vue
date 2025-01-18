@@ -1,14 +1,16 @@
 <template>
-  <template v-for="(value, index) in values" :key="`radio-${index}`">
-    <input
-      type="radio"
-      v-bind="$attrs"
-      :id="`${id}-${index}`"
-      :value="value"
-      v-model="model"
-    />
-    <label :for="`${id}-${index}`">{{ labels[index] || value }}</label>
-  </template>
+  <div>
+    <template v-for="(value, index) in values" :key="`radio-${index}`">
+      <input
+        type="radio"
+        v-bind="$attrs"
+        :id="`${id}-${index}`"
+        :value="value"
+        v-model="model"
+      />
+      <label :for="`${id}-${index}`">{{ labels[index] || value }}</label>
+    </template>
+  </div>
 </template>
 
 <script setup>
