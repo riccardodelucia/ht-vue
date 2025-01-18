@@ -31,33 +31,25 @@
       <ht-checkbox
         v-model="checkboxModelValue"
         label="Checkbox label"
-        :true-value="checkboxTrueValue"
-        :false-value="checkboxFalseValue"
+        :true-value="true"
+        :false-value="'false'"
       ></ht-checkbox>
       <p>checkboxModelValue: {{ checkboxModelValue }}</p>
     </div>
 
     <div>
-      <ht-checkbox
+      <ht-checkbox-multiple
         v-model="checkboxMultipleModelValue"
-        name="country"
-        value="italy"
-        label="Italy"
-      ></ht-checkbox>
-      <ht-checkbox
-        v-model="checkboxMultipleModelValue"
-        name="country"
-        value="france"
-        label="France"
-      ></ht-checkbox>
-
+        :values="['Italy', 'France']"
+        :labels="['Italy', 'France']"
+      ></ht-checkbox-multiple>
       <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
     </div>
     <div>
       <ht-toggle-switch
         v-model="toggleSwitchModelValue"
-        :true-value="toggleSwitchTrueValue"
-        :false-value="toggleSwitchFalseValue"
+        :true-value="1"
+        :false-value="{ value: 'false' }"
         label="Toggle Switch label"
       ></ht-toggle-switch>
       <p>toggleSwitchModelValue: {{ toggleSwitchModelValue }}</p>
@@ -87,8 +79,8 @@
     </div>
     <div>
       <ht-radio-group
-        :options="radioOptions"
-        :option-labels="radioLabels"
+        :values="radioOptions"
+        :labels="radioLabels"
         v-model="radioModelValue"
         name="test"
       ></ht-radio-group>
@@ -158,13 +150,11 @@
           >
         </template>
       </ht-datatable-client>
-      <ht-checkbox
-        v-for="column in columns"
+      <ht-checkbox-multiple
         v-model="activeColumnNames"
-        name="column-group"
-        :value="column.name"
-        :label="column.name"
-      ></ht-checkbox>
+        :values="columns.map(({ name }) => name)"
+        :labels="columns.map(({ name }) => name)"
+      ></ht-checkbox-multiple>
     </div>
   </section>
 </template>
@@ -191,16 +181,14 @@ const activeOptions = ref(multipleSelectOptions);
 
 ///////////////////////////////////
 // Checkbox
-const checkboxTrueValue = true;
-const checkboxFalseValue = null;
-const checkboxModelValue = ref(checkboxFalseValue);
+
+const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
 
 ///////////////////////////////////
 // Toggle Switch
-const toggleSwitchTrueValue = 1;
-const toggleSwitchFalseValue = { value: 'false' };
-const toggleSwitchModelValue = ref(toggleSwitchTrueValue);
+
+const toggleSwitchModelValue = ref(1);
 
 ///////////////////////////////////
 // Radio Group

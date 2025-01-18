@@ -2,14 +2,14 @@
   <input
     :id="id"
     role="switch"
-    v-model="toggle"
+    v-model="model"
     :true-value="trueValue"
     :false-value="falseValue"
     type="checkbox"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `input-error-${id}` : null"
   />
-  <label :for="id">{{ toggle }}</label>
+  <label :for="id">{{ model }}</label>
   <span
     v-if="errorMessage"
     :id="`input-error-${uuid}`"
@@ -21,19 +21,14 @@
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
-import { ref, watch } from 'vue';
 
 const props = defineProps({
-  modelValue: {
-    type: [String, Number, Boolean, Object, Array],
-    required: true,
-  },
   trueValue: {
-    type: [String, Number, Boolean, Object, Array],
+    type: [String, Number, Boolean, Object, Array, null],
     default: () => true,
   },
   falseValue: {
-    type: [String, Number, Boolean, Object, Array],
+    type: [String, Number, Boolean, Object, Array, null],
     default: () => false,
   },
   label: {
@@ -50,23 +45,7 @@ const props = defineProps({
     default: () => uuidv4(),
   },
 });
-
-const emit = defineEmits(['update:modelValue']);
-
-const toggle = ref(
-  props.modelValue === props.trueValue ? props.trueValue : props.falseValue,
-);
-
-/**
- * For details about the reason behind the use of watch, look at ht-select
- */
-watch(
-  toggle,
-  () => {
-    emit('update:modelValue', toggle.value);
-  },
-  { immediate: false },
-);
+const model = defineModel();
 </script>
 
 <style lang="postcss" scoped>

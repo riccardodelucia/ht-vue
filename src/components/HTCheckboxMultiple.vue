@@ -1,31 +1,41 @@
 <template>
-  <template v-for="(value, index) in values" :key="`radio-${index}`">
+  <template v-for="(value, index) in values" :key="`checkbox-${index}`">
     <input
-      type="radio"
-      v-bind="$attrs"
       :id="`${id}-${index}`"
-      :value="value"
+      v-bind="$attrs"
       v-model="model"
+      :value="value"
+      type="checkbox"
+      :aria-invalid="errorMessage ? true : null"
+      :aria-describedby="errorMessage ? `input-error-${id}` : null"
     />
     <label :for="`${id}-${index}`">{{ labels[index] || value }}</label>
   </template>
+  <span
+    v-if="errorMessage"
+    :id="`input-error-${id}`"
+    class="ht-input-error-message"
+    aria-live="assertive"
+  >
+    {{ errorMessage }}
+  </span>
 </template>
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 
 const props = defineProps({
-  modelValue: {
-    type: [Object, String, Boolean, Number],
-    required: true,
-  },
   values: {
-    required: true,
     type: Array,
+    default: () => [],
   },
   labels: {
     type: Array,
-    default: () => [],
+    default: null,
+  },
+  errorMessage: {
+    type: String,
+    default: null,
   },
   // SSR only
   id: {
@@ -44,7 +54,6 @@ input {
 }
 label {
   margin-left: var(--size-1);
-  cursor: pointer;
 }
 input:not(:first-child) {
   margin-left: var(--size-4);
