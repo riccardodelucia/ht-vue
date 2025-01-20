@@ -31,10 +31,6 @@ const props = defineProps({
     type: [String, Number, Boolean, Object, Array, null],
     default: () => false,
   },
-  label: {
-    type: String,
-    default: null,
-  },
   errorMessage: {
     type: String,
     default: null,
