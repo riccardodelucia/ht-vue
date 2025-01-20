@@ -7,8 +7,8 @@
     :available-pages="availablePages"
     :displayable-pages="displayablePages"
     v-model:page="currentPage"
-    v-model:search-value="searchValue"
-    v-model:search-column="searchColumn"
+    @search-value="setSearchValue"
+    @search-column="setSearchColumn"
     :search-all-columns-label="searchAllColumnsLabel"
     :use-search="useSearch"
     :use-sort="useSort"
@@ -28,7 +28,7 @@
  * Note: ht-table-client is implemented as a wrapper around ht-table-server component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
  * over props.tableData
  */
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   columns: { type: Array, required: true },
@@ -36,7 +36,7 @@ const props = defineProps({
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
-  searchAllColumnsLabel: { Type: String, default: 'All Columns' },
+  searchAllColumnsLabel: { type: String, default: 'All' },
   useSort: { type: Boolean, default: true },
   usePagination: { type: Boolean, default: true },
   displayablePages: {
@@ -56,6 +56,7 @@ const props = defineProps({
 // Client side filtering
 const searchValue = ref('');
 const searchColumn = ref(props.searchAllColumnsLabel);
+
 const searchColumnIndex = computed(() => {
   const columnIndex = props.columns.findIndex(
     (column) => column.name === searchColumn.value,
@@ -65,9 +66,17 @@ const searchColumnIndex = computed(() => {
   return columnIndex;
 });
 
-watch([searchColumn, searchValue], () => {
+const setSearchValue = (value) => {
+  searchValue.value = value;
   resetPagination();
-});
+  console.log(value);
+};
+
+const setSearchColumn = (column) => {
+  searchColumn.value = column;
+  resetPagination();
+  console.log(column);
+};
 
 const filteredTableData = computed(() => {
   if (!props.useSearch || !searchValue.value || searchColumnIndex.value === -1)

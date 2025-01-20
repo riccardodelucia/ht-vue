@@ -95,7 +95,6 @@
     <div class="ht-layout-stack">
       <h2>Server side table</h2>
       <ht-datatable-server
-        :active-column-names="activeColumnNames"
         :table-data="tableData"
         :columns="columns"
         row-header="Italy"
@@ -141,7 +140,7 @@
         :displayable-pages="3"
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps.column.name === 'Action'"
+          <template v-if="slotProps?.column.name === 'Action'"
             ><button type="button">
               Action: {{ slotProps.dataValue }}
             </button></template

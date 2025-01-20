@@ -3,8 +3,8 @@
     <ht-datatable-search
       v-if="useSearch"
       :column-options="searchableColumns"
-      v-model:search-column="searchColumn"
-      v-model:search-value="searchValue"
+      @search-column="$emit('search-column', $event)"
+      @search-value="$emit('search-value', $event)"
     ></ht-datatable-search>
     <div class="table-container">
       <table>
@@ -29,8 +29,7 @@
           <tr v-for="rowIndex in nRows">
             <template v-for="column in displayableColumns">
               <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
-             custom HTML-->
-
+             custom HTML -->
               <th v-if="column.name === rowHeader" scope="row">
                 <slot
                   :column="column"
@@ -77,12 +76,11 @@ const props = defineProps({
    *  name: String //the name to describe the column
    *  sortable: Boolean // optional, it indicates whether the column is sortable
    *  sortFn: Function // optional, it specifies a sorting logic for the column, to adapt to the column values type. Default logic is used otherwise (see sort function)
-   *  fixed: Boolean // optional, it enables/ disables the possibility to hide the column, irrespectively of the activeColumnNames props configuration
    * }
    *
    */
   columns: { type: Array, required: true },
-  activeColumnNames: { type: Array, required: true },
+  activeColumnNames: { type: Array, default: null },
   rowHeader: { type: String, default: null },
   /**
    *  Note: tableData must provide a value for every column cell, even cells that have a custom HTML rendered slot.
@@ -90,7 +88,7 @@ const props = defineProps({
    */
   tableData: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
-  searchAllColumnsLabel: { Type: String, default: 'All Columns' },
+  searchAllColumnsLabel: { type: String, default: 'All Columns' },
   useSort: { type: Boolean, default: true },
   usePagination: { type: Boolean, default: true },
   displayablePages: {
@@ -103,12 +101,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['sort', 'page-size']);
+const emit = defineEmits([
+  'sort',
+  'page-size',
+  'search-column',
+  'search-value',
+]);
 
 const page = defineModel('page', { type: Number });
-
-const searchColumn = defineModel('search-column', { type: String });
-const searchValue = defineModel('search-value', { type: String });
 
 /////////////////////////////////////////////////////
 // General logic
@@ -176,8 +176,9 @@ const sortableColumns = computed(() => {
 
 /////////////////////////////////////////////////////
 const displayableColumns = computed(() => {
-  return sortableColumns.value.filter(
-    (column) => props.activeColumnNames.includes(column.name), // || column.fixed,
+  if (props.activeColumnNames === null) return sortableColumns.value;
+  return sortableColumns.value.filter((column) =>
+    props.activeColumnNames.includes(column.name),
   );
 });
 
@@ -267,6 +268,6 @@ table {
 .datatable {
   display: grid;
   grid-row-gap: var(--size-5);
-  max-width: 1000px;
+  max-width: 100%;
 }
 </style>

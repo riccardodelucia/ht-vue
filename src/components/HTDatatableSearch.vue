@@ -2,27 +2,28 @@
   <div class="datatable-search">
     <ht-search-bar
       label="Search data"
-      @search="(value) => (searchValue = value)"
+      @search="$emit('search-value', $event)"
     ></ht-search-bar>
     <div class="search-select">
       <ht-select
-        v-model="searchColumn"
+        :modelValue="searchColumn"
         :options="columnOptions"
-        :showDisabledOption="false"
+        :show-disabled-option="false"
         label="Search By"
+        @update:modelValue="$emit('search-column', $event)"
       ></ht-select>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 const props = defineProps({
   columnOptions: { type: Array, required: true },
-  // if the columns array already contains a column named 'All Columns', we give the possibility to override the all columns label
 });
 
-const searchValue = defineModel('search-value');
-const searchColumn = defineModel('search-column');
+defineEmits(['search-column', 'search-value']);
+const searchColumn = ref(props.columnOptions[0]);
 </script>
 
 <style lang="postcss" scoped>
