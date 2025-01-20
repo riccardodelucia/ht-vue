@@ -57,15 +57,6 @@ const props = defineProps({
 const searchValue = ref('');
 const searchColumn = ref(props.searchAllColumnsLabel);
 
-const searchColumnIndex = computed(() => {
-  const columnIndex = props.columns.findIndex(
-    (column) => column.name === searchColumn.value,
-  );
-  if (columnIndex === -1)
-    throw new Error('The column you are saerching on cannot be found');
-  return columnIndex;
-});
-
 const setSearchValue = (value) => {
   searchValue.value = value;
   resetPagination();
@@ -79,8 +70,7 @@ const setSearchColumn = (column) => {
 };
 
 const filteredTableData = computed(() => {
-  if (!props.useSearch || !searchValue.value || searchColumnIndex.value === -1)
-    return props.tableData;
+  if (!props.useSearch || !searchValue.value) return props.tableData;
 
   if (searchColumn.value === props.searchAllColumnsLabel) {
     return props.tableData.filter((row) =>
@@ -93,9 +83,15 @@ const filteredTableData = computed(() => {
     );
   }
 
+  const searchColumnIndex = props.columns.findIndex(
+    (column) => column.name === searchColumn.value,
+  );
+  if (searchColumnIndex === -1)
+    throw new Error('The column you are searching on cannot be found');
+
   return props.tableData.filter(
     (row) =>
-      String(row[searchColumnIndex.value])
+      String(row[searchColumnIndex])
         .toLocaleLowerCase()
         .indexOf(searchValue.value.toLowerCase()) > -1,
   );

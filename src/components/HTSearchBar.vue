@@ -1,33 +1,37 @@
 <template>
-  <search class="search-bar">
-    <form @submit.prevent="onSubmit">
-      <label :for="uuid" class="ht-visually-hidden">
-        {{ label }}
-      </label>
-      <input
-        :id="uuid"
-        v-model="model"
-        :placeholder="label"
-        :list="listId"
-        type="search"
-      />
-      <button type="submit" icon-type="search" label="Submit Search">
-        <VueFeather type="search" width="5"></VueFeather>
-      </button>
-      <datalist :id="listId">
-        <option
-          v-for="(hint, id) in hints"
-          :key="`hint-${id}`"
-          :value="hint"
-        ></option>
-      </datalist>
-    </form>
-  </search>
+  <div class="search-bar">
+    <label :for="uuid" class="ht-visually-hidden">
+      {{ label }}
+    </label>
+    <input
+      :id="uuid"
+      v-model="model"
+      :placeholder="label"
+      :list="listId"
+      type="search"
+    />
+    <button
+      type="button"
+      icon-type="search"
+      label="Submit Search"
+      @click="onClick"
+    >
+      <VueFeather type="search" width="5"></VueFeather>
+    </button>
+    <datalist :id="listId">
+      <option
+        v-for="(hint, id) in hints"
+        :key="`hint-${id}`"
+        :value="hint"
+      ></option>
+    </datalist>
+  </div>
 </template>
 
 <script setup>
 /**
- * Note: Vue still doesn't recognise native HTML search element. This causes many warning on the console during development, which can be ignored
+ * Note: Vue still doesn't recognise native HTML search element. This causes many warning on the console during development.
+ * Note: accessibility of this component is not perfect.
  */
 import { v4 as uuidv4 } from 'uuid';
 
@@ -44,25 +48,22 @@ const emit = defineEmits(['search']);
 const uuid = uuidv4();
 const listId = uuidv4();
 
-const onSubmit = () => {
+const onClick = () => {
   emit('search', model.value);
 };
 </script>
 
 <style lang="postcss" scoped>
 /**
-  Note: currently, there no way to style a datalist with pure CSS. The approach to style it requires a bunch of work with JS, which here is omitted for simplicity
+  Note: currently, there no way to style a datalist with pure CSS. The approach to style it requires a bunch of work with JS, which here is omitted for simplicity.
 */
-.search-bar {
-  display: inline-block;
-}
 
-.search-bar form {
-  display: flex;
+.search-bar {
+  display: inline-flex;
   flex-wrap: nowrap;
 }
 
-input {
+input[type='search'] {
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
 }
