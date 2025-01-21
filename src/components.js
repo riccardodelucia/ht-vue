@@ -9,7 +9,7 @@ export { default as HTDatatableSearch } from './components/HTDatatableSearch.vue
 export { default as HTDatatableServer } from './components/HTDatatableServer.vue';
 export { default as HTFooter } from './components/HTFooter.vue';
 export { default as HTFormProgressBar } from './components/HTFormProgressBar.vue';
-export { default as HTHeaderWeb } from './components/HTHeaderWeb.vue';
+export { default as HTHeader } from './components/HTHeader.vue';
 export { default as HTInput } from './components/HTInput.vue';
 export { default as HTInputFile } from './components/HTInputFile.vue';
 export { default as HTProgress } from './components/HTProgress.vue';
