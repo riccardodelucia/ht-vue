@@ -65,6 +65,7 @@ export default {
 
 .sidenav-link > a {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   padding: var(--size-2);
   gap: var(--size-3);
