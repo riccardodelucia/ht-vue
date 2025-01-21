@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <a href="https://humantechnopole.it/en/" target="_blank">
-      <img :src="htLogoWhite" alt="HT logo" class="ht-logo" />
+      <img :src="htLogoWhite" alt="HT header logo" class="header-logo" />
     </a>
     <template v-if="$slots.default">
       <HTButtonIcon
@@ -82,7 +82,7 @@ const onClick = () => {
   top: 1.5em;
 }
 
-.ht-logo {
+.header-logo {
   height: 2rem;
   margin-block: var(--size-4);
 }

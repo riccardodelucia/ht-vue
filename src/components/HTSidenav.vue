@@ -1,7 +1,10 @@
 <template>
   <nav class="sidenav">
-    <a class="logo" href="https://humantechnopole.it/en/" target="_blank"
-      ><img :src="htLogoWhite" alt="HT logo"
+    <a
+      class="sidenav-logo"
+      href="https://humantechnopole.it/en/"
+      target="_blank"
+      ><img :src="htLogoWhite" alt="HT sidenav logo"
     /></a>
     <h2>{{ title }}</h2>
     <ul v-if="links.length > 0" class="sidenav-list">
@@ -50,7 +53,7 @@ export default {
   }
 }
 
-.logo {
+.sidenav-logo {
   display: block;
   width: 9rem;
   padding-inline: var(--size-3);
