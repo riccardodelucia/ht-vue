@@ -1,13 +1,13 @@
 <template>
   <footer class="footer">
     <slot></slot>
-    <section>
+    <div class="footer-standard-content">
       <img :src="htLogoWhite" alt="HT logo" />
       <address>
         Fondazione Human Technopole - Viale Rita Levi-Montalcini, 1 - Area MIND
         – Cargo 6 - 20157 Milano Italy - C.F. 97821360159
       </address>
-    </section>
+    </div>
   </footer>
 </template>
 
@@ -33,7 +33,7 @@ export default {
   color: white;
   padding: var(--size-3);
 
-  section:last-child {
+  .footer-standard-content {
     display: grid;
     place-items: center;
 
@@ -42,10 +42,9 @@ export default {
     img {
       width: 15rem;
     }
-  }
-
-  address {
-    text-align: center;
+    address {
+      text-align: center;
+    }
   }
 }
 </style>
