@@ -4,19 +4,16 @@
   </progress>
 </template>
 
-<script>
-export default {
-  name: 'HTProgress',
-  props: {
-    label: {
-      type: String,
-      default: '',
-    },
-    max: { type: Number, default: 100 },
-    value: {
-      type: Number,
-      default: 0,
-    },
+<script setup>
+defineProps({
+  label: {
+    type: String,
+    default: '',
   },
-};
+  max: { type: Number, default: 100 },
+  value: {
+    type: Number,
+    default: 0,
+  },
+});
 </script>

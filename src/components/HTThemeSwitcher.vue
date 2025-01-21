@@ -7,7 +7,7 @@
   ></HTButtonIcon>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import HTButtonIcon from './HTButtonIcon.vue';
 
@@ -24,32 +24,25 @@ function computeInitialTheme() {
   return 'light';
 }
 
-export default {
-  name: 'HTThemeSwitcher',
-  components: { HTButtonIcon },
-  setup() {
-    const currentTheme = ref(computeInitialTheme());
-    setTheme(currentTheme.value);
+const currentTheme = ref(computeInitialTheme());
+setTheme(currentTheme.value);
 
-    function setTheme(theme) {
-      if (theme === 'light') {
-        document.documentElement.classList.remove('ht-darkmode');
-      } else {
-        document.documentElement.classList.add('ht-darkmode');
-      }
-      localStorage.setItem('theme', theme);
-    }
+function setTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.classList.remove('ht-darkmode');
+  } else {
+    document.documentElement.classList.add('ht-darkmode');
+  }
+  localStorage.setItem('theme', theme);
+}
 
-    function toggleTheme(theme) {
-      if (theme === 'light') return 'dark';
-      return 'light';
-    }
+function toggleTheme(theme) {
+  if (theme === 'light') return 'dark';
+  return 'light';
+}
 
-    const onClick = () => {
-      currentTheme.value = toggleTheme(currentTheme.value);
-      setTheme(currentTheme.value);
-    };
-    return { onClick, currentTheme };
-  },
+const onClick = () => {
+  currentTheme.value = toggleTheme(currentTheme.value);
+  setTheme(currentTheme.value);
 };
 </script>

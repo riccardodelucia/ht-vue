@@ -20,21 +20,13 @@
   </nav>
 </template>
 
-<script>
+<script setup>
 import htLogoWhite from '../assets/ht-logo-white.svg';
 
-export default {
-  name: 'HTSidenav',
-  props: {
-    title: { type: String, default: 'Test' },
-    links: { type: Array, default: () => [] },
-  },
-  setup() {
-    return {
-      htLogoWhite,
-    };
-  },
-};
+defineProps({
+  title: { type: String, default: 'Test' },
+  links: { type: Array, default: () => [] },
+});
 </script>
 
 <style lang="postcss" scoped>

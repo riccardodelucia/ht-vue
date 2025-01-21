@@ -13,20 +13,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HTToast',
-  props: {
-    type: { type: String, required: true },
-    title: { type: String, required: true },
-    toastId: { type: [String, Number], required: true },
-  },
-  emits: ['close-notification'],
-  setup(props, { emit }) {
-    function onClick() {
-      emit('close-notification', props.toastId);
-    }
-    return { onClick };
-  },
+<script setup>
+const props = defineProps({
+  type: { type: String, required: true },
+  title: { type: String, required: true },
+  toastId: { type: [String, Number], required: true },
+});
+const emit = defineEmits(['close-notification']);
+const onClick = () => {
+  emit('close-notification', props.toastId);
 };
 </script>

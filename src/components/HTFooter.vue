@@ -11,17 +11,8 @@
   </footer>
 </template>
 
-<script>
+<script setup>
 import htLogoWhite from '../assets/ht-logo-white.svg';
-
-export default {
-  name: 'HTFooter',
-  data() {
-    return {
-      htLogoWhite,
-    };
-  },
-};
 </script>
 
 <style lang="postcss" scoped>

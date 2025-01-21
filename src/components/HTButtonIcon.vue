@@ -5,10 +5,25 @@
   </button>
 </template>
 
-<script>
+<script setup>
 import VueFeather from 'vue-feather';
 
-export default {
+defineProps({
+  iconType: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    default: '',
+  },
+  width: {
+    type: Number,
+    default: 25,
+  },
+});
+
+/* export default {
   name: 'HTButtonIcon',
   components: { VueFeather },
   props: {
@@ -25,5 +40,5 @@ export default {
       default: 25,
     },
   },
-};
+}; */
 </script>

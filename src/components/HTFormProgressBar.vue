@@ -28,38 +28,35 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import HTProgress from './HTProgress.vue';
+import { computed } from 'vue';
 
-export default {
-  name: 'HTFormProgressBar',
-  components: { HTProgress },
-  props: {
-    currentStep: {
-      type: Number,
-      required: true,
-    },
-    steps: {
-      type: Array,
-      required: true,
-      validator(value) {
-        return value.length > 1;
-      },
+const props = defineProps({
+  currentStep: {
+    type: Number,
+    required: true,
+  },
+  steps: {
+    type: Array,
+    required: true,
+    validator(value) {
+      return value.length > 1;
     },
   },
-  computed: {
-    nSteps() {
-      return this.steps.length;
-    },
-    progressPercentage() {
-      const nIntervals = this.nSteps - 1;
+});
 
-      const stepWidthPercentage = 100 / nIntervals;
+const nSteps = computed(() => {
+  return props.steps.length;
+});
 
-      return this.currentStep * stepWidthPercentage;
-    },
-  },
-};
+const progressPercentage = computed(() => {
+  const nIntervals = nSteps.value - 1;
+
+  const stepWidthPercentage = 100 / nIntervals;
+
+  return props.currentStep * stepWidthPercentage;
+});
 </script>
 
 <style lang="postcss" scoped>

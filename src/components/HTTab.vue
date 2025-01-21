@@ -30,25 +30,21 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HTTab',
-  props: {
-    tabList: {
-      type: Array,
-      required: true,
-    },
+<script setup>
+import { ref } from 'vue';
+defineProps({
+  tabList: {
+    type: Array,
+    required: true,
   },
-  emits: ['tab-selected'],
-  data() {
-    return { selected: 0 };
-  },
-  methods: {
-    onClick(idx) {
-      this.selected = idx;
-      this.$emit('tab-selected', idx);
-    },
-  },
+});
+
+const emit = defineEmits(['tab-selected']);
+const selected = ref(0);
+
+const onClick = (idx) => {
+  selected.value = idx;
+  emit('tab-selected', idx);
 };
 </script>
 

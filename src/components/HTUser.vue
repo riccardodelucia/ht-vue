@@ -36,40 +36,27 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, inject } from 'vue';
 import HTButtonIcon from './HTButtonIcon.vue';
 import VueFeather from 'vue-feather';
 
-export default {
-  name: 'HTUser',
-  components: { HTButtonIcon, VueFeather },
-  setup() {
-    const open = ref(false);
-    const auth = inject('auth');
+const open = ref(false);
+const auth = inject('auth');
 
-    const onClickOutside = () => {
-      open.value = false;
-    };
-
-    const userName = computed(() => {
-      const maxLength = 20;
-      const name =
-        auth.userProfile?.firstName || auth.userProfile?.username || 'user';
-
-      return name.length > maxLength
-        ? name.substring(0, maxLength - 3).concat('...')
-        : name;
-    });
-
-    return {
-      auth,
-      open,
-      onClickOutside,
-      userName,
-    };
-  },
+const onClickOutside = () => {
+  open.value = false;
 };
+
+const userName = computed(() => {
+  const maxLength = 20;
+  const name =
+    auth.userProfile?.firstName || auth.userProfile?.username || 'user';
+
+  return name.length > maxLength
+    ? name.substring(0, maxLength - 3).concat('...')
+    : name;
+});
 </script>
 
 <style lang="postcss" scoped>

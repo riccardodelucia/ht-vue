@@ -3,11 +3,11 @@
   <div class="accordion">
     <component :is="`h${headingLevel}`">
       <button
-        :id="uuidButton"
+        :id="idButton"
         class="ht-reset"
         type="button"
         :aria-expanded="isExpanded"
-        :aria-controls="uuidPanel"
+        :aria-controls="idPanel"
         @click="onClick"
       >
         <!-- Use a <span> element to add classes for styling text -->
@@ -16,10 +16,10 @@
       </button>
     </component>
     <div
-      :id="uuidPanel"
+      :id="idPanel"
       class="panel"
       role="region"
-      :aria-labelledby="uuidButton"
+      :aria-labelledby="idButton"
       :aria-hidden="!isExpanded"
     >
       <div>
@@ -29,28 +29,29 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { ref } from 'vue';
 import VueFeather from 'vue-feather';
 
-export default {
-  name: 'HTAccordion',
-  components: { VueFeather },
-  props: {
-    headingLevel: { type: Number, default: 2 },
+defineProps({
+  headingLevel: { type: Number, default: 2 },
+  // SSR only
+  idButton: {
+    type: String,
+    default: () => uuidv4(),
   },
-  setup() {
-    const isExpanded = ref(false);
-    const uuidButton = uuidv4();
-    const uuidPanel = uuidv4();
-
-    const onClick = () => {
-      isExpanded.value = !isExpanded.value;
-    };
-
-    return { isExpanded, onClick, uuidButton, uuidPanel };
+  // SSR only
+  idPanel: {
+    type: String,
+    default: () => uuidv4(),
   },
+});
+
+const isExpanded = ref(false);
+
+const onClick = () => {
+  isExpanded.value = !isExpanded.value;
 };
 </script>
 
