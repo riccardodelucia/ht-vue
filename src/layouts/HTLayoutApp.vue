@@ -1,8 +1,7 @@
 <template>
-  <div class="app-layout">
+  <div class="container">
     <header class="app-header">
-      <HTButtonIcon
-        id="toggle-sidenav"
+      <ht-button-icon
         class="toggle-sidenav"
         icon-type="menu"
         type="button"
@@ -11,57 +10,46 @@
         :aria-expanded="isExpanded"
         @click="onClick"
       >
-      </HTButtonIcon>
+      </ht-button-icon>
       <slot name="header"></slot>
     </header>
-    <HTSidenav
+    <ht-sidenav
       id="sidenav"
       class="sidenav"
-      aria-labelledby="toggle-sidenav"
       :aria-hidden="!isExpanded"
       :title="sidenavTitle"
+      :links="sidenavLinks"
     >
-      <template #sidenav-list>
-        <slot name="sidenav-list"></slot>
+      <template #sidenav-content>
+        <slot name="sidenav-content"></slot>
       </template>
-    </HTSidenav>
-    <main id="main" class="main">
+    </ht-sidenav>
+    <main class="main">
       <slot></slot>
     </main>
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
-import HTButtonIcon from '../components/HTButtonIcon.vue';
-import HTSidenav from '../components/HTSidenav.vue';
 
-import menuLogo from '../assets/icons/menu-icon.svg';
+defineProps({
+  sidenavTitle: { type: String, default: '' },
+  sidenavLinks: { type: Array, default: () => [] },
+});
 
-export default {
-  name: 'HTLayoutApp',
-  components: { HTButtonIcon, HTSidenav },
-  props: { sidenavTitle: { type: String, default: '' } },
-  setup() {
-    const isExpanded = ref(true);
+const isExpanded = ref(true);
 
-    const onClick = () => {
-      isExpanded.value = !isExpanded.value;
-    };
-
-    return {
-      onClick,
-      isExpanded,
-      menuLogo,
-    };
-  },
+const onClick = () => {
+  isExpanded.value = !isExpanded.value;
 };
 </script>
 
 <style lang="postcss" scoped>
-.app-layout {
+.container {
   display: grid;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
 
   grid-template-columns: auto 1fr;
@@ -78,9 +66,9 @@ export default {
   min-height: 4rem;
   background-color: var(--surface-2);
   display: flex;
-  justify-content: space-between;
   align-items: center;
 
+  // colored line below header
   &::after {
     content: '';
     height: var(--size-1);
@@ -93,16 +81,6 @@ export default {
     right: 0;
     position: absolute;
   }
-}
-
-.toggle-sidenav {
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  background-color: transparent;
-  color: var(--ht-text-color-1);
-  display: flex;
-  gap: var(--size-2);
 }
 
 .sidenav {
