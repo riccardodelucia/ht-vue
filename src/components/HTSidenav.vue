@@ -27,7 +27,7 @@ export default {
   name: 'HTSidenav',
   props: {
     title: { type: String, default: 'Test' },
-    links: { type: Array, default: [] },
+    links: { type: Array, default: () => [] },
   },
   setup() {
     return {

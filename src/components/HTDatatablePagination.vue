@@ -8,45 +8,47 @@
         label="Page Size"
       ></ht-select>
     </div>
+    <div class="pagination-controls">
+      <span>Page {{ currentPage }} of {{ availablePages }}</span>
+      <nav class="pagination-nav" aria-label="pagination">
+        <ul>
+          <li>
+            <button
+              v-if="currentPage > 1"
+              class="chevron"
+              @click="setCurrentPage(currentPage - 1)"
+            >
+              <VueFeather type="chevron-left"></VueFeather>
+            </button>
+            <button v-else class="chevron" aria-disabled="true">
+              <VueFeather type="chevron-left"></VueFeather>
+            </button>
+          </li>
 
-    <nav class="pagination-nav" aria-label="pagination">
-      <ul>
-        <li>
-          <button
-            v-if="currentPage > 1"
-            class="chevron"
-            @click="setCurrentPage(currentPage - 1)"
-          >
-            <VueFeather type="chevron-left"></VueFeather>
-          </button>
-          <button v-else class="chevron" aria-disabled="true">
-            <VueFeather type="chevron-left"></VueFeather>
-          </button>
-        </li>
-
-        <li v-for="page in pages" :key="page">
-          <button
-            class="page number-indicator"
-            :aria-current="page === currentPage ? 'page' : null"
-            @click="setCurrentPage(page)"
-          >
-            {{ page }}
-          </button>
-        </li>
-        <li>
-          <button
-            v-if="currentPage < availablePages"
-            class="chevron"
-            @click="setCurrentPage(currentPage + 1)"
-          >
-            <VueFeather type="chevron-right"></VueFeather>
-          </button>
-          <button v-else class="chevron" aria-disabled="true">
-            <VueFeather type="chevron-right"></VueFeather>
-          </button>
-        </li>
-      </ul>
-    </nav>
+          <li v-for="page in pages" :key="page">
+            <button
+              class="page number-indicator"
+              :aria-current="page === currentPage ? 'page' : null"
+              @click="setCurrentPage(page)"
+            >
+              {{ page }}
+            </button>
+          </li>
+          <li>
+            <button
+              v-if="currentPage < availablePages"
+              class="chevron"
+              @click="setCurrentPage(currentPage + 1)"
+            >
+              <VueFeather type="chevron-right"></VueFeather>
+            </button>
+            <button v-else class="chevron" aria-disabled="true">
+              <VueFeather type="chevron-right"></VueFeather>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </template>
 
@@ -142,8 +144,14 @@ const pages = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
 .pagination {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--size-4);
   justify-content: space-between;

@@ -33,8 +33,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { computed, watch } from 'vue';
 
-import { labelize } from '../utilities.js';
-
 const props = defineProps({
   label: { type: String, default: null },
   modelValue: {

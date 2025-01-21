@@ -26,7 +26,7 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 
-const props = defineProps({
+defineProps({
   values: {
     type: Array,
     default: () => [],

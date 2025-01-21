@@ -35,7 +35,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 
-const props = defineProps({
+defineProps({
   label: { type: String, required: true },
   hints: { type: Array, default: () => [] },
 });

@@ -183,7 +183,6 @@ const selectOptionLabels = ['A', 'B'];
 const selectModelValue = ref(null);
 
 const multipleSelectOptions = ['A', 'B', 'C'];
-const multipleSelectOptionLabels = ['A', 'B', 'C'];
 const multipleSelectModelValue = ref([]);
 
 const activeOptions = ref(multipleSelectOptions);

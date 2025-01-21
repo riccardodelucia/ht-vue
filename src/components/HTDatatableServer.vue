@@ -9,7 +9,10 @@
     <div class="table-container">
       <table>
         <thead>
-          <template v-for="column in displayableColumns">
+          <template
+            v-for="(column, idx) in displayableColumns"
+            :key="`thead-th-${idx}`"
+          >
             <th scope="col" :aria-sort="column.sortDirection">
               <button
                 v-if="column.sortDirection"
@@ -26,26 +29,29 @@
         </thead>
         <tbody>
           <!-- with this syntax, the Vue index starts from 1-->
-          <tr v-for="rowIndex in nRows">
-            <template v-for="column in displayableColumns">
+          <tr v-for="rowIdx in nRows" :key="`tbody-row-${rowIdx}`">
+            <template
+              v-for="(column, columnIdx) in displayableColumns"
+              :key="`tbody-column-${columnIdx}`"
+            >
               <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
              custom HTML -->
               <th v-if="column.name === rowHeader" scope="row">
                 <slot
                   :column="column"
                   :columnIndex="column.columnIndex"
-                  :rowIndex="rowIndex"
-                  :dataValue="tableData[rowIndex - 1][column.columnIndex]"
-                  >{{ tableData[rowIndex - 1][column.columnIndex] }}</slot
+                  :rowIndex="rowIdx"
+                  :dataValue="tableData[rowIdx - 1][column.columnIndex]"
+                  >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
                 >
               </th>
               <td v-else>
                 <slot
                   :column="column"
                   :columnIndex="column.columnIndex"
-                  :rowIndex="rowIndex"
-                  :dataValue="tableData[rowIndex - 1][column.columnIndex]"
-                  >{{ tableData[rowIndex - 1][column.columnIndex] }}</slot
+                  :rowIndex="rowIdx"
+                  :dataValue="tableData[rowIdx - 1][column.columnIndex]"
+                  >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
                 >
               </td>
             </template>

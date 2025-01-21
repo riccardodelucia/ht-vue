@@ -5,6 +5,7 @@
     v-model="model"
     :true-value="trueValue"
     :false-value="falseValue"
+    v-bind="$attrs"
     type="checkbox"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `input-error-${id}` : null"
@@ -22,7 +23,7 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 
-const props = defineProps({
+defineProps({
   trueValue: {
     type: [String, Number, Boolean, Object, Array, null],
     default: () => true,
