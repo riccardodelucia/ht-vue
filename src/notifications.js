@@ -27,7 +27,7 @@ export function sendSuccessNotification({
       title,
       message,
     },
-    timeout
+    timeout,
   );
 }
 
@@ -42,19 +42,19 @@ export function sendErrorNotification({
       title,
       message,
     },
-    timeout
+    timeout,
   );
 }
 
 export function removeNotification(id) {
   notifications.value = notifications.value.filter(
-    (notification) => notification.id !== id
+    (notification) => notification.id !== id,
   );
 }
 
 let notificationId = 0;
 const notificationsTimeout = 5;
-export const notifications = ref([]);
+const notifications = ref([]);
 
 export const HTNotificationsPlugin = {
   install(app) {
