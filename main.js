@@ -4,7 +4,7 @@ import '@nf-data-iu3/ht-design/style.css';
 
 import VueFeather from 'vue-feather';
 
-import { HTVue } from './lib/plugin.js';
+import { HTVue } from './src/plugin.js';
 
 import App from './App.vue';
 
