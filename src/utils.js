@@ -47,10 +47,24 @@ export function interceptorCamelize(response) {
   return response;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Charts utilities
 // this function is used when we want to extract size info for charts
 export const getInnerChartSizes = function (width, height, margin) {
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
   return { innerWidth, innerHeight };
+};
+
+// this function is used to augment the length of scales, which is especially useful to create space around datasets for better visualizations
+export const augmentedExtent = (data, augmentation = 0.05) => {
+  const scaleMin = Math.min(...data);
+  const scaleMax = Math.max(...data);
+
+  const standardExtent = Math.abs(scaleMax - scaleMin);
+  return [
+    scaleMin - standardExtent * augmentation,
+    scaleMax + standardExtent * augmentation,
+  ];
 };
