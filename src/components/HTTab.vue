@@ -2,49 +2,54 @@
   <div class="tab">
     <div ref="tablist" class="tablist" role="tablist">
       <button
-        v-for="(tab, idx) in tabList"
-        :key="`${tab.panel}-button`"
+        v-for="(tab, idx) in tabs"
+        :key="`tab-button-${idx}`"
         class="tab-button"
         type="button"
-        :aria-selected="idx === selected"
+        :aria-selected="tab === selected"
         role="tab"
-        :aria-controls="`${tab.panel}-tabpanel`"
-        @click="onClick(idx)"
+        :aria-controls="`tabpanel-${id}-${idx}`"
+        @click="onClick(tab)"
       >
-        {{ tab.label }}
+        {{ tabLabels[idx] || tab }}
       </button>
     </div>
     <div>
       <article
-        v-for="(tab, idx) in tabList"
-        :id="`${tab.panel}-tabpanel`"
-        :key="`${tab.panel}-tabpanel`"
+        v-for="(tab, idx) in tabs"
+        :id="`tabpanel-${id}-${idx}`"
+        :key="`tabpanel-${idx}`"
         class="ht-card"
         role="tabpanel"
-        :tabindex="idx === selected ? 0 : -1"
-        :class="[{ 'tab-hidden': idx !== selected }]"
+        :tabindex="tab === selected ? 0 : -1"
+        :class="[{ 'tab-hidden': tab !== selected }]"
       >
-        <slot :name="tab.panel"></slot>
+        <slot :name="tab"></slot>
       </article>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
+
 defineProps({
-  tabList: {
+  tabs: {
     type: Array,
     required: true,
   },
+  tabLabels: { typer: Array, default: () => [] },
+  // SSR only
+  id: {
+    type: String,
+    default: () => uuidv4(),
+  },
 });
 
-const emit = defineEmits(['tab-selected']);
-const selected = ref(0);
+const selected = defineModel({ type: String });
 
-const onClick = (idx) => {
-  selected.value = idx;
-  emit('tab-selected', idx);
+const onClick = (tab) => {
+  selected.value = tab;
 };
 </script>
 

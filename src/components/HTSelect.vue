@@ -12,11 +12,11 @@
       {{ disabledOptionLabel }}
     </option>
     <option
-      v-for="(option, index) in options"
-      :key="`option-${index}`"
+      v-for="(option, idx) in options"
+      :key="`option-${idx}`"
       :value="option"
     >
-      {{ optionLabels[index] || option }}
+      {{ optionLabels[idx] || option }}
     </option>
   </select>
   <span

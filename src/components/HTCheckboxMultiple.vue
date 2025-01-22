@@ -1,8 +1,8 @@
 <template>
   <div>
-    <template v-for="(value, index) in values" :key="`checkbox-${index}`">
+    <template v-for="(value, idx) in values" :key="`checkbox-${idx}`">
       <input
-        :id="`${id}-${index}`"
+        :id="`${id}-${idx}`"
         v-bind="$attrs"
         v-model="model"
         :value="value"
@@ -10,7 +10,7 @@
         :aria-invalid="errorMessage ? true : null"
         :aria-describedby="errorMessage ? `input-error-${id}` : null"
       />
-      <label :for="`${id}-${index}`">{{ labels[index] || value }}</label>
+      <label :for="`${id}-${idx}`">{{ labels[idx] || value }}</label>
     </template>
   </div>
   <span
