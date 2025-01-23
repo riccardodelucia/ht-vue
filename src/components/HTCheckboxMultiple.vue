@@ -11,14 +11,14 @@
     />
     <label :for="`${id}-${idx}`">{{ labels[idx] || value }}</label>
   </div>
-  <!--   <span
+  <p
     v-if="errorMessage"
     :id="`input-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
   >
     {{ errorMessage }}
-  </span> -->
+  </p>
 </template>
 
 <script setup>
@@ -33,10 +33,10 @@ defineProps({
     type: Array,
     default: () => [],
   },
-  /*   errorMessage: {
+  errorMessage: {
     type: String,
     default: null,
-  }, */
+  },
   // SSR only
   id: {
     type: String,

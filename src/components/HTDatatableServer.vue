@@ -41,7 +41,7 @@
                   <slot
                     :column="column"
                     :columnIndex="column.columnIndex"
-                    :rowIndex="rowIdx"
+                    :rowIndex="rowIdx - 1"
                     :dataValue="tableData[rowIdx - 1][column.columnIndex]"
                     >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
                   >
@@ -52,7 +52,7 @@
                   <slot
                     :column="column"
                     :columnIndex="column.columnIndex"
-                    :rowIndex="rowIdx"
+                    :rowIndex="rowIdx - 1"
                     :dataValue="tableData[rowIdx - 1][column.columnIndex]"
                     >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
                   >
