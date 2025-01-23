@@ -22,23 +22,4 @@ defineProps({
     default: 25,
   },
 });
-
-/* export default {
-  name: 'HTButtonIcon',
-  components: { VueFeather },
-  props: {
-    iconType: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    width: {
-      type: Number,
-      default: 25,
-    },
-  },
-}; */
 </script>

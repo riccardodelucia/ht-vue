@@ -37,22 +37,26 @@
               <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
              custom HTML -->
               <th v-if="column.name === rowHeader" scope="row">
-                <slot
-                  :column="column"
-                  :columnIndex="column.columnIndex"
-                  :rowIndex="rowIdx"
-                  :dataValue="tableData[rowIdx - 1][column.columnIndex]"
-                  >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
-                >
+                <div class="table-cell">
+                  <slot
+                    :column="column"
+                    :columnIndex="column.columnIndex"
+                    :rowIndex="rowIdx - 1"
+                    :dataValue="tableData[rowIdx - 1][column.columnIndex]"
+                    >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
+                  >
+                </div>
               </th>
               <td v-else>
-                <slot
-                  :column="column"
-                  :columnIndex="column.columnIndex"
-                  :rowIndex="rowIdx"
-                  :dataValue="tableData[rowIdx - 1][column.columnIndex]"
-                  >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
-                >
+                <div class="table-cell">
+                  <slot
+                    :column="column"
+                    :columnIndex="column.columnIndex"
+                    :rowIndex="rowIdx - 1"
+                    :dataValue="tableData[rowIdx - 1][column.columnIndex]"
+                    >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
+                  >
+                </div>
               </td>
             </template>
           </tr>
@@ -105,6 +109,8 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  tableCellWidth: { type: String, default: '30rem' }, // this defines the min width of the table cell. Column width can still grow more than this number according to the size of the column header content.
+  tableCellHeight: { type: String, default: '100%' }, // when 100%, the cell height is adapted to fit the cell content.
 });
 
 const emit = defineEmits([
@@ -195,15 +201,60 @@ const searchableColumns = computed(() => [
 </script>
 
 <style lang="postcss" scoped>
+.datatable {
+  display: grid;
+  grid-row-gap: var(--size-5);
+  width: 100%;
+}
+
+.table-container {
+  max-width: 100%;
+  overflow-x: scroll;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding-block: var(--size-2);
+  padding-inline: var(--size-2);
+  border: 1px solid var(--ht-color-gray-3);
+  min-width: v-bind(tableCellWidth);
+}
+
+th[scope='row'],
+td {
+  font-weight: inherit;
+  text-wrap: wrap;
+}
+
+tr:nth-child(even) {
+  background-color: var(--ht-surface-3);
+}
+
+// putting a div within th, td allows to controls the cell height and scrolling behavior.
+.table-cell {
+  height: v-bind(tableCellHeight);
+  overflow-y: scroll;
+  white-space: pre-line; // this converts JS '\n' characters into HTML new line.
+}
+
 .sort-button {
   background-color: transparent;
   border: 0;
+  border-radius: 0;
   padding: 0;
+  padding-right: 20px;
   width: 100%;
-  padding-right: var(--size-4);
   color: var(--ht-color-text-1);
   font-weight: var(--font-weight-8);
   position: relative;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 .sort-button:before,
@@ -235,45 +286,5 @@ th[aria-sort='ascending'] .sort-button:before {
 th[aria-sort='descending'] .sort-button:after {
   border-top-color: var(--ht-color-gray-3);
   margin-top: 1px;
-}
-
-th,
-td {
-  padding-block: var(--size-2);
-  padding-inline: var(--size-1);
-  text-align: center;
-  border: 1px solid var(--ht-color-gray-3);
-  min-width: 10rem;
-  max-width: 25rem;
-}
-
-td {
-  overflow: auto;
-}
-
-th[scope='row'] {
-  font-weight: inherit;
-  overflow: auto;
-}
-
-tr:nth-child(even) {
-  background-color: var(--ht-surface-3);
-}
-
-table {
-  table-layout: auto;
-  width: 100%;
-  border-collapse: collapse;
-}
-.table-container {
-  max-width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.datatable {
-  display: grid;
-  grid-row-gap: var(--size-5);
-  max-width: 100%;
 }
 </style>
