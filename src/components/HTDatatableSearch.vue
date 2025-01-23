@@ -4,12 +4,13 @@
       label="Search data"
       @search="$emit('search-value', $event)"
     ></ht-search-bar>
-    <div class="search-select">
+    <div>
       <ht-select
+        class="search-select"
         :modelValue="searchColumn"
         :options="columnOptions"
         :show-disabled-option="false"
-        label="Search By"
+        label="Search By: "
         @update:modelValue="$emit('search-column', $event)"
       ></ht-select>
     </div>
@@ -33,9 +34,8 @@ const searchColumn = ref(props.columnOptions[0]);
   justify-content: space-between;
 }
 
-.search-select {
-  display: flex;
-  gap: var(--size-4);
-  align-items: center;
+:deep(.search-select) {
+  max-width: 10rem;
+  text-overflow: ellipsis;
 }
 </style>

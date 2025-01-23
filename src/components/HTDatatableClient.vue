@@ -13,6 +13,8 @@
     :use-search="useSearch"
     :use-sort="useSort"
     :use-pagination="usePagination"
+    :table-cell-width="tableCellWidth"
+    :table-cell-height="tableCellHeight"
     @sort="setSortColumn"
     @page-size="setPageSize"
   >
@@ -43,6 +45,8 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  tableCellWidth: { type: String, default: '100%' },
+  tableCellHeight: { type: String, default: '100%' },
 });
 
 /**
