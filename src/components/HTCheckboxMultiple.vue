@@ -1,26 +1,24 @@
 <template>
-  <div>
-    <template v-for="(value, idx) in values" :key="`checkbox-${idx}`">
-      <input
-        :id="`${id}-${idx}`"
-        v-bind="$attrs"
-        v-model="model"
-        :value="value"
-        type="checkbox"
-        :aria-invalid="errorMessage ? true : null"
-        :aria-describedby="errorMessage ? `input-error-${id}` : null"
-      />
-      <label :for="`${id}-${idx}`">{{ labels[idx] || value }}</label>
-    </template>
+  <div v-for="(value, idx) in values" :key="`checkbox-${idx}`">
+    <input
+      :id="`${id}-${idx}`"
+      v-bind="$attrs"
+      v-model="model"
+      :value="value"
+      type="checkbox"
+      :aria-invalid="errorMessage ? true : null"
+      :aria-describedby="errorMessage ? `input-error-${id}` : null"
+    />
+    <label :for="`${id}-${idx}`">{{ labels[idx] || value }}</label>
   </div>
-  <span
+  <!--   <span
     v-if="errorMessage"
     :id="`input-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
   >
     {{ errorMessage }}
-  </span>
+  </span> -->
 </template>
 
 <script setup>
@@ -35,10 +33,10 @@ defineProps({
     type: Array,
     default: () => [],
   },
-  errorMessage: {
+  /*   errorMessage: {
     type: String,
     default: null,
-  },
+  }, */
   // SSR only
   id: {
     type: String,
