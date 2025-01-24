@@ -5,7 +5,7 @@
       icon-type="x"
       type="button"
       aria-controls="modal"
-      @click="closeModal"
+      @click="emit('close')"
     ></ht-button-icon>
     <slot></slot>
   </dialog>
@@ -26,16 +26,13 @@ const body = document.querySelector('body');
 
 watchEffect(() => {
   if (props.show === true) {
-    modalDialog.value.showModal();
+    modalDialog.value?.showModal();
     body.classList.add('ht-prevent-scroll');
+  } else {
+    body.classList.remove('ht-prevent-scroll');
+    modalDialog.value?.close();
   }
 });
-
-const closeModal = () => {
-  body.classList.remove('ht-prevent-scroll');
-  modalDialog.value.close();
-  emit('close');
-};
 </script>
 
 <style lang="postcss" scoped>
