@@ -1,7 +1,7 @@
 <template>
   <ht-datatable-server
     :active-column-names="activeColumnNames"
-    :table-data="paginatedData"
+    :table-data="serverSideTableData"
     :columns="columns"
     :row-header="rowHeader"
     :available-pages="availablePages"
@@ -30,7 +30,7 @@
  * Note: ht-table-client is implemented as a wrapper around ht-table-server component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
  * over props.tableData
  */
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 const props = defineProps({
   columns: { type: Array, required: true },
@@ -50,6 +50,11 @@ const props = defineProps({
 });
 
 /**
+ * Every time the shown data is updated, we emit this event to inform back the parent component.
+ */
+const emit = defineEmits(['shown-data']);
+
+/**
  * data processing is implemented as the following block processing: filtering -> sorting -> paginating
  * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
  * Computed properties are computed on top of each previous stage.
@@ -64,20 +69,26 @@ const searchColumn = ref(props.searchAllColumnsLabel);
 const setSearchValue = (value) => {
   searchValue.value = value;
   resetPagination();
-  console.log(value);
 };
 
 const setSearchColumn = (column) => {
   searchColumn.value = column;
   resetPagination();
-  console.log(column);
 };
 
+/**
+ * This is used to append the original row index value to the filtered+sorted+paginated data.
+ * This information is used to inform back the parent component about the currently shown rows of tabelData.
+ */
+const internalTableData = computed(() =>
+  props.tableData.map((row, idx) => ({ row, idx })),
+);
+
 const filteredTableData = computed(() => {
-  if (!props.useSearch || !searchValue.value) return props.tableData;
+  if (!props.useSearch || !searchValue.value) return internalTableData.value; //props.tableData;
 
   if (searchColumn.value === props.searchAllColumnsLabel) {
-    return props.tableData.filter((row) =>
+    return internalTableData.value.filter(({ row }) =>
       row.some(
         (elem) =>
           String(elem)
@@ -93,8 +104,8 @@ const filteredTableData = computed(() => {
   if (searchColumnIndex === -1)
     throw new Error('The column you are searching on cannot be found');
 
-  return props.tableData.filter(
-    (row) =>
+  return internalTableData.value.filter(
+    ({ row }) =>
       String(row[searchColumnIndex])
         .toLocaleLowerCase()
         .indexOf(searchValue.value.toLowerCase()) > -1,
@@ -127,14 +138,17 @@ const sortedTableData = computed(() => {
     return order * directionMultiplier;
   };
 
+  // the map creates the column array over the selected column. The index is used to then sort the corresponding columns
   const sortedColumnData = filteredTableData.value
-    .map((row, idx) => ({
-      idx,
-      value: row[columnIndex],
+    .map((row, currentRowIdx) => ({
+      currentRowIdx,
+      value: row.row[columnIndex], // remember, filteredTableData also contains the original row index of the row. Do not confuse with 'currentRowIdx'
     }))
     .sort((a, b) => sortFn(a.value, b.value));
 
-  return sortedColumnData.map(({ idx }) => filteredTableData.value[idx]);
+  return sortedColumnData.map(
+    ({ currentRowIdx }) => filteredTableData.value[currentRowIdx],
+  );
 });
 
 ///////////////////////////////////////////////
@@ -169,6 +183,16 @@ const paginate = (items, pageSize, currentPage) => {
   const stopIndex = Math.min(currentPage * pageSize, items.length);
   return items.slice((currentPage - 1) * pageSize, stopIndex);
 };
+
+watchEffect(() => {
+  emit('shown-data', paginatedData.value);
+});
+
+///////////////////////////////////////////////
+// Server-side table data
+const serverSideTableData = computed(() =>
+  paginatedData.value.map(({ row }) => row),
+);
 </script>
 
 <style lang="postcss" scoped>
