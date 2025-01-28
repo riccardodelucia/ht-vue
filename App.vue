@@ -38,11 +38,16 @@
     </div>
 
     <div>
-      <ht-checkbox-multiple
+      <ht-checkbox
         v-model="checkboxMultipleModelValue"
-        :values="['Italy', 'France']"
-        :labels="['Italy', 'France']"
-      ></ht-checkbox-multiple>
+        value="Italy"
+        label="Italy"
+      ></ht-checkbox>
+      <ht-checkbox
+        v-model="checkboxMultipleModelValue"
+        value="France"
+        label="France"
+      ></ht-checkbox>
       <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
     </div>
     <div>
@@ -68,11 +73,13 @@
         :options="activeOptions"
       ></ht-select>
       <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
-
-      <ht-checkbox-multiple
+      <ht-checkbox
+        v-for="(option, idx) in multipleSelectOptions"
+        :key="`multiple-select-checkbox-${idx}`"
+        :value="option"
         v-model="activeOptions"
-        :values="multipleSelectOptions"
-      ></ht-checkbox-multiple>
+        :label="option"
+      ></ht-checkbox>
       <p>activeOptions: {{ activeOptions }}</p>
     </div>
     <div>
@@ -142,16 +149,19 @@
         <template v-slot="slotProps">
           <template v-if="slotProps?.column.name === 'Action'"
             ><button type="button">
-              Action: {{ slotProps.dataValue }}
-            </button></template
-          >
+              Action: {{ slotProps.dataValue }}Original Row Index:
+            </button>
+            <p>Original Row Index: {{ slotProps.originalRowIndex }}</p>
+          </template>
         </template>
       </ht-datatable-client>
-      <ht-checkbox-multiple
+      <ht-checkbox
+        v-for="(option, idx) in columns.map(({ name }) => name)"
+        :key="`datatable-client-checkbox-${idx}`"
+        :value="option"
+        :label="option"
         v-model="activeColumnNames"
-        :values="columns.map(({ name }) => name)"
-        :labels="columns.map(({ name }) => name)"
-      ></ht-checkbox-multiple>
+      ></ht-checkbox>
     </div>
     <div>
       <h2>Modal Dialog</h2>
