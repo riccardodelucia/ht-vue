@@ -5,6 +5,7 @@
     v-model="model"
     :true-value="trueValue"
     :false-value="falseValue"
+    :value="value"
     type="checkbox"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `input-error-${id}` : null"
@@ -32,6 +33,7 @@ defineProps({
     type: [String, Number, Boolean, Object, Array, null],
     default: () => false,
   },
+  value: { type: [String, Number, Boolean, Object], required: false }, // for multiple checkboxes only
   label: {
     type: String,
     default: null,

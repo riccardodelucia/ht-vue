@@ -20,7 +20,10 @@
   >
     <!-- This allows to pass the slot of the inner server table up to the parent -->
     <template v-slot="slotProps">
-      <slot v-bind="slotProps"></slot>
+      <slot
+        v-bind="slotProps"
+        :originalRowIndex="getOriginalRowIndex(slotProps.rowIndex)"
+      ></slot>
     </template>
   </ht-datatable-server>
 </template>
@@ -184,9 +187,14 @@ const paginate = (items, pageSize, currentPage) => {
   return items.slice((currentPage - 1) * pageSize, stopIndex);
 };
 
+///////////////////////////////////////////////
+// Additional datatable client steps
+
 watchEffect(() => {
   emit('shown-data', paginatedData.value);
 });
+
+const getOriginalRowIndex = (rowIndex) => paginatedData.value[rowIndex].idx;
 
 ///////////////////////////////////////////////
 // Server-side table data
