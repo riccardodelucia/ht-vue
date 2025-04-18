@@ -1,6 +1,5 @@
 <template>
   <ht-datatable-server
-    :active-column-names="activeColumnNames"
     :table-data="serverSideTableData"
     :columns="columns"
     :row-header="rowHeader"
@@ -37,7 +36,6 @@ import { computed, ref, watchEffect } from 'vue';
 
 const props = defineProps({
   columns: { type: Array, required: true },
-  activeColumnNames: { type: Array, required: true },
   rowHeader: { type: String, default: null },
   tableData: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
