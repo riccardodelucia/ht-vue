@@ -51,11 +51,11 @@
       <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
     </div>
     <div>
-      <ht-checkbox-group-select-all
+      <ht-checkbox-select-all
         :options="checkboxSelectAllOptions"
         v-model="checkboxSelectAllOptionsModel"
         :initially-selected="false"
-      ></ht-checkbox-group-select-all>
+      ></ht-checkbox-select-all>
       <div>
         <ht-checkbox
           v-model="checkboxSelectAllOptionsModel"

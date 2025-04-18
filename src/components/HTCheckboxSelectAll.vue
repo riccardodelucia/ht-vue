@@ -1,7 +1,7 @@
 <template>
   <ht-checkbox
     ref="checkbox"
-    label="De/Select All"
+    :label="label"
     :model-value="selectAll"
     @update:model-value="onCheckboxSelectAllUpdated"
   ></ht-checkbox>
@@ -24,6 +24,10 @@ const props = defineProps({
     },
   },
   initiallySelected: { type: Boolean, default: true },
+  label: {
+    type: String,
+    default: null,
+  },
 });
 const model = defineModel({ type: Array, required: true }); // array of checkbox selections
 
