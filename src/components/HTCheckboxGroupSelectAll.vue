@@ -23,8 +23,12 @@ const props = defineProps({
       return value.length > 0;
     },
   },
+  initiallySelected: { type: Boolean, default: true },
 });
 const model = defineModel({ type: Array, required: true }); // array of checkbox selections
+
+// we set the model content from within the component to be more robust against spurious initial arrays which could not contain declared options.
+model.value = props.initiallySelected ? props.options : [];
 
 const onCheckboxSelectAllUpdated = (value) => {
   model.value = value ? props.options : [];

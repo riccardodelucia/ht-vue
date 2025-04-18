@@ -54,6 +54,7 @@
       <ht-checkbox-group-select-all
         :options="checkboxSelectAllOptions"
         v-model="checkboxSelectAllOptionsModel"
+        :initially-selected="false"
       ></ht-checkbox-group-select-all>
       <div>
         <ht-checkbox
