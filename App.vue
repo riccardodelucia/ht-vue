@@ -40,15 +40,43 @@
     <div>
       <ht-checkbox
         v-model="checkboxMultipleModelValue"
-        value="Italy"
+        value="italy"
         label="Italy"
       ></ht-checkbox>
       <ht-checkbox
         v-model="checkboxMultipleModelValue"
-        value="France"
+        value="france"
         label="France"
       ></ht-checkbox>
       <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
+    </div>
+    <div>
+      <ht-checkbox-select-all
+        :options="checkboxSelectAllOptions"
+        v-model="checkboxSelectAllOptionsModel"
+        :initially-selected="false"
+      ></ht-checkbox-select-all>
+      <div>
+        <ht-checkbox
+          v-model="checkboxSelectAllOptionsModel"
+          label="First"
+          :value="checkboxSelectAllOptions[0]"
+        ></ht-checkbox>
+        <ht-checkbox
+          v-model="checkboxSelectAllOptionsModel"
+          label="Second"
+          :value="checkboxSelectAllOptions[1]"
+        ></ht-checkbox>
+        <ht-checkbox
+          v-model="checkboxSelectAllOptionsModel"
+          label="Third"
+          :value="checkboxSelectAllOptions[2]"
+        ></ht-checkbox>
+      </div>
+      <p>
+        checkboxSelectAllOptionsModel:
+        {{ checkboxSelectAllOptionsModel }}
+      </p>
     </div>
     <div>
       <ht-toggle-switch
@@ -202,6 +230,9 @@ const activeOptions = ref(multipleSelectOptions);
 
 const checkboxModelValue = ref(true);
 const checkboxMultipleModelValue = ref([]);
+
+const checkboxSelectAllOptions = [1, 2, 3];
+const checkboxSelectAllOptionsModel = ref([]);
 
 ///////////////////////////////////
 // Toggle Switch

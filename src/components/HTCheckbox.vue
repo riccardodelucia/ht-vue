@@ -1,5 +1,6 @@
 <template>
   <input
+    ref="checkbox"
     :id="id"
     v-bind="$attrs"
     v-model="model"
@@ -23,6 +24,7 @@
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
+import { ref } from 'vue';
 
 defineProps({
   trueValue: {
@@ -50,6 +52,19 @@ defineProps({
 });
 
 const model = defineModel();
+const checkbox = ref(null);
+
+const setIndeterminate = () => {
+  checkbox.value.indeterminate = true;
+};
+const resetIndeterminate = () => {
+  checkbox.value.indeterminate = false;
+};
+
+defineExpose({
+  setIndeterminate,
+  resetIndeterminate,
+});
 </script>
 
 <style lang="postcss" scoped>
