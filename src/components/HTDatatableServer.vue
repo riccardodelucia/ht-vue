@@ -90,7 +90,6 @@ const props = defineProps({
    *
    */
   columns: { type: Array, required: true },
-  activeColumnNames: { type: Array, default: null },
   rowHeader: { type: String, default: null },
   /**
    *  Note: tableData must provide a value for every column cell, even cells that have a custom HTML rendered slot.
@@ -188,10 +187,7 @@ const sortableColumns = computed(() => {
 
 /////////////////////////////////////////////////////
 const displayableColumns = computed(() => {
-  if (props.activeColumnNames === null) return sortableColumns.value;
-  return sortableColumns.value.filter((column) =>
-    props.activeColumnNames.includes(column.name),
-  );
+  return sortableColumns.value;
 });
 
 const searchableColumns = computed(() => [
