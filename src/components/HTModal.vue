@@ -5,7 +5,7 @@
       icon-type="x"
       type="button"
       aria-controls="modal"
-      @click="emit('close')"
+      @click="showModal = false"
     ></ht-button-icon>
     <slot></slot>
   </dialog>
@@ -14,18 +14,14 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 
-const props = defineProps({
-  show: { type: Boolean, default: false },
-});
-
-const emit = defineEmits(['close']);
+const showModal = defineModel('showModal', { type: Boolean, default: false });
 
 const modalDialog = ref(null);
 
 const body = document.querySelector('body');
 
 watchEffect(() => {
-  if (props.show === true) {
+  if (showModal.value === true) {
     modalDialog.value?.showModal();
     body.classList.add('ht-prevent-scroll');
   } else {
