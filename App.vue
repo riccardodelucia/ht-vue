@@ -128,6 +128,18 @@
       <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
     </div>
     <div class="ht-layout-stack">
+      <h2>Accordion</h2>
+      <ht-collapsible :initially-expanded="true">
+        <template #heading>Label</template>
+        <template #default
+          >Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
+          dolores amet autem. Eos dolor labore aliquam quis voluptatem
+          laudantium facilis, consequatur dolore enim harum, reiciendis impedit,
+          eveniet eius. Accusantium, dicta.</template
+        >
+      </ht-collapsible>
+    </div>
+    <div class="ht-layout-stack">
       <h2>Server side table</h2>
       <ht-datatable-server
         :table-data="tableData"
