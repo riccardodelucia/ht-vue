@@ -10,7 +10,6 @@
       <ht-textarea v-model="inputTextareaModel" label="Textarea"></ht-textarea>
       <p>inputTextareaModel: {{ inputTextareaModel }}</p>
     </div>
-
     <div>
       <ht-search-bar
         v-model="searchModelValue"
