@@ -36,9 +36,11 @@ watchEffect(() => {
 
 <style lang="postcss" scoped>
 .modal {
-  position: relative;
   padding: 0;
   background-color: var(--ht-surface-1);
+  position: fixed;
+  inset: 0 0 0 0;
+  margin: auto;
 }
 
 .modal-close-button {
