@@ -31,6 +31,21 @@ export function sendSuccessNotification({
   );
 }
 
+export function sendWarningNotification({
+  title = 'Warning ⚠️',
+  message = 'A generic warning has been raised',
+  timeout = notificationsTimeout,
+}) {
+  sendNotification(
+    {
+      type: 'warning',
+      title,
+      message,
+    },
+    timeout,
+  );
+}
+
 export function sendErrorNotification({
   title = 'Something went wrong... 💥',
   message = 'Unknown error',
@@ -54,7 +69,7 @@ export function removeNotification(id) {
 
 let notificationId = 0;
 const notificationsTimeout = 5;
-const notifications = ref([]);
+export const notifications = ref([]);
 
 export const HTNotificationsPlugin = {
   install(app) {

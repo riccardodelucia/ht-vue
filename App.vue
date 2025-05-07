@@ -1,6 +1,30 @@
 <template>
-  <section class="ht-container ht-wrapper ht-layout-stack">
+  <main class="ht-container ht-wrapper ht-layout-stack">
     <h1>HT Vue Components</h1>
+    <h2>Notifications</h2>
+    <div>
+      <button type="button" @click="sendSuccessNotification">
+        Send Success Notification
+      </button>
+      <button type="button" @click="sendWarningNotification">
+        Send Warning Notification
+      </button>
+      <button type="button" @click="sendErrorNotification">
+        Send Error Notification
+      </button>
+    </div>
+    <div class="notifications-container ht-layout-stack">
+      <ht-toast
+        v-for="{ type, title, message, id } in notifications"
+        :key="`toast-${id}`"
+        :type="type"
+        :title="title"
+        :toast-id="id"
+        @close-notification="onCloseNotification"
+      >
+        <p>{{ message }}</p>
+      </ht-toast>
+    </div>
     <h2>Input Controls</h2>
     <div>
       <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
@@ -313,11 +337,25 @@
       </ht-modal>
       <ht-checkbox v-model="showModal" label="Show Modal"></ht-checkbox>
     </div>
-  </section>
+  </main>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+
+import {
+  notifications,
+  removeNotification,
+  sendSuccessNotification,
+  sendWarningNotification,
+  sendErrorNotification,
+} from './src/notifications';
+
+///////////////////////////////////
+// Notifications
+const onCloseNotification = (id) => {
+  removeNotification(id);
+};
 
 ///////////////////////////////////
 // Input Field
@@ -706,6 +744,19 @@ const searchHints = [
 </script>
 
 <style lang="postcss">
+.notifications-container {
+  padding: var(--size-2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  width: 25%;
+
+  @media only screen and (max-width: 700px) {
+    width: 100%;
+  }
+}
+
 section {
   margin-bottom: 20rem;
 }

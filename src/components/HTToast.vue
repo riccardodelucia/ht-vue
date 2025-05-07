@@ -1,5 +1,5 @@
 <template>
-  <div class="ht-toast" :data-type="type === 'error' ? 'error' : null">
+  <div class="ht-toast" :data-type="type">
     <h2>{{ title }}</h2>
     <button
       class="ht-reset"
@@ -15,7 +15,7 @@
 
 <script setup>
 const props = defineProps({
-  type: { type: String, required: true },
+  type: { type: String, default: null },
   title: { type: String, required: true },
   toastId: { type: [String, Number], required: true },
 });
