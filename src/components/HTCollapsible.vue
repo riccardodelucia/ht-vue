@@ -1,7 +1,7 @@
 <template>
   <div class="collapsible">
-    <div class="collapsible-heading" @click="collapsed = !collapsed">
-      <slot name="heading"></slot>
+    <div class="collapsible-header" @click="collapsed = !collapsed">
+      <slot name="header"></slot>
       <VueFeather type="chevron-down" class="collapsible-icon"></VueFeather>
     </div>
     <div class="panel" v-show="collapsed">
@@ -23,7 +23,7 @@ const rotation = computed(() => (collapsed.value ? '0deg' : '180deg'));
 </script>
 
 <style lang="postcss" scoped>
-.collapsible-heading {
+.collapsible-header {
   display: grid;
   grid-template-columns: 1fr 2rem;
 }

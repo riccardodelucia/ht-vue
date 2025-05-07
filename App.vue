@@ -129,7 +129,7 @@
     <div class="ht-layout-stack">
       <h2>Accordion</h2>
       <ht-collapsible :initially-expanded="true">
-        <template #heading>Label</template>
+        <template #header>Label</template>
         <template #default
           >Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
           dolores amet autem. Eos dolor labore aliquam quis voluptatem
@@ -204,13 +204,112 @@
     </div>
     <div>
       <h2>Modal Dialog</h2>
-      <ht-modal v-model:show="showModal">
-        <div class="modal-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-          minus numquam sunt et quidem illum praesentium expedita, reprehenderit
-          cum laudantium laborum minima similique eaque alias labore ea omnis
-          earum placeat?
-        </div>
+      <ht-modal v-model:show-modal="showModal">
+        <template #header><h1>Modal</h1></template>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
       </ht-modal>
       <ht-checkbox v-model="showModal" label="Show Modal"></ht-checkbox>
     </div>
