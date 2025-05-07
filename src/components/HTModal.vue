@@ -1,31 +1,30 @@
 <template>
   <dialog id="modal" class="modal" ref="modalDialog">
-    <ht-button-icon
-      class="modal-close-button"
-      icon-type="x"
-      type="button"
-      aria-controls="modal"
-      @click="emit('close')"
-    ></ht-button-icon>
-    <slot></slot>
+    <div class="modal-header">
+      <div><slot name="header"></slot></div>
+      <ht-button-icon
+        class="modal-close-button"
+        icon-type="x"
+        type="button"
+        aria-controls="modal"
+        @click="showModal = false"
+      ></ht-button-icon>
+    </div>
+    <div class="modal-content"><slot></slot></div>
   </dialog>
 </template>
 
 <script setup>
 import { ref, watchEffect } from 'vue';
 
-const props = defineProps({
-  show: { type: Boolean, default: false },
-});
-
-const emit = defineEmits(['close']);
+const showModal = defineModel('showModal', { type: Boolean, default: false });
 
 const modalDialog = ref(null);
 
 const body = document.querySelector('body');
 
 watchEffect(() => {
-  if (props.show === true) {
+  if (showModal.value === true) {
     modalDialog.value?.showModal();
     body.classList.add('ht-prevent-scroll');
   } else {
@@ -36,9 +35,32 @@ watchEffect(() => {
 </script>
 
 <style lang="postcss" scoped>
+.modal {
+  padding: 0;
+  background-color: var(--ht-surface-1);
+  position: fixed;
+  inset: 0 0 0 0;
+  margin: auto;
+}
+
 .modal-close-button {
-  position: absolute;
-  top: 0.5em;
-  right: 0.5em;
+  justify-self: center;
+  align-self: start;
+  cursor: pointer;
+}
+
+.modal-header {
+  display: grid;
+  grid-template-columns: 1fr var(--size-6);
+  position: sticky; /* Keeps the header fixed at the top */
+  top: 0;
+  z-index: 10;
+  background-color: var(--ht-surface-1);
+  padding-block: var(--size-2);
+  padding-left: var(--size-6);
+}
+
+.modal-content {
+  padding-inline: var(--size-6);
 }
 </style>

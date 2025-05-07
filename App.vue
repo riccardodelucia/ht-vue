@@ -1,6 +1,30 @@
 <template>
-  <section class="ht-container ht-wrapper ht-layout-stack">
+  <main class="ht-container ht-wrapper ht-layout-stack">
     <h1>HT Vue Components</h1>
+    <h2>Notifications</h2>
+    <div>
+      <button type="button" @click="sendSuccessNotification">
+        Send Success Notification
+      </button>
+      <button type="button" @click="sendWarningNotification">
+        Send Warning Notification
+      </button>
+      <button type="button" @click="sendErrorNotification">
+        Send Error Notification
+      </button>
+    </div>
+    <div class="notifications-container ht-layout-stack">
+      <ht-toast
+        v-for="{ type, title, message, id } in notifications"
+        :key="`toast-${id}`"
+        :type="type"
+        :title="title"
+        :toast-id="id"
+        @close-notification="onCloseNotification"
+      >
+        <p>{{ message }}</p>
+      </ht-toast>
+    </div>
     <h2>Input Controls</h2>
     <div>
       <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
@@ -10,7 +34,6 @@
       <ht-textarea v-model="inputTextareaModel" label="Textarea"></ht-textarea>
       <p>inputTextareaModel: {{ inputTextareaModel }}</p>
     </div>
-
     <div>
       <ht-search-bar
         v-model="searchModelValue"
@@ -128,6 +151,18 @@
       <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
     </div>
     <div class="ht-layout-stack">
+      <h2>Accordion</h2>
+      <ht-collapsible :initially-expanded="true">
+        <template #header>Label</template>
+        <template #default
+          >Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
+          dolores amet autem. Eos dolor labore aliquam quis voluptatem
+          laudantium facilis, consequatur dolore enim harum, reiciendis impedit,
+          eveniet eius. Accusantium, dicta.</template
+        >
+      </ht-collapsible>
+    </div>
+    <div class="ht-layout-stack">
       <h2>Server side table</h2>
       <ht-datatable-server
         :table-data="tableData"
@@ -193,21 +228,134 @@
     </div>
     <div>
       <h2>Modal Dialog</h2>
-      <ht-modal v-model:show="showModal">
-        <div class="modal-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-          minus numquam sunt et quidem illum praesentium expedita, reprehenderit
-          cum laudantium laborum minima similique eaque alias labore ea omnis
-          earum placeat?
-        </div>
+      <ht-modal v-model:show-modal="showModal">
+        <template #header><h1>Modal</h1></template>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        minus numquam sunt et quidem illum praesentium expedita, reprehenderit
+        cum laudantium laborum minima similique eaque alias labore ea omnis
+        earum placeat? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Perspiciatis minus numquam sunt et quidem illum praesentium expedita,
+        reprehenderit cum laudantium laborum minima similique eaque alias labore
+        ea omnis earum placeat? Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Perspiciatis minus numquam sunt et quidem illum
+        praesentium expedita, reprehenderit cum laudantium laborum minima
+        similique eaque alias labore ea omnis earum placeat? Lorem ipsum dolor
+        sit amet consectetur adipisicing elit. Perspiciatis minus numquam sunt
+        et quidem illum praesentium expedita, reprehenderit cum laudantium
+        laborum minima similique eaque alias labore ea omnis earum placeat?
       </ht-modal>
       <ht-checkbox v-model="showModal" label="Show Modal"></ht-checkbox>
     </div>
-  </section>
+  </main>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+
+import {
+  notifications,
+  removeNotification,
+  sendSuccessNotification,
+  sendWarningNotification,
+  sendErrorNotification,
+} from './src/notifications';
+
+///////////////////////////////////
+// Notifications
+const onCloseNotification = (id) => {
+  removeNotification(id);
+};
 
 ///////////////////////////////////
 // Input Field
@@ -596,6 +744,19 @@ const searchHints = [
 </script>
 
 <style lang="postcss">
+.notifications-container {
+  padding: var(--size-2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  width: 25%;
+
+  @media only screen and (max-width: 700px) {
+    width: 100%;
+  }
+}
+
 section {
   margin-bottom: 20rem;
 }
