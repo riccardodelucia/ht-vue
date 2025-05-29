@@ -1,7 +1,6 @@
 <template>
   <dialog id="modal" class="modal" ref="modalDialog">
-    <div class="modal-header">
-      <div><slot name="header"></slot></div>
+    <div class="modal-close-button-container">
       <ht-button-icon
         class="modal-close-button"
         icon-type="x"
@@ -9,6 +8,9 @@
         aria-controls="modal"
         @click="showModal = false"
       ></ht-button-icon>
+    </div>
+    <div class="modal-header">
+      <slot name="header"></slot>
     </div>
     <div class="modal-content"><slot></slot></div>
   </dialog>
@@ -43,24 +45,26 @@ watchEffect(() => {
   margin: auto;
 }
 
+.modal-close-button-container {
+  display: flex;
+  justify-content: end;
+  align-content: center;
+  height: 2rem;
+  padding-top: var(--size-2);
+  padding-inline: var(--size-3);
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 .modal-close-button {
-  justify-self: center;
-  align-self: start;
   cursor: pointer;
 }
 
-.modal-header {
-  display: grid;
-  grid-template-columns: 1fr var(--size-6);
-  position: sticky; /* Keeps the header fixed at the top */
-  top: 0;
-  z-index: 10;
-  background-color: var(--ht-surface-1);
-  padding-block: var(--size-2);
-  padding-left: var(--size-6);
-}
-
+.modal-header,
 .modal-content {
   padding-inline: var(--size-6);
+  overflow: hidden;
 }
 </style>

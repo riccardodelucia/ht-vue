@@ -792,4 +792,8 @@ h3 {
 .modal-content {
   width: 40rem;
 }
+
+main > div:last-of-type {
+  margin-bottom: 10rem;
+}
 </style>
