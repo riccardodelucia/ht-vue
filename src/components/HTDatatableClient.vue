@@ -44,7 +44,7 @@ const props = defineProps({
   },
   tableCellWidth: { type: String, default: '100%' },
   tableCellHeight: { type: String, default: '100%' },
-  activeColumnsIndexes: { type: Array, default: () => [0, 1, 2] },
+  activeColumnsIndexes: { type: Array, default: null },
 });
 
 // ===== REACTIVE STATE =====
@@ -53,6 +53,12 @@ const searchColumn = ref(props.searchAllColumnsLabel);
 const currentSortColumnInfo = ref(null);
 const currentPage = ref(1);
 const pageSize = ref(5);
+
+const internalActiveColumnsIndexes = computed(() => {
+  if (props.activeColumnsIndexes) return props.activeColumnsIndexes;
+  const allColumnsIndexes = props.columns.map((_, idx) => idx);
+  return allColumnsIndexes;
+});
 
 // ===== HELPER FUNCTIONS =====
 const resetPagination = () => {
@@ -89,18 +95,22 @@ const setPageSize = (value) => {
   }
 };
 
+// gets the row index of the selected row irrespectively of filtering, sorting and pagination.
 const getOriginalRowIndex = (rowIndex) => {
+  // tableserver sends back the rowIndex which indicates the current position of the row in the actual shown table.
+  // since the actual shown table corresponds to the rows in paginatedData, rowIndex retrieves the corresponding row in paginated data.
+  // finally, since paginatedData comes from internalTableData, which stores the initial rowIndex, we can finally retrieve the index of the origianl item in props.data
   const item = paginatedData.value[rowIndex];
-  return item ? item.idx : -1;
+  return item ? item.rowIndex : -1;
 };
+
+// ===== COMPUTED PIPELINE =====
 
 /**
  * data processing is implemented as the following pipeline: filtering -> sorting -> paginating
  * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
  * Computed properties are computed on top of each previous stage.
  */
-
-// ===== COMPUTED PIPELINE =====
 
 // STEP 1: Add original indexes to track row identity
 /**
@@ -152,7 +162,7 @@ const sortedTableData = computed(() => {
     columnIndex,
   } = currentSortColumnInfo.value;
 
-  const activeColumnIndex = props.activeColumnsIndexes[columnIndex];
+  const activeColumnIndex = internalActiveColumnsIndexes.value[columnIndex];
 
   const directionMultiplier = sortDirection === 'ASC' ? 1 : -1;
 
@@ -191,12 +201,12 @@ const paginatedData = computed(() => {
 });
 
 const serverDatatableColumns = computed(() =>
-  props.activeColumnsIndexes.map((index) => props.columns[index]),
+  internalActiveColumnsIndexes.value.map((index) => props.columns[index]),
 );
 // STEP: 5 Extract final data for table server component
 const serverDatatableData = computed(() =>
   paginatedData.value.map(({ row }) => {
-    const activeColumnsRowItems = props.activeColumnsIndexes.map(
+    const activeColumnsRowItems = internalActiveColumnsIndexes.value.map(
       (index) => row[index],
     );
     return activeColumnsRowItems;
