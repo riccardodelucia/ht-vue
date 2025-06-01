@@ -28,16 +28,12 @@
 </template>
 
 <script setup>
-/**
- * Note: ht-table-client is implemented as a wrapper around ht-table-server component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
- * over props.tableData
- */
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   columns: { type: Array, required: true },
   rowHeader: { type: String, default: null },
-  tableData: { type: Array, required: true },
+  data: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
   searchAllColumnsLabel: { type: String, default: 'All' },
   useSort: { type: Boolean, default: true },
@@ -109,10 +105,10 @@ const getOriginalRowIndex = (rowIndex) => {
 // STEP 1: Add original indexes to track row identity
 /**
  * This is used to append the original row index value to the filtered+sorted+paginated data.
- * This information is used to inform back the parent component about the currently shown rows of tableData.
+ * This information is used to inform back the parent component about the currently shown rows of data.
  */
 const internalTableData = computed(() =>
-  props.tableData.map((row, rowIndex) => ({ row, rowIndex })),
+  props.data.map((row, rowIndex) => ({ row, rowIndex })),
 );
 
 // STEP 2: Apply filtering
@@ -215,7 +211,7 @@ const availablePages = computed(() => {
 // ===== SIDE EFFECTS =====
 
 watch(
-  () => props.tableData,
+  () => props.data,
   () => {
     // Reset search and pagination when base data changes
     // But preserve sort settings as they might still be valid

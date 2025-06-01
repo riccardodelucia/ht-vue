@@ -201,7 +201,7 @@
       <h2>Client side table</h2>
       <ht-datatable-client
         :active-columns-indexes="activeColumnsIndexes"
-        :table-data="tableData"
+        :data="tableData"
         :columns="columns"
         row-header="Country"
         :use-search="true"
