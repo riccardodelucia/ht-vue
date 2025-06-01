@@ -235,46 +235,4 @@ watch(
 );
 </script>
 
-<style lang="postcss" scoped>
-.sort-button {
-  background-color: transparent;
-  border: 0;
-  padding: 0;
-  width: 100%;
-  padding-right: var(--size-4);
-  color: var(--ht-color-text-1);
-  font-weight: var(--font-weight-8);
-  position: relative;
-}
-
-.sort-button:before,
-.sort-button:after {
-  border: 4px solid transparent;
-  content: '';
-  display: block;
-  height: 0;
-  right: 5px;
-  top: 50%;
-  position: absolute;
-  width: 0;
-}
-
-th[aria-sort='none'] .sort-button:before {
-  border-bottom-color: var(--ht-color-gray-3);
-  margin-top: -9px;
-}
-th[aria-sort='none'] .sort-button:after {
-  border-top-color: var(--ht-color-gray-3);
-  margin-top: 1px;
-}
-
-th[aria-sort='ascending'] .sort-button:before {
-  border-bottom-color: var(--ht-color-gray-3);
-  margin-top: -9px;
-}
-
-th[aria-sort='descending'] .sort-button:after {
-  border-top-color: var(--ht-color-gray-3);
-  margin-top: 1px;
-}
-</style>
+<
