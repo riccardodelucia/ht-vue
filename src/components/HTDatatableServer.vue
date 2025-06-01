@@ -3,23 +3,23 @@
     <ht-datatable-search
       v-if="useSearch"
       :column-options="searchableColumns"
-      @search-column="$emit('search-column', $event)"
-      @search-value="$emit('search-value', $event)"
+      @search-column="onSetSearchColumn"
+      @search-value="onSetSearchValue"
     ></ht-datatable-search>
     <div class="table-container">
       <table>
         <thead>
           <template
-            v-for="(column, idx) in displayableColumns"
-            :key="`thead-th-${idx}`"
+            v-for="(column, columnIndex) in columns"
+            :key="`thead-th-${columnIndex}`"
           >
-            <th scope="col" :aria-sort="column.sortDirection">
+            <th scope="col" :aria-sort="setAriaSort(column, columnIndex)">
               <button
-                v-if="column.sortDirection"
+                v-if="column.sortable"
                 class="sort-button"
                 type="button"
                 :aria-label="`Sort toggle for column ${column.name}`"
-                @click="onSortColumn(column)"
+                @click="onSortColumn(column, columnIndex)"
               >
                 {{ column.name }}
               </button>
@@ -28,22 +28,19 @@
           </template>
         </thead>
         <tbody>
-          <!-- with this syntax, the Vue index starts from 1-->
-          <tr v-for="rowIdx in nRows" :key="`tbody-row-${rowIdx}`">
+          <tr v-for="(row, rowIndex) in data" :key="`tbody-row-${rowIndex}`">
             <template
-              v-for="(column, columnIdx) in displayableColumns"
-              :key="`tbody-column-${columnIdx}`"
+              v-for="(column, columnIndex) in columns"
+              :key="`tbody-column-${columnIndex}`"
             >
-              <!-- register a slot for each available cell to give the parent the opportunity to specifically override that column content with
-             custom HTML -->
               <th v-if="column.name === rowHeader" scope="row">
                 <div class="table-cell">
                   <slot
                     :column="column"
-                    :columnIndex="column.columnIndex"
-                    :rowIndex="rowIdx - 1"
-                    :dataValue="tableData[rowIdx - 1][column.columnIndex]"
-                    >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
+                    :columnIndex="columnIndex"
+                    :rowIndex="rowIndex"
+                    :dataValue="row[columnIndex]"
+                    >{{ row[columnIndex] }}</slot
                   >
                 </div>
               </th>
@@ -51,10 +48,10 @@
                 <div class="table-cell">
                   <slot
                     :column="column"
-                    :columnIndex="column.columnIndex"
-                    :rowIndex="rowIdx - 1"
-                    :dataValue="tableData[rowIdx - 1][column.columnIndex]"
-                    >{{ tableData[rowIdx - 1][column.columnIndex] }}</slot
+                    :columnIndex="columnIndex"
+                    :rowIndex="rowIndex"
+                    :dataValue="data[rowIndex][columnIndex]"
+                    >{{ data[rowIndex][columnIndex] }}</slot
                   >
                 </div>
               </td>
@@ -86,16 +83,18 @@ const props = defineProps({
    *  name: String //the name to describe the column
    *  sortable: Boolean // optional, it indicates whether the column is sortable
    *  sortFn: Function // optional, it specifies a sorting logic for the column, to adapt to the column values type. Default logic is used otherwise (see sort function)
+   *  sortDirection: defines the current sorting direction for the column
    * }
    *
    */
   columns: { type: Array, required: true },
-  rowHeader: { type: String, default: null },
+  rowHeader: { type: String, default: null }, // use to set the html element to <th> instead of <td>
   /**
-   *  Note: tableData must provide a value for every column cell, even cells that have a custom HTML rendered slot.
+   *  data is an array of objects, where each object contains {rowIndex, rowData}. This allows to map back to the original row indexes of the table, whenever filtered
+   *  Note: data must provide a value for every column cell, even cells that have a custom HTML rendered slot.
    *  The corresponding value will be exposed as a slotProp to the parent.
    */
-  tableData: { type: Array, required: true },
+  data: { type: Array, required: true },
   useSearch: { type: Boolean, default: true },
   searchAllColumnsLabel: { type: String, default: 'All Columns' },
   useSort: { type: Boolean, default: true },
@@ -121,79 +120,39 @@ const emit = defineEmits([
 
 const page = defineModel('page', { type: Number });
 
-/////////////////////////////////////////////////////
-// General logic
-const nRows = computed(() => props.tableData.length);
+const sortState = ref({});
 
 const onPageSizeChange = (pageSize) => {
-  // different page sizes can mess with the sorting. Therefore, we keep the current sorting but we inform that the column is not sorted anymore.
-  setCurrentSortColumn(null);
   emit('page-size', pageSize);
 };
 
-/////////////////////////////////////////////////////
-// Sort columns state logic
-
-const currentSortColumn = ref(null);
-
-const setCurrentSortColumn = (column) => {
-  if (!column || !props.useSort || !column?.sortable) {
-    currentSortColumn.value = null;
-    return;
-  }
-
-  let { sortDirection } = column;
-  if (sortDirection === 'ascending') sortDirection = 'descending';
-  else sortDirection = 'ascending';
-
-  currentSortColumn.value = { ...column, sortDirection };
+const onSortColumn = (column, columnIndex) => {
+  const sortDirection =
+    sortState.value.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+  sortState.value = { ...column, columnIndex, sortDirection };
+  emit('sort', sortState.value);
 };
 
-const onSortColumn = (column) => {
-  setCurrentSortColumn(column);
-  emit('sort', currentSortColumn.value);
+const onSetSearchColumn = (column) => {
+  emit('search-column', column);
 };
 
-/**
- * sortableColumns is crucial to make the table work proerly. It must contain the info about all original columns, not only active ones.
- * In addition, the column data must include new info compared to props.columns:
- * - the columnIndex, which is used to retrieve the corresponding table value, on each row
- * - the column sort state, according to the current selected sorting column. If the column doesn't match the current sorting column,
- * its sorting state is reset to the initial condition (either 'none' or null)
- */
-const sortableColumns = computed(() => {
-  if (!props.useSort) {
-    // disable all sorting by putting every element's sortDirection to null
-    return props.columns.map((column, idx) => {
-      return {
-        ...column,
-        sortDirection: null,
-        columnIndex: idx,
-      };
-    });
-  } else {
-    return props.columns.map((column, idx) => {
-      if (column.name === currentSortColumn.value?.name) {
-        return currentSortColumn.value;
-      }
-      return {
-        ...column,
-        sortDirection: column?.sortable ? 'none' : null,
-        columnIndex: idx,
-      };
-    });
-  }
-});
-
-/////////////////////////////////////////////////////
-const displayableColumns = computed(() => {
-  return sortableColumns.value;
-});
+const onSetSearchValue = (value) => {
+  emit('search-value', value);
+};
 
 const searchableColumns = computed(() => [
   props.searchAllColumnsLabel,
-  ...displayableColumns.value.map(({ name }) => name),
+  ...props.columns.map(({ name }) => name),
 ]);
+
+const setAriaSort = (column, columnIndex) => {
+  if (!column.sortable) return null;
+  if (columnIndex !== sortState.value.columnIndex) {
+    return 'none';
+  }
+  return sortState.value.sortDirection;
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -274,12 +233,12 @@ th[aria-sort='none'] .sort-button:after {
   margin-top: 1px;
 }
 
-th[aria-sort='ascending'] .sort-button:before {
+th[aria-sort='ASC'] .sort-button:before {
   border-bottom-color: var(--ht-color-gray-3);
   margin-top: -9px;
 }
 
-th[aria-sort='descending'] .sort-button:after {
+th[aria-sort='DESC'] .sort-button:after {
   border-top-color: var(--ht-color-gray-3);
   margin-top: 1px;
 }

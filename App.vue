@@ -165,7 +165,7 @@
     <div class="ht-layout-stack">
       <h2>Server side table</h2>
       <ht-datatable-server
-        :table-data="tableData"
+        :data="tableData"
         :columns="columns"
         row-header="Italy"
         v-model:page="currentPage"
@@ -200,7 +200,7 @@
       </ht-datatable-server>
       <h2>Client side table</h2>
       <ht-datatable-client
-        :active-column-names="activeColumnNames"
+        :active-columns-indexes="activeColumnsIndexes"
         :table-data="tableData"
         :columns="columns"
         row-header="Country"
@@ -221,10 +221,11 @@
       <ht-checkbox
         v-for="(option, idx) in columns.map(({ name }) => name)"
         :key="`datatable-client-checkbox-${idx}`"
-        :value="option"
+        :value="idx"
         :label="option"
-        v-model="activeColumnNames"
+        v-model="activeColumnsIndexes"
       ></ht-checkbox>
+      <p>{{ activeColumnsIndexes }}</p>
     </div>
     <div>
       <h2>Modal Dialog</h2>
@@ -409,10 +410,14 @@ function sortStrings(str1, str2) {
   return str1.localeCompare(str2);
 }
 const columns = [
-  { name: 'Country', sortable: true, sortFn: sortStrings },
+  {
+    name: 'Country',
+    sortable: true,
+    sortFn: sortStrings,
+  },
   { name: 'Capital' },
   { name: 'Inhabitants (Millions)', sortable: true },
-  { name: 'Action', sortable: false, fixed: true },
+  { name: 'Action', sortable: false },
 ];
 
 const tableData = [
@@ -459,29 +464,10 @@ const tableData = [
   ['Singapore', 'Singapore', 5.64, 'Singapore'],
 ];
 
-const activeColumnNames = ref([
-  'Country',
-  'Capital',
-  'Inhabitants (Millions)',
-  'Action',
-]);
+const activeColumnsIndexes = ref(columns.map((_, idx) => idx));
 
 // Server side table
 const currentPage = ref(1);
-
-// client side table
-const sortTable = (sortColumn) => {
-  const sortColumnIndex = sortColumn.columnIndex;
-  const orderMultiplier = sortColumn.sortOrder === 'ascending' ? 1 : -1;
-
-  const sortedData = tableData.value.sort((a, b) => {
-    const columnA = a[sortColumnIndex];
-    const columnB = b[sortColumnIndex];
-    return (columnA - columnB) * orderMultiplier;
-  });
-
-  tableData.value = sortedData;
-};
 
 ///////////////////////////////////
 // Search Bar

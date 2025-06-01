@@ -1,19 +1,19 @@
 <template>
   <ht-datatable-server
-    :table-data="serverSideTableData"
-    :columns="columns"
+    :data="serverDatatableData"
+    :columns="serverDatatableColumns"
     :row-header="rowHeader"
     :available-pages="availablePages"
     :displayable-pages="displayablePages"
-    v-model:page="currentPage"
-    @search-value="setSearchValue"
-    @search-column="setSearchColumn"
     :search-all-columns-label="searchAllColumnsLabel"
     :use-search="useSearch"
     :use-sort="useSort"
     :use-pagination="usePagination"
     :table-cell-width="tableCellWidth"
     :table-cell-height="tableCellHeight"
+    v-model:page="currentPage"
+    @search-value="setSearchValue"
+    @search-column="setSearchColumn"
     @sort="setSortColumn"
     @page-size="setPageSize"
   >
@@ -32,7 +32,7 @@
  * Note: ht-table-client is implemented as a wrapper around ht-table-server component. It intercepts events from the ht-table-server and processes them to manage the data to be shown
  * over props.tableData
  */
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   columns: { type: Array, required: true },
@@ -48,25 +48,27 @@ const props = defineProps({
   },
   tableCellWidth: { type: String, default: '100%' },
   tableCellHeight: { type: String, default: '100%' },
+  activeColumnsIndexes: { type: Array, default: () => [0, 1, 2] },
 });
 
-/**
- * Every time the shown data is updated, we emit this event to inform back the parent component.
- */
-const emit = defineEmits(['shown-data']);
-
-/**
- * data processing is implemented as the following block processing: filtering -> sorting -> paginating
- * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
- * Computed properties are computed on top of each previous stage.
- * This implementation, although possibly not optimized, should make the code easier to understand.
- */
-
-///////////////////////////////////////////////
-// Client side filtering
+// ===== REACTIVE STATE =====
 const searchValue = ref('');
 const searchColumn = ref(props.searchAllColumnsLabel);
+const currentSortColumnInfo = ref(null);
+const currentPage = ref(1);
+const pageSize = ref(5);
 
+// ===== HELPER FUNCTIONS =====
+const resetPagination = () => {
+  currentPage.value = 1;
+};
+
+const paginate = (items, pageSize, currentPage) => {
+  const stopIndex = Math.min(currentPage * pageSize, items.length);
+  return items.slice((currentPage - 1) * pageSize, stopIndex);
+};
+
+// ===== EVENT HANDLERS =====
 const setSearchValue = (value) => {
   searchValue.value = value;
   resetPagination();
@@ -77,85 +79,12 @@ const setSearchColumn = (column) => {
   resetPagination();
 };
 
-/**
- * This is used to append the original row index value to the filtered+sorted+paginated data.
- * This information is used to inform back the parent component about the currently shown rows of tabelData.
- */
-const internalTableData = computed(() =>
-  props.tableData.map((row, idx) => ({ row, idx })),
-);
-
-const filteredTableData = computed(() => {
-  if (!props.useSearch || !searchValue.value) return internalTableData.value; //props.tableData;
-
-  if (searchColumn.value === props.searchAllColumnsLabel) {
-    return internalTableData.value.filter(({ row }) =>
-      row.some(
-        (elem) =>
-          String(elem)
-            .toLocaleLowerCase()
-            .indexOf(searchValue.value.toLowerCase()) > -1,
-      ),
-    );
+const setSortColumn = (sortColumnInfo) => {
+  if (props.useSort) {
+    currentSortColumnInfo.value = sortColumnInfo;
+    resetPagination(); // Reset to first page when sorting changes
   }
-
-  const searchColumnIndex = props.columns.findIndex(
-    (column) => column.name === searchColumn.value,
-  );
-  if (searchColumnIndex === -1)
-    throw new Error('The column you are searching on cannot be found');
-
-  return internalTableData.value.filter(
-    ({ row }) =>
-      String(row[searchColumnIndex])
-        .toLocaleLowerCase()
-        .indexOf(searchValue.value.toLowerCase()) > -1,
-  );
-});
-
-///////////////////////////////////////////////
-// Client-side sorting
-const currentSortColumn = ref(null);
-
-const setSortColumn = (sortColumn) => {
-  if (props.useSort) currentSortColumn.value = sortColumn;
 };
-
-const sortedTableData = computed(() => {
-  if (!currentSortColumn.value || !props.useSort)
-    return filteredTableData.value;
-
-  const {
-    sortDirection,
-    sortFn: columnSortFn,
-    columnIndex,
-  } = currentSortColumn.value;
-
-  const directionMultiplier = sortDirection === 'ascending' ? 1 : -1;
-
-  const sortFn = (a, b) => {
-    // standard sorting function is: a - b
-    const order = columnSortFn ? columnSortFn(a, b) : a - b;
-    return order * directionMultiplier;
-  };
-
-  // the map creates the column array over the selected column. The index is used to then sort the corresponding columns
-  const sortedColumnData = filteredTableData.value
-    .map((row, currentRowIdx) => ({
-      currentRowIdx,
-      value: row.row[columnIndex], // remember, filteredTableData also contains the original row index of the row. Do not confuse with 'currentRowIdx'
-    }))
-    .sort((a, b) => sortFn(a.value, b.value));
-
-  return sortedColumnData.map(
-    ({ currentRowIdx }) => filteredTableData.value[currentRowIdx],
-  );
-});
-
-///////////////////////////////////////////////
-// Client-side pagination
-const currentPage = ref(1);
-const pageSize = ref(5);
 
 const setPageSize = (value) => {
   if (props.usePagination) {
@@ -164,15 +93,100 @@ const setPageSize = (value) => {
   }
 };
 
-const resetPagination = () => {
-  currentPage.value = 1;
+const getOriginalRowIndex = (rowIndex) => {
+  const item = paginatedData.value[rowIndex];
+  return item ? item.idx : -1;
 };
 
-const availablePages = computed(() => {
-  if (!props.usePagination) return 0;
-  return Math.ceil(sortedTableData.value.length / pageSize.value) || 1;
+/**
+ * data processing is implemented as the following pipeline: filtering -> sorting -> paginating
+ * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
+ * Computed properties are computed on top of each previous stage.
+ */
+
+// ===== COMPUTED PIPELINE =====
+
+// STEP 1: Add original indexes to track row identity
+/**
+ * This is used to append the original row index value to the filtered+sorted+paginated data.
+ * This information is used to inform back the parent component about the currently shown rows of tableData.
+ */
+const internalTableData = computed(() =>
+  props.tableData.map((row, rowIndex) => ({ row, rowIndex })),
+);
+
+// STEP 2: Apply filtering
+const filteredTableData = computed(() => {
+  if (!props.useSearch || !searchValue.value) return internalTableData.value;
+
+  const searchTerm = searchValue.value.toLowerCase();
+
+  if (searchColumn.value === props.searchAllColumnsLabel) {
+    return internalTableData.value.filter(({ row }) =>
+      row.some(
+        (elem) => String(elem).toLocaleLowerCase().indexOf(searchTerm) > -1,
+      ),
+    );
+  }
+
+  const searchColumnIndex = props.columns.findIndex(
+    (column) => column.name === searchColumn.value,
+  );
+  if (searchColumnIndex === -1) {
+    console.warn('Search column not found:', searchColumn.value);
+    return internalTableData.value;
+  }
+
+  return internalTableData.value.filter(
+    ({ row }) =>
+      String(row[searchColumnIndex] || '')
+        .toLocaleLowerCase()
+        .indexOf(searchTerm) > -1,
+  );
 });
 
+// STEP 3: Apply sorting
+const sortedTableData = computed(() => {
+  if (!currentSortColumnInfo.value || !props.useSort)
+    return filteredTableData.value;
+
+  const {
+    sortDirection,
+    sortFn: columnSortFn,
+    columnIndex,
+  } = currentSortColumnInfo.value;
+
+  const activeColumnIndex = props.activeColumnsIndexes[columnIndex];
+
+  const directionMultiplier = sortDirection === 'ASC' ? 1 : -1;
+
+  const internalSortFn = (rowA, rowB) => {
+    const a = rowA.row[activeColumnIndex];
+    const b = rowB.row[activeColumnIndex];
+
+    // Handle null/undefined values
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+    // standard sorting function is: a - b
+    const order = columnSortFn ? columnSortFn(a, b) : a - b;
+    return order * directionMultiplier;
+  };
+
+  try {
+    const sortedColumnData = filteredTableData.value.toSorted((rowA, rowB) => {
+      return internalSortFn(rowA, rowB);
+    });
+    return sortedColumnData;
+  } catch (error) {
+    console.error(`Cannot sort column ${activeColumnIndex}`);
+    console.error(error);
+
+    return filteredTableData.value;
+  }
+});
+
+// STEP 4: Apply pagination
 const paginatedData = computed(() => {
   if (!props.usePagination) {
     return sortedTableData.value;
@@ -180,24 +194,44 @@ const paginatedData = computed(() => {
   return paginate(sortedTableData.value, pageSize.value, currentPage.value);
 });
 
-const paginate = (items, pageSize, currentPage) => {
-  const stopIndex = Math.min(currentPage * pageSize, items.length);
-  return items.slice((currentPage - 1) * pageSize, stopIndex);
-};
+const serverDatatableColumns = computed(() =>
+  props.activeColumnsIndexes.map((index) => props.columns[index]),
+);
+// STEP: 5 Extract final data for table server component
+const serverDatatableData = computed(() =>
+  paginatedData.value.map(({ row }) => {
+    const activeColumnsRowItems = props.activeColumnsIndexes.map(
+      (index) => row[index],
+    );
+    return activeColumnsRowItems;
+  }),
+);
 
-///////////////////////////////////////////////
-// Additional datatable client steps
-
-watchEffect(() => {
-  emit('shown-data', paginatedData.value);
+const availablePages = computed(() => {
+  if (!props.usePagination) return 0;
+  return Math.ceil(sortedTableData.value.length / pageSize.value) || 1;
 });
 
-const getOriginalRowIndex = (rowIndex) => paginatedData.value[rowIndex].idx;
+// ===== SIDE EFFECTS =====
 
-///////////////////////////////////////////////
-// Server-side table data
-const serverSideTableData = computed(() =>
-  paginatedData.value.map(({ row }) => row),
+watch(
+  () => props.tableData,
+  () => {
+    // Reset search and pagination when base data changes
+    // But preserve sort settings as they might still be valid
+    resetPagination();
+
+    // If current search column no longer exists, reset to "All"
+    if (searchColumn.value !== props.searchAllColumnsLabel) {
+      const columnExists = props.columns.some(
+        (col) => col.name === searchColumn.value,
+      );
+      if (!columnExists) {
+        searchColumn.value = props.searchAllColumnsLabel;
+      }
+    }
+  },
+  { immediate: false },
 );
 </script>
 
