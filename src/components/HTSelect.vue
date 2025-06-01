@@ -21,7 +21,7 @@
   </select>
   <span
     v-if="errorMessage"
-    :id="`select-error-${uuid}`"
+    :id="`select-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
     >{{ errorMessage }}
@@ -69,18 +69,19 @@ const isMultiple = computed(() => {
   return Array.isArray(model.value);
 });
 
-// Cannot directly watch props. Therefore, we create a computed property on it.
-const options = computed(() => props.options);
-watch(options, () => {
-  if (isMultiple.value) {
-    const newSelections = props.options.filter((newOption) => {
-      return props.modelValue.includes(newOption);
-    });
-    model.value = newSelections;
-  } else if (!props.options.includes(model.value))
-    if (props.showDisabledOption)
-      // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
-      model.value = null;
-    else model.value = props.options[0];
-});
+watch(
+  () => props.options,
+  () => {
+    if (isMultiple.value) {
+      const newSelections = props.options.filter((newOption) => {
+        return props.modelValue.includes(newOption);
+      });
+      model.value = newSelections;
+    } else if (!props.options.includes(model.value))
+      if (props.showDisabledOption)
+        // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
+        model.value = null;
+      else model.value = props.options[0];
+  },
+);
 </script>
