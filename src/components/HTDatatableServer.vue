@@ -66,6 +66,7 @@
       @page-size="onPageSizeChange"
       :available-pages="availablePages"
       :displayable-pages="displayablePages"
+      :total-items-count="totalItemsCount"
     ></ht-datatable-pagination>
   </div>
 </template>
@@ -107,6 +108,7 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  totalItemsCount: { type: Number, default: null },
   tableCellWidth: { type: String, default: '30rem' }, // this defines the min width of the table cell. Column width can still grow more than this number according to the size of the column header content.
   tableCellHeight: { type: String, default: '100%' }, // when 100%, the cell height is adapted to fit the cell content.
 });

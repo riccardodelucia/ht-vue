@@ -9,6 +9,7 @@
     :use-search="useSearch"
     :use-sort="useSort"
     :use-pagination="usePagination"
+    :total-items-count="totalItemsCount"
     :table-cell-width="tableCellWidth"
     :table-cell-height="tableCellHeight"
     v-model:page="currentPage"
@@ -150,6 +151,8 @@ const filteredTableData = computed(() => {
         .indexOf(searchTerm) > -1,
   );
 });
+
+const totalItemsCount = computed(() => filteredTableData.value.length);
 
 // STEP 3: Apply sorting
 const sortedTableData = computed(() => {

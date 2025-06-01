@@ -9,6 +9,7 @@
       ></ht-select>
     </div>
     <div class="pagination-controls">
+      <span v-if="totalItemsCount">Total count: {{ totalItemsCount }}</span>
       <span>Page {{ currentPage }} of {{ availablePages }}</span>
       <nav class="pagination-nav" aria-label="pagination">
         <ul>
@@ -79,6 +80,7 @@ const props = defineProps({
       return value > 0;
     },
   },
+  totalItemsCount: { type: Number, default: null },
 });
 
 /**
@@ -147,7 +149,7 @@ const pages = computed(() => {
 .pagination-controls {
   display: flex;
   align-items: center;
-  gap: var(--size-2);
+  gap: var(--size-4);
 }
 
 .pagination {
