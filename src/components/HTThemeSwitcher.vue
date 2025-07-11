@@ -2,7 +2,7 @@
   <HTButtonIcon
     type="button"
     :icon-type="currentTheme === 'dark' ? 'sun' : 'moon'"
-    label="Switch Between Brigh /Dark Color Scheme"
+    label="Switch Between Bright /Dark Color Scheme"
     @click="onClick"
   ></HTButtonIcon>
 </template>
@@ -10,6 +10,9 @@
 <script setup>
 import { ref } from 'vue';
 import HTButtonIcon from './HTButtonIcon.vue';
+
+
+const emit = defineEmits(['themeChange']);
 
 function computeInitialTheme() {
   if (import.meta.env.SSR) {
@@ -37,12 +40,13 @@ function setTheme(theme) {
 }
 
 function toggleTheme(theme) {
-  if (theme === 'light') return 'dark';
-  return 'light';
+  return theme === 'light'? 'dark' : 'light';
 }
 
 const onClick = () => {
   currentTheme.value = toggleTheme(currentTheme.value);
   setTheme(currentTheme.value);
+  emit('themeChange', currentTheme.value);
 };
 </script>
+git
