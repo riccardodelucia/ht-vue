@@ -66,7 +66,7 @@ export const useHTColorMode = () => {
  * @param {Ref<string>} colorMode - Reactive ref for the color mode ('dark', 'light', or 'auto').
  * @returns {ComputedRef<Object>} - Computed ECharts theme object with resolved color values.
  */
-export const useEChartsTheme = (colorMode) => {
+export const useEChartsTheme = (colorMode, paletteType = 'full') => {
   function getStyleFromTag(property, fallback = '', tag = 'body') {
     const el = document.createElement(tag);
     document.body.appendChild(el);
@@ -90,8 +90,8 @@ export const useEChartsTheme = (colorMode) => {
     const fontWeightTitle = getStyleFromTag('font-weight', 'bold', 'h1');
     const lineHeight = parseFloat(getStyleFromTag('font-size')) * 1.25 || '20';
 
-    return {
-      color: [
+    const palettes = {
+      full: [
         getStyleFromTag(`--ht-chart-orange-1${suffix}`),
         getStyleFromTag(`--ht-chart-blue-1${suffix}`),
         getStyleFromTag(`--ht-chart-green-1${suffix}`),
@@ -101,6 +101,15 @@ export const useEChartsTheme = (colorMode) => {
         getStyleFromTag(`--ht-chart-purple-1${suffix}`),
         getStyleFromTag(`--ht-chart-neutral-1${suffix}`),
       ],
+      simple: [
+        getStyleFromTag(`--ht-chart-main-blue${suffix}`),
+        getStyleFromTag(`--ht-chart-main-red${suffix}`),
+        getStyleFromTag(`--ht-chart-main-grey${suffix}`),
+      ],
+    };
+
+    return {
+      color: palettes[paletteType] || palettes.full,
       backgroundColor: getStyleFromTag(`--ht-surface-1${suffix}`),
       textStyle: {
         color: getStyleFromTag(`--ht-text-color-1${suffix}`),
@@ -124,6 +133,7 @@ export const useEChartsTheme = (colorMode) => {
         },
       },
       legend: {
+        left: 'center',
         textStyle: {
           color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
