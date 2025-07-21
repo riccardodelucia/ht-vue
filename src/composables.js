@@ -67,10 +67,13 @@ export const useHTColorMode = () => {
  * @returns {ComputedRef<Object>} - Computed ECharts theme object with resolved color values.
  */
 export const useEChartsTheme = (colorMode) => {
-  function cssVar(name) {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(name)
-      .trim();
+  function getStyleFromTag(property, fallback = '', tag = 'body') {
+    const el = document.createElement(tag);
+    document.body.appendChild(el);
+    const value =
+      getComputedStyle(el).getPropertyValue(property).trim() || fallback;
+    document.body.removeChild(el);
+    return value;
   }
 
   return computed(() => {
@@ -81,40 +84,40 @@ export const useEChartsTheme = (colorMode) => {
 
     const suffix = isDarkMode ? '-dark' : '-light';
 
-    const fontFamily = cssVar('--font-sans') || 'Arial, sans-serif';
-    const fontWeight = cssVar('--font-weight-4') || 'normal';
-    const fontSizeTitle = cssVar('--font-size-2') || '20px';
-    const fontWeightTitle = cssVar('--font-weight-5') || 'bold';
-    const lineHeight = cssVar('--font-lineheight-4') || '1.5';
+    const fontFamily = getStyleFromTag('font-family', 'Arial, sans-serif');
+    const fontWeight = getStyleFromTag('font-weight', 'normal');
+    const fontSizeTitle = getStyleFromTag('font-size', '20px', 'h3');
+    const fontWeightTitle = getStyleFromTag('font-weight', 'bold', 'h1');
+    const lineHeight = parseFloat(getStyleFromTag('font-size')) * 1.25 || '20';
 
     return {
       color: [
-        cssVar(`--ht-chart-orange-1${suffix}`),
-        cssVar(`--ht-chart-blue-1${suffix}`),
-        cssVar(`--ht-chart-green-1${suffix}`),
-        cssVar(`--ht-chart-yellow-1${suffix}`),
-        cssVar(`--ht-chart-blue-2${suffix}`),
-        cssVar(`--ht-chart-orange-2${suffix}`),
-        cssVar(`--ht-chart-purple-1${suffix}`),
-        cssVar(`--ht-chart-neutral-1${suffix}`),
+        getStyleFromTag(`--ht-chart-orange-1${suffix}`),
+        getStyleFromTag(`--ht-chart-blue-1${suffix}`),
+        getStyleFromTag(`--ht-chart-green-1${suffix}`),
+        getStyleFromTag(`--ht-chart-yellow-1${suffix}`),
+        getStyleFromTag(`--ht-chart-blue-2${suffix}`),
+        getStyleFromTag(`--ht-chart-orange-2${suffix}`),
+        getStyleFromTag(`--ht-chart-purple-1${suffix}`),
+        getStyleFromTag(`--ht-chart-neutral-1${suffix}`),
       ],
-      backgroundColor: cssVar(`--ht-surface-1${suffix}`),
+      backgroundColor: getStyleFromTag(`--ht-surface-1${suffix}`),
       textStyle: {
-        color: cssVar(`--ht-text-color-1${suffix}`),
+        color: getStyleFromTag(`--ht-text-color-1${suffix}`),
         fontFamily,
         fontWeight,
         lineHeight,
       },
       title: {
         textStyle: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight: fontWeightTitle,
           fontSize: fontSizeTitle,
           lineHeight,
         },
         subtextStyle: {
-          color: cssVar(`--ht-text-color-2${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-2${suffix}`),
           fontFamily,
           fontWeight,
           lineHeight,
@@ -122,17 +125,17 @@ export const useEChartsTheme = (colorMode) => {
       },
       legend: {
         textStyle: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight: 'bold',
           lineHeight,
         },
       },
       tooltip: {
-        backgroundColor: cssVar(`--ht-surface-2${suffix}`),
-        borderColor: cssVar(`--ht-surface-shadow${suffix}`),
+        backgroundColor: getStyleFromTag(`--ht-surface-2${suffix}`),
+        borderColor: getStyleFromTag(`--ht-surface-shadow${suffix}`),
         textStyle: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight,
           lineHeight,
@@ -140,53 +143,53 @@ export const useEChartsTheme = (colorMode) => {
       },
       xAxis: {
         axisLabel: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight,
           lineHeight,
         },
         nameTextStyle: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight: fontWeightTitle,
           lineHeight,
         },
         splitLine: {
           lineStyle: {
-            color: cssVar(`--ht-splitline-color${suffix}`) || '#ccc',
+            color: getStyleFromTag(`--ht-splitline-color${suffix}`) || '#ccc',
             type: 'dashed',
           },
         },
       },
       yAxis: {
         axisLabel: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight,
           lineHeight,
         },
         nameTextStyle: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight: fontWeightTitle,
           lineHeight,
         },
         splitLine: {
           lineStyle: {
-            color: cssVar(`--ht-splitline-color${suffix}`) || '#ccc',
+            color: getStyleFromTag(`--ht-splitline-color${suffix}`) || '#ccc',
             type: 'dashed',
           },
         },
       },
       label: {
-        color: cssVar(`--ht-text-color-1${suffix}`),
+        color: getStyleFromTag(`--ht-text-color-1${suffix}`),
         fontFamily,
         fontWeight,
         lineHeight,
       },
       visualMap: {
         textStyle: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
+          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight,
           lineHeight,
@@ -195,7 +198,8 @@ export const useEChartsTheme = (colorMode) => {
       seriesDefaults: {
         heatmap: {
           itemStyle: {
-            borderColor: cssVar(`--ht-chart-neutral-1${suffix}`) || '#000',
+            borderColor:
+              getStyleFromTag(`--ht-chart-neutral-1${suffix}`) || '#000',
             borderWidth: 1,
           },
         },
