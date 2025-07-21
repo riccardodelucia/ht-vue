@@ -10,8 +10,8 @@
     <ul v-if="links.length > 0" class="sidenav-list">
       <li class="sidenav-link" v-for="(link, idx) in links" :key="idx">
         <RouterLink active-class="active" :to="link.to">
-          <VueFeather :type="link.icon"></VueFeather
-          ><span>{{ link.label }}</span>
+         <HTIcon :type="link.icon" />
+         <span>{{ link.label }}</span>
         </RouterLink>
       </li>
     </ul>
