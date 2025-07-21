@@ -81,6 +81,12 @@ export const useEChartsTheme = (colorMode) => {
 
     const suffix = isDarkMode ? '-dark' : '-light';
 
+    const fontFamily = cssVar('--font-sans') || 'Arial, sans-serif';
+    const fontWeight = cssVar('--font-weight-4') || 'normal';
+    const fontSizeTitle = cssVar('--font-size-2') || '20px';
+    const fontWeightTitle = cssVar('--font-weight-5') || 'bold';
+    const lineHeight = cssVar('--font-lineheight-4') || '1.5';
+
     return {
       color: [
         cssVar(`--ht-chart-orange-1${suffix}`),
@@ -93,18 +99,102 @@ export const useEChartsTheme = (colorMode) => {
         cssVar(`--ht-chart-neutral-1${suffix}`),
       ],
       backgroundColor: cssVar(`--ht-surface-1${suffix}`),
-      textStyle: { color: cssVar(`--ht-text-color-1${suffix}`) },
+      textStyle: {
+        color: cssVar(`--ht-text-color-1${suffix}`),
+        fontFamily,
+        fontWeight,
+        lineHeight,
+      },
       title: {
-        textStyle: { color: cssVar(`--ht-text-color-1${suffix}`) },
-        subtextStyle: { color: cssVar(`--ht-text-color-2${suffix}`) },
+        textStyle: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight: fontWeightTitle,
+          fontSize: fontSizeTitle,
+          lineHeight,
+        },
+        subtextStyle: {
+          color: cssVar(`--ht-text-color-2${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
       },
       legend: {
-        textStyle: { color: cssVar(`--ht-text-color-1${suffix}`) },
+        textStyle: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
       },
       tooltip: {
         backgroundColor: cssVar(`--ht-surface-2${suffix}`),
         borderColor: cssVar(`--ht-surface-shadow${suffix}`),
-        textStyle: { color: cssVar(`--ht-text-color-1${suffix}`) },
+        textStyle: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+      },
+      xAxis: {
+        axisLabel: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+        nameTextStyle: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+      },
+      yAxis: {
+        axisLabel: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+        nameTextStyle: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+      },
+      label: {
+        color: cssVar(`--ht-text-color-1${suffix}`),
+        fontFamily,
+        fontWeight,
+        lineHeight,
+      },
+      markPoint: {
+        label: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+      },
+      markLine: {
+        label: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
+      },
+      emphasis: {
+        label: {
+          color: cssVar(`--ht-text-color-1${suffix}`),
+          fontFamily,
+          fontWeight,
+          lineHeight,
+        },
       },
     };
   });
