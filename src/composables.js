@@ -124,7 +124,7 @@ export const useEChartsTheme = (colorMode) => {
         textStyle: {
           color: cssVar(`--ht-text-color-1${suffix}`),
           fontFamily,
-          fontWeight,
+          fontWeight: 'bold',
           lineHeight,
         },
       },
@@ -148,8 +148,14 @@ export const useEChartsTheme = (colorMode) => {
         nameTextStyle: {
           color: cssVar(`--ht-text-color-1${suffix}`),
           fontFamily,
-          fontWeight,
+          fontWeight: fontWeightTitle,
           lineHeight,
+        },
+        splitLine: {
+          lineStyle: {
+            color: cssVar(`--ht-splitline-color${suffix}`) || '#ccc',
+            type: 'dashed',
+          },
         },
       },
       yAxis: {
@@ -162,8 +168,14 @@ export const useEChartsTheme = (colorMode) => {
         nameTextStyle: {
           color: cssVar(`--ht-text-color-1${suffix}`),
           fontFamily,
-          fontWeight,
+          fontWeight: fontWeightTitle,
           lineHeight,
+        },
+        splitLine: {
+          lineStyle: {
+            color: cssVar(`--ht-splitline-color${suffix}`) || '#ccc',
+            type: 'dashed',
+          },
         },
       },
       label: {
@@ -172,28 +184,20 @@ export const useEChartsTheme = (colorMode) => {
         fontWeight,
         lineHeight,
       },
-      markPoint: {
-        label: {
+      visualMap: {
+        textStyle: {
           color: cssVar(`--ht-text-color-1${suffix}`),
           fontFamily,
           fontWeight,
           lineHeight,
         },
       },
-      markLine: {
-        label: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
-        },
-      },
-      emphasis: {
-        label: {
-          color: cssVar(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
+      seriesDefaults: {
+        heatmap: {
+          itemStyle: {
+            borderColor: cssVar(`--ht-chart-neutral-1${suffix}`) || '#000',
+            borderWidth: 1,
+          },
         },
       },
     };
