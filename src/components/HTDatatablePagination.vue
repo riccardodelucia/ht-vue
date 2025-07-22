@@ -19,10 +19,10 @@
               class="chevron"
               @click="setCurrentPage(currentPage - 1)"
             >
-              <VueFeather type="chevron-left"></VueFeather>
+              <VueFeather type="chevron-left"/>
             </button>
             <button v-else class="chevron" aria-disabled="true">
-              <VueFeather type="chevron-left"></VueFeather>
+              <VueFeather type="chevron-left"/>
             </button>
           </li>
 
@@ -41,10 +41,10 @@
               class="chevron"
               @click="setCurrentPage(currentPage + 1)"
             >
-              <VueFeather type="chevron-right"></VueFeather>
+              <VueFeather type="chevron-right"/>
             </button>
             <button v-else class="chevron" aria-disabled="true">
-              <VueFeather type="chevron-right"></VueFeather>
+              <VueFeather type="chevron-right"/>
             </button>
           </li>
         </ul>
@@ -61,7 +61,6 @@
  * either provided links or a linkResolving function which extrapolates the link for each page.
  */
 import { computed, ref } from 'vue';
-import VueFeather from 'vue-feather';
 
 const props = defineProps({
   // max number of pages to be displayed

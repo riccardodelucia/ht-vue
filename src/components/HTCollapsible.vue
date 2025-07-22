@@ -2,7 +2,7 @@
   <div class="collapsible">
     <div class="collapsible-header" @click="collapsed = !collapsed">
       <slot name="header"></slot>
-      <VueFeather type="chevron-down" class="collapsible-icon"></VueFeather>
+      <VueFeather type="chevron-down" class="collapsible-icon"/>  
     </div>
     <div class="panel" v-show="collapsed">
       <slot></slot>

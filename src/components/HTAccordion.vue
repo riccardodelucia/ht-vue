@@ -12,7 +12,7 @@
       >
         <!-- Use a <span> element to add classes for styling text -->
         <slot name="header"></slot>
-        <VueFeather type="chevron-down"></VueFeather>
+        <VueFeather type="chevron-down"/>
       </button>
     </component>
     <div
@@ -32,7 +32,6 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { ref } from 'vue';
-import VueFeather from 'vue-feather';
 
 defineProps({
   headingLevel: { type: Number, default: 2 },

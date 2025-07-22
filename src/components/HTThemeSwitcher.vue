@@ -8,10 +8,10 @@
 </template>
 
 <script setup>
-import { useHTColorMode } from '../composables';
+import { useHTColorTheme } from '../composables';
 import HTButtonIcon from './HTButtonIcon.vue';
 
-const theme = useHTColorMode()
+const theme = useHTColorTheme()
 
 const onClick = () => {
    theme.value = theme.value === 'light' ? 'dark' : 'light'

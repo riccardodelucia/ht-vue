@@ -2,6 +2,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { computed, ref } from 'vue';
 import { useColorMode } from '@vueuse/core';
+import { themeVars } from './theme/themeVars';
 
 // #region Tooltip
 
@@ -47,7 +48,7 @@ export const useTooltip = function (config = { animation: 'false' }) {
  * @returns {Ref<string>} A Vue ref whose value is the current color mode: 'dark', 'light', or 'auto'.
  */
 export const useHTColorTheme = () => {
-  const mode = useColorMode({
+  const theme = useColorMode({
     initialValue: 'auto',
     modes: {
       dark: 'ht-darkmode',
@@ -55,167 +56,142 @@ export const useHTColorTheme = () => {
     },
   });
 
-  return mode;
+  return theme;
 };
 
 /**
- * Returns a reactive ECharts theme object based on the current color mode.
- * The theme colors and styles are dynamically resolved from CSS custom properties
- * for dark and light modes. Automatically detects system preference if mode is 'auto'.
+ * Returns a computed ECharts theme object based on the current color mode.
+ * Uses preloaded theme variables from themeVars and builds the ECharts theme
+ * configuration dynamically for 'light' or 'dark' mode, depending on the value of colorMode.
+ * The palette type can be customized (e.g. 'full', 'simple').
  *
- * @param {Ref<string>} colorMode - Reactive ref for the color mode ('dark', 'light', or 'auto').
- * @returns {ComputedRef<Object>} - Computed ECharts theme object with resolved color values.
+ * @param {Ref<string>} colorMode - A Vue ref with the current color mode ('dark', 'light', or 'auto').
+ * @param {string} [paletteType='full'] - The palette type to use for chart colors.
+ * @returns {ComputedRef<Object>} - A computed ECharts theme object with resolved color and style values.
  */
-export const useEChartsTheme = (colorMode, paletteType = 'full') => {
-  function getStyleFromTag(property, fallback = '', tag = 'body') {
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    const value =
-      getComputedStyle(el).getPropertyValue(property).trim() || fallback;
-    document.body.removeChild(el);
-    return value;
-  }
+export function buildEChartsTheme(mode = 'light', paletteType = 'full') {
+  const vars = themeVars[mode];
 
-  return computed(() => {
-    const isDarkMode =
-      colorMode.value === 'dark' ||
-      (colorMode.value === 'auto' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const palettes = {
+    full: [
+      vars.chartOrange1,
+      vars.chartBlue1,
+      vars.chartGreen1,
+      vars.chartYellow1,
+      vars.chartBlue2,
+      vars.chartOrange2,
+      vars.chartPurple1,
+      vars.chartNeutral1,
+    ],
+    simple: [vars.chartMainBlue, vars.chartMainRed, vars.chartMainGrey],
+  };
 
-    const suffix = isDarkMode ? '-dark' : '-light';
-
-    const fontFamily = getStyleFromTag('font-family', 'Arial, sans-serif');
-    const fontWeight = getStyleFromTag('font-weight', 'normal');
-    const fontSizeTitle = getStyleFromTag('font-size', '20px', 'h3');
-    const fontWeightTitle = getStyleFromTag('font-weight', 'bold', 'h1');
-    const lineHeight = parseFloat(getStyleFromTag('font-size')) * 1.25 || '20';
-
-    const palettes = {
-      full: [
-        getStyleFromTag(`--ht-chart-orange-1${suffix}`),
-        getStyleFromTag(`--ht-chart-blue-1${suffix}`),
-        getStyleFromTag(`--ht-chart-green-1${suffix}`),
-        getStyleFromTag(`--ht-chart-yellow-1${suffix}`),
-        getStyleFromTag(`--ht-chart-blue-2${suffix}`),
-        getStyleFromTag(`--ht-chart-orange-2${suffix}`),
-        getStyleFromTag(`--ht-chart-purple-1${suffix}`),
-        getStyleFromTag(`--ht-chart-neutral-1${suffix}`),
-      ],
-      simple: [
-        getStyleFromTag(`--ht-chart-main-blue${suffix}`),
-        getStyleFromTag(`--ht-chart-main-red${suffix}`),
-        getStyleFromTag(`--ht-chart-main-grey${suffix}`),
-      ],
-    };
-
-    return {
-      color: palettes[paletteType] || palettes.full,
-      backgroundColor: getStyleFromTag(`--ht-surface-1${suffix}`),
+  return {
+    color: palettes[paletteType] || palettes.full,
+    backgroundColor: vars.surface1,
+    textStyle: {
+      color: vars.textColor1,
+      fontFamily: vars.fontFamily,
+      fontWeight: vars.fontWeight,
+      lineHeight: vars.lineHeight,
+    },
+    title: {
       textStyle: {
-        color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-        fontFamily,
-        fontWeight,
-        lineHeight,
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeightTitle,
+        fontSize: vars.fontSizeTitle,
+        lineHeight: vars.lineHeight,
       },
-      title: {
-        textStyle: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight: fontWeightTitle,
-          fontSize: fontSizeTitle,
-          lineHeight,
-        },
-        subtextStyle: {
-          color: getStyleFromTag(`--ht-text-color-2${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
-        },
+      subtextStyle: {
+        color: vars.textColor2,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeight,
+        lineHeight: vars.lineHeight,
       },
-      legend: {
-        left: 'center',
-        textStyle: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight: 'bold',
-          lineHeight,
-        },
+    },
+    legend: {
+      left: 'center',
+      textStyle: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: 'bold',
+        lineHeight: vars.lineHeight,
       },
-      tooltip: {
-        backgroundColor: getStyleFromTag(`--ht-surface-2${suffix}`),
-        borderColor: getStyleFromTag(`--ht-surface-shadow${suffix}`),
-        textStyle: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
-        },
+    },
+    tooltip: {
+      backgroundColor: vars.surface2,
+      borderColor: vars.surfaceShadow,
+      textStyle: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeight,
+        lineHeight: vars.lineHeight,
       },
-      xAxis: {
-        axisLabel: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
-        },
-        nameTextStyle: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight: fontWeightTitle,
-          lineHeight,
-        },
-        splitLine: {
-          lineStyle: {
-            color: getStyleFromTag(`--ht-splitline-color${suffix}`) || '#ccc',
-            type: 'dashed',
-          },
+    },
+    xAxis: {
+      axisLabel: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeight,
+        lineHeight: vars.lineHeight,
+      },
+      nameTextStyle: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeightTitle,
+        lineHeight: vars.lineHeight,
+      },
+      splitLine: {
+        lineStyle: {
+          color: vars.splitlineColor,
+          type: 'dashed',
         },
       },
-      yAxis: {
-        axisLabel: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
-        },
-        nameTextStyle: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight: fontWeightTitle,
-          lineHeight,
-        },
-        splitLine: {
-          lineStyle: {
-            color: getStyleFromTag(`--ht-splitline-color${suffix}`) || '#ccc',
-            type: 'dashed',
-          },
+    },
+    yAxis: {
+      axisLabel: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeight,
+        lineHeight: vars.lineHeight,
+      },
+      nameTextStyle: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeightTitle,
+        lineHeight: vars.lineHeight,
+      },
+      splitLine: {
+        lineStyle: {
+          color: vars.splitlineColor,
+          type: 'dashed',
         },
       },
-      label: {
-        color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-        fontFamily,
-        fontWeight,
-        lineHeight,
+    },
+    label: {
+      color: vars.textColor1,
+      fontFamily: vars.fontFamily,
+      fontWeight: vars.fontWeight,
+      lineHeight: vars.lineHeight,
+    },
+    visualMap: {
+      textStyle: {
+        color: vars.textColor1,
+        fontFamily: vars.fontFamily,
+        fontWeight: vars.fontWeight,
+        lineHeight: vars.lineHeight,
       },
-      visualMap: {
-        textStyle: {
-          color: getStyleFromTag(`--ht-text-color-1${suffix}`),
-          fontFamily,
-          fontWeight,
-          lineHeight,
+    },
+    seriesDefaults: {
+      heatmap: {
+        itemStyle: {
+          borderColor: vars.chartNeutral1,
+          borderWidth: 1,
         },
       },
-      seriesDefaults: {
-        heatmap: {
-          itemStyle: {
-            borderColor:
-              getStyleFromTag(`--ht-chart-neutral-1${suffix}`) || '#000',
-            borderWidth: 1,
-          },
-        },
-      },
-    };
-  });
-};
+    },
+  };
+}
 
 // #endregion

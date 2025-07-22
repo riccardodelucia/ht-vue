@@ -29,7 +29,7 @@
       </h2>
       <nav aria-labelledby="user-menu-heading">
         <a class="ht-reset logout" href="#" @click="auth.logout()">
-          <VueFeather type="log-out"></VueFeather>logout
+          <VueFeather type="log-out"/>logout
         </a>
       </nav>
     </div>
@@ -39,7 +39,6 @@
 <script setup>
 import { ref, computed, inject } from 'vue';
 import HTButtonIcon from './HTButtonIcon.vue';
-import VueFeather from 'vue-feather';
 
 const open = ref(false);
 const auth = inject('auth');

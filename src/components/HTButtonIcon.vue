@@ -1,13 +1,11 @@
 <template>
   <button class="ht-reset ht-grid-center-xy">
     <span class="ht-visually-hidden">{{ label }}</span>
-    <VueFeather :type="iconType" :width="width"></VueFeather>
+    <VueFeather :type="iconType" :width="width" />
   </button>
 </template>
 
 <script setup>
-import VueFeather from 'vue-feather';
-
 defineProps({
   iconType: {
     type: String,

@@ -16,7 +16,7 @@
       label="Submit Search"
       @click="onClick"
     >
-      <VueFeather type="search" width="5"></VueFeather>
+      <VueFeather type="search" width="5"/>
     </button>
     <datalist :id="listId">
       <option
