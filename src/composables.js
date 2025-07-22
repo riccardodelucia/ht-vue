@@ -46,7 +46,7 @@ export const useTooltip = function (config = { animation: 'false' }) {
  *
  * @returns {Ref<string>} A Vue ref whose value is the current color mode: 'dark', 'light', or 'auto'.
  */
-export const useHTColorMode = () => {
+export const useHTColorTheme = () => {
   const mode = useColorMode({
     initialValue: 'auto',
     modes: {
