@@ -7,7 +7,7 @@
         type="button"
         aria-controls="modal"
         @click="showModal = false"
-      ></ht-button-icon>
+      />
     </div>
     <div class="modal-header">
       <slot name="header"></slot>

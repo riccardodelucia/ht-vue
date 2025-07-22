@@ -12,7 +12,7 @@
         label="Toggle Primary Navigation"
         :aria-expanded="false"
         @click="onClick"
-      ></HTButtonIcon>
+      />
       <HTButtonIcon
         v-else
         aria-controls="primary-header-content"
@@ -21,7 +21,7 @@
         label="Toggle Primary Navigation"
         :aria-expanded="true"
         @click="onClick"
-      ></HTButtonIcon>
+      />
     </template>
     <div id="primary-header-content" :aria-hidden="!isExpanded">
       <slot></slot>

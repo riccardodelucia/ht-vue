@@ -50,14 +50,20 @@ export function buildTheme(suffix) {
     chartMainRed: getStyleFromTag(`--ht-chart-main-red${suffix}`),
     chartMainGrey: getStyleFromTag(`--ht-chart-main-grey${suffix}`),
     fontFamily: getStyleFromTag('font-family', 'Arial, sans-serif', 'svg'),
-    fontWeight: getStyleFromTag('font-weight', 'normal', 'h3'),
-    fontSizeTitle:
-      getStyleFromTag('font-size', '20px', 'div', 'ht-chart-title') ||
-      getStyleFromTag('font-size', '20px', 'h3'),
-    fontWeightTitle:
-      getStyleFromTag('font-weight', 'bold', 'div', 'ht-chart-title') ||
-      getStyleFromTag('font-weight', 'bold', 'h1'),
-    lineHeight: getStyleFromTag('line-height', '1.5', 'body'),
+    fontWeight: getStyleFromTag('font-weight', 'normal'),
+    fontSizeTitle: getStyleFromTag(
+      'font-size',
+      '20px',
+      'div',
+      'ht-chart-title',
+    ),
+    fontWeightTitle: getStyleFromTag(
+      'font-weight',
+      'bold',
+      'div',
+      'ht-chart-title',
+    ),
+    lineHeight: parseFloat(getStyleFromTag('line-height', '28')),
   };
 }
 

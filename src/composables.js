@@ -1,6 +1,6 @@
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useColorMode } from '@vueuse/core';
 import { themeVars } from './theme/themeVars';
 
@@ -43,9 +43,9 @@ export const useTooltip = function (config = { animation: 'false' }) {
  * Reactive color mode composable based on @vueuse/core.
  * Uses saved theme from localStorage if available.
  * Defaults to system preference ('auto').
- * Applies 'ht-darkmode' class to <html> for dark mode.
+ * Applies 'ht-darkmode' class to <html> for dark theme.
  *
- * @returns {Ref<string>} A Vue ref whose value is the current color mode: 'dark', 'light', or 'auto'.
+ * @returns {Ref<string>} A Vue ref whose value is the current color theme: 'dark', 'light', or 'auto'.
  */
 export const useHTColorTheme = () => {
   const theme = useColorMode({
@@ -60,17 +60,24 @@ export const useHTColorTheme = () => {
 };
 
 /**
- * Returns a computed ECharts theme object based on the current color mode.
+ * Returns a plain ECharts theme object based on the current color theme.
  * Uses preloaded theme variables from themeVars and builds the ECharts theme
- * configuration dynamically for 'light' or 'dark' mode, depending on the value of colorMode.
+ * configuration dynamically for 'light' or 'dark' mode.
  * The palette type can be customized (e.g. 'full', 'simple').
  *
- * @param {Ref<string>} colorMode - A Vue ref with the current color mode ('dark', 'light', or 'auto').
+ * @param {string|Ref<string>} theme - The current color theme ('dark', 'light', or 'auto'), or a Vue ref.
  * @param {string} [paletteType='full'] - The palette type to use for chart colors.
- * @returns {ComputedRef<Object>} - A computed ECharts theme object with resolved color and style values.
+ * @returns {Object} An ECharts theme object with resolved color and style values.
  */
-export function buildEChartsTheme(mode = 'light', paletteType = 'full') {
-  const vars = themeVars[mode];
+export function useEChartsTheme(theme = 'light', paletteType = 'full') {
+  let colorMode =
+    typeof theme === 'object' && theme.value ? theme.value : theme;
+  if (theme === 'auto') {
+    colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  }
+  const vars = themeVars[colorMode];
 
   const palettes = {
     full: [

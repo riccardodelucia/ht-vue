@@ -16,7 +16,7 @@
       label="Submit Search"
       @click="onClick"
     >
-      <VueFeather type="search" width="5"/>
+      <HTIcon type="search" width="5"/>
     </button>
     <datalist :id="listId">
       <option
@@ -34,6 +34,7 @@
  * Note: accessibility of this component is not perfect.
  */
 import { v4 as uuidv4 } from 'uuid';
+import HTIcon from './HTIcon.vue';
 
 defineProps({
   label: { type: String, required: true },

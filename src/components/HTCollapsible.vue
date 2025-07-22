@@ -2,7 +2,7 @@
   <div class="collapsible">
     <div class="collapsible-header" @click="collapsed = !collapsed">
       <slot name="header"></slot>
-      <VueFeather type="chevron-down" class="collapsible-icon"/>  
+      <HTIcon type="chevron-down" iconClass="collapsible-icon"/>
     </div>
     <div class="panel" v-show="collapsed">
       <slot></slot>
@@ -12,6 +12,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
+import HTIcon from './HTIcon.vue';
 
 const props = defineProps({
   initiallyExpanded: { type: Boolean, default: false },

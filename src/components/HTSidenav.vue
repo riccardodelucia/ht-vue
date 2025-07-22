@@ -22,6 +22,7 @@
 
 <script setup>
 import htLogoWhite from '../assets/ht-logo-white.svg';
+import HTIcon from './HTIcon.vue';
 
 defineProps({
   title: { type: String, default: 'Test' },
