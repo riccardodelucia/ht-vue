@@ -10,7 +10,10 @@
     <ul v-if="links.length > 0" class="sidenav-list">
       <li class="sidenav-link" v-for="(link, idx) in links" :key="idx">
         <RouterLink active-class="active" :to="link.to">
-         <HTIcon :type="link.icon" />
+
+            <HTIcon :type="link.icon" :width="25" />
+
+
          <span>{{ link.label }}</span>
         </RouterLink>
       </li>
@@ -30,7 +33,7 @@ defineProps({
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .sidenav {
   background-color: var(--ht-color-brand-blue-1);
   width: 16rem;

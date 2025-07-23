@@ -17,6 +17,11 @@ defineProps({
   },
   width: {
     type: Number,
+    default: 25,
+  },
+    height: {
+    type: Number,
+    default: 25,
   },
   iconClass: {
     type: [String, Array, Object],
@@ -26,11 +31,20 @@ defineProps({
 </script>
 
 <template>
-  <span v-if="!type" :style="{ display: 'inline-block', width: (width || 25) + 'px', height: (width || 25) + 'px' }"></span>
-  <VueFeather
-    v-else
-    :type="type"
-    :width="width"
-    :class="iconClass"
-  />
+  <span
+    :style="{
+      display: 'inline-block',
+      width: width + 'px',
+      minWidth: width + 'px',
+      height: height + 'px'
+    }"
+  >
+    <VueFeather
+      v-if="type"
+      :type="type"
+      :width="width"
+      :height="height"
+      :class="iconClass"
+    />
+  </span>
 </template>
