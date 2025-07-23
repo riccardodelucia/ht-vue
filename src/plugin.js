@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { loadThemeProperties } from './theme/theme';
+import { loadThemeProperties } from './theme/theme.js';
 
 export const HTVue = {
   install(app) {
