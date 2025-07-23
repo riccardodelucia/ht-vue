@@ -70,7 +70,7 @@ defineProps({
   color: white;
   text-decoration: none;
 
-  & > * {
+  & > *:first-child {
     flex: 0 0 auto;
   }
 
