@@ -2,7 +2,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { ref } from 'vue';
 import { useColorMode } from '@vueuse/core';
-import { themeVars } from './theme/themeVars';
+import { themeProperties } from './theme/theme';
 
 // #region Tooltip
 
@@ -61,7 +61,7 @@ export const useHTColorTheme = () => {
 
 /**
  * Returns a plain ECharts theme object based on the current color theme.
- * Uses preloaded theme variables from themeVars and builds the ECharts theme
+ * Uses preloaded theme variables from theme.js and builds the ECharts theme
  * configuration dynamically for 'light' or 'dark' mode.
  * The palette type can be customized (e.g. 'full', 'simple').
  *
@@ -77,7 +77,7 @@ export function useEChartsTheme(theme = 'light', paletteType = 'full') {
       ? 'dark'
       : 'light';
   }
-  const vars = themeVars[colorMode];
+  const vars = themeProperties[colorMode];
 
   const palettes = {
     full: [

@@ -4,21 +4,19 @@
       class="sidenav-logo"
       href="https://humantechnopole.it/en/"
       target="_blank"
-      ><img :src="htLogoWhite" alt="HT sidenav logo"
-    /></a>
+    >
+      <img :src="htLogoWhite" alt="HT sidenav logo" />
+    </a>
     <h2>{{ title }}</h2>
     <ul v-if="links.length > 0" class="sidenav-list">
       <li class="sidenav-link" v-for="(link, idx) in links" :key="idx">
         <RouterLink active-class="active" :to="link.to">
-
-            <HTIcon :type="link.icon" :width="25" />
-
-
-         <span>{{ link.label }}</span>
+          <HTIcon :type="link.icon" :width="25" />
+          <span>{{ link.label }}</span>
         </RouterLink>
       </li>
     </ul>
-    <!-- Us this slot if you want to override the default render behavior of the sidenav -->
+    <!-- Use this slot if you want to override the default render behavior of the sidenav -->
     <slot name="sidenav-content"></slot>
   </nav>
 </template>
@@ -71,6 +69,10 @@ defineProps({
   cursor: pointer;
   color: white;
   text-decoration: none;
+
+  & > * {
+    flex: 0 0 auto;
+  }
 
   &.active {
     background-color: var(--ht-color-secondary);

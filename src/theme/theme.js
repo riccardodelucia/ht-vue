@@ -1,4 +1,4 @@
-export const themeVars = { light: {}, dark: {} };
+export const themeProperties = { light: {}, dark: {} };
 
 /**
  * Reads a CSS property or variable from a specific tag or class.
@@ -73,7 +73,7 @@ export function buildTheme(suffix) {
  *
  * @returns {void}
  */
-export function loadThemeVars() {
-  themeVars.light = buildTheme('-light');
-  themeVars.dark = buildTheme('-dark');
+export function loadThemeProperties() {
+  themeProperties.light = buildTheme('-light');
+  themeProperties.dark = buildTheme('-dark');
 }

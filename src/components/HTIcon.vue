@@ -9,42 +9,22 @@
 -->
 
 <script setup>
-import VueFeather from 'vue-feather'; 
+import { useAttrs } from 'vue';
+import VueFeather from 'vue-feather';
 
 defineProps({
   type: {
     type: String,
   },
-  width: {
-    type: Number,
-    default: 25,
-  },
-    height: {
-    type: Number,
-    default: 25,
-  },
-  iconClass: {
-    type: [String, Array, Object],
-    default: undefined,
-  }
 });
+const attrs = useAttrs();
 </script>
 
 <template>
+  <VueFeather v-if="type" :type="type" v-bind="attrs" />
   <span
-    :style="{
-      display: 'inline-block',
-      width: width + 'px',
-      minWidth: width + 'px',
-      height: height + 'px'
-    }"
-  >
-    <VueFeather
-      v-if="type"
-      :type="type"
-      :width="width"
-      :height="height"
-      :class="iconClass"
-    />
-  </span>
+    v-else
+    v-bind="attrs"
+    :style="{ display: 'inline-block', minWidth: attrs.width + 'px' }"
+  />
 </template>
