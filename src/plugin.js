@@ -1,11 +1,7 @@
 import _ from 'lodash';
-import { loadThemeProperties } from './theme/theme.js';
 
 export const HTVue = {
   install(app) {
-    // Load theme variables once when the plugin is installed
-    loadThemeProperties();
-
     // Auto-register all Vue components and layouts in the project
     const componentFiles = import.meta.glob('./components/*.vue', {
       eager: true,

@@ -2,7 +2,11 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { ref } from 'vue';
 import { useColorMode } from '@vueuse/core';
-import { themeProperties } from './theme/theme';
+import {
+  getHTThemeColors,
+  getHTChartColors,
+  getHTVariable,
+} from '@nf-data-iu3/ht-design/runtime';
 
 // #region Tooltip
 
@@ -43,162 +47,80 @@ export const useTooltip = function (config = { animation: 'false' }) {
  * Reactive color mode composable based on @vueuse/core.
  * Uses saved theme from localStorage if available.
  * Defaults to system preference ('auto').
- * Applies 'ht-darkmode' class to <html> for dark theme.
+ * Applies correct theme class on initial render, including 'auto' mode.
  *
- * @returns {Ref<string>} A Vue ref whose value is the current color theme: 'dark', 'light', or 'auto'.
+ * @returns {Ref<string>} Vue ref with current color theme: 'dark', 'light', or 'auto'.
  */
 export const useHTColorTheme = () => {
   const theme = useColorMode({
     initialValue: 'auto',
-    modes: {
-      dark: 'ht-darkmode',
-      light: '',
-    },
+    modes: { dark: 'ht-darkmode', light: '' },
   });
 
   return theme;
 };
 
 /**
- * Returns a plain ECharts theme object based on the current color theme.
- * Uses preloaded theme variables from theme.js and builds the ECharts theme
- * configuration dynamically for 'light' or 'dark' mode.
- * The palette type can be customized (e.g. 'full', 'simple').
+ * Returns ECharts theme object based on the current active CSS theme.
+ * Reads CSS custom properties at runtime to automatically match light/dark mode.
  *
- * @param {string|Ref<string>} theme - The current color theme ('dark', 'light', or 'auto'), or a Vue ref.
- * @param {string} [paletteType='full'] - The palette type to use for chart colors.
- * @returns {Object} An ECharts theme object with resolved color and style values.
+ * @param {string} [paletteType='full'] - Palette type: 'full' or 'simple'.
+ * @returns {Object} ECharts theme with resolved colors and styles.
  */
-export function useEChartsTheme(theme = 'light', paletteType = 'full') {
-  let colorMode =
-    typeof theme === 'object' && theme.value ? theme.value : theme;
-  if (theme === 'auto') {
-    colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-  }
-  const vars = themeProperties[colorMode];
+export const useHTEchartsTheme = (paletteType = 'full') => {
+  const chartColors = getHTChartColors(paletteType);
+  const themeColors = getHTThemeColors();
 
-  const palettes = {
-    full: [
-      vars.chartOrange1,
-      vars.chartBlue1,
-      vars.chartGreen1,
-      vars.chartYellow1,
-      vars.chartBlue2,
-      vars.chartOrange2,
-      vars.chartPurple1,
-      vars.chartNeutral1,
-    ],
-    simple: [vars.chartMainBlue, vars.chartMainRed, vars.chartMainGrey],
+  /**
+   * Calculates the numeric font size value by multiplying the given CSS variable by ht-font-size-base.
+   * @param {string} fontSizeVar - The font size CSS variable name (e.g., 'ht-font-size-2')
+   * @returns {number} The calculated font size as a number
+   */
+  const getCalculatedFontSize = (fontSizeVar) => {
+    return (
+      parseFloat(getHTVariable(fontSizeVar)) *
+      parseFloat(getHTVariable('ht-font-size-base'))
+    );
   };
 
   return {
-    color: palettes[paletteType] || palettes.full,
-    backgroundColor: vars.surface1,
+    color: Object.values(chartColors),
+    backgroundColor: themeColors.surface1,
     textStyle: {
-      color: vars.textColor1,
-      fontFamily: vars.fontFamily,
-      fontWeight: vars.fontWeight,
-      lineHeight: vars.lineHeight,
+      color: themeColors.textColor1,
+      fontFamily: getHTVariable('ht-font-sans'),
+      fontSize: getCalculatedFontSize('ht-font-size-0'),
     },
     title: {
       textStyle: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeightTitle,
-        fontSize: vars.fontSizeTitle,
-        lineHeight: vars.lineHeight,
-      },
-      subtextStyle: {
-        color: vars.textColor2,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeight,
-        lineHeight: vars.lineHeight,
+        color: themeColors.textColor1,
+        fontFamily: getHTVariable('ht-font-sans'),
+        fontWeight: getHTVariable('ht-font-weight-5'),
+        fontSize: getCalculatedFontSize('ht-font-size-3'),
       },
     },
     legend: {
-      left: 'center',
       textStyle: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: 'bold',
-        lineHeight: vars.lineHeight,
-      },
-    },
-    tooltip: {
-      backgroundColor: vars.surface2,
-      borderColor: vars.surfaceShadow,
-      textStyle: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeight,
-        lineHeight: vars.lineHeight,
+        color: themeColors.textColor1,
+        fontFamily: getHTVariable('ht-font-sans'),
+        fontSize: getCalculatedFontSize('ht-font-size-1'),
       },
     },
     xAxis: {
       axisLabel: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeight,
-        lineHeight: vars.lineHeight,
-      },
-      nameTextStyle: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeightTitle,
-        lineHeight: vars.lineHeight,
-      },
-      splitLine: {
-        lineStyle: {
-          color: vars.splitlineColor,
-          type: 'dashed',
-        },
+        color: themeColors.textColor2,
+        fontFamily: getHTVariable('ht-font-sans'),
+        fontSize: getCalculatedFontSize('ht-font-size-2'),
       },
     },
     yAxis: {
       axisLabel: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeight,
-        lineHeight: vars.lineHeight,
-      },
-      nameTextStyle: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeightTitle,
-        lineHeight: vars.lineHeight,
-      },
-      splitLine: {
-        lineStyle: {
-          color: vars.splitlineColor,
-          type: 'dashed',
-        },
-      },
-    },
-    label: {
-      color: vars.textColor1,
-      fontFamily: vars.fontFamily,
-      fontWeight: vars.fontWeight,
-      lineHeight: vars.lineHeight,
-    },
-    visualMap: {
-      textStyle: {
-        color: vars.textColor1,
-        fontFamily: vars.fontFamily,
-        fontWeight: vars.fontWeight,
-        lineHeight: vars.lineHeight,
-      },
-    },
-    seriesDefaults: {
-      heatmap: {
-        itemStyle: {
-          borderColor: vars.chartNeutral1,
-          borderWidth: 1,
-        },
+        color: themeColors.textColor2,
+        fontFamily: getHTVariable('ht-font-sans'),
+        fontSize: getCalculatedFontSize('ht-font-size-2'),
       },
     },
   };
-}
+};
 
 // #endregion
