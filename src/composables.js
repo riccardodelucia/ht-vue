@@ -77,10 +77,10 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
    * @returns {number} The calculated font size as a number
    */
   const getCalculatedFontSize = (fontSizeVar) => {
-    return (
-      parseFloat(getCSSVariable(fontSizeVar)) *
-      parseFloat(getCSSVariable('--ht-font-size-base'))
-    );
+    const fontSize = parseFloat(getCSSVariable(fontSizeVar)) || 1;
+    const baseSize = parseFloat(getCSSVariable('--ht-font-size-base')) || 16;
+    const result = fontSize * baseSize;
+    return isNaN(result) ? 16 : result;
   };
 
   return {
@@ -89,7 +89,7 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
     textStyle: {
       color: themeColors.textColor1,
       fontFamily: getCSSVariable('--ht-font-sans'),
-      fontSize: getCalculatedFontSize('--ht-font-size-0'),
+      //fontSize: getCalculatedFontSize('--ht-font-size-1'),
     },
     title: {
       textStyle: {
@@ -119,13 +119,14 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
     },
     xAxis: {
       axisLabel: {
-        color: themeColors.textColor2,
+        color: themeColors.textColor1,
         fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-3'),
+        fontSize: getCalculatedFontSize('--ht-font-size-0'),
       },
       nameTextStyle: {
         color: themeColors.textColor1,
         fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-1'),
       },
       splitLine: {
         lineStyle: {
@@ -136,13 +137,14 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
     },
     yAxis: {
       axisLabel: {
-        color: themeColors.textColor2,
+        color: themeColors.textColor1,
         fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-3'),
+        fontSize: getCalculatedFontSize('--ht-font-size-0'),
       },
       nameTextStyle: {
         color: themeColors.textColor1,
         fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-1'),
       },
       splitLine: {
         lineStyle: {
@@ -154,24 +156,21 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
     label: {
       color: themeColors.textColor1,
       fontFamily: getCSSVariable('--ht-font-sans'),
-      fontSize: getCalculatedFontSize('--ht-font-size-2'),
+      fontSize: getCalculatedFontSize('--ht-font-size-0'),
     },
     visualMap: {
       textStyle: {
         color: themeColors.textColor1,
         fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-2'),
+        fontSize: getCalculatedFontSize('--ht-font-size-1'),
       },
     },
     seriesDefaults: {
       heatmap: {
         itemStyle: {
-          borderColor: themeColors.chartContrast,
-          borderWidth: 1,
+          borderColor: 'black',
+          borderWidth: 1.2,
         },
-        color: themeColors.textColor2,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-2'),
       },
     },
   };
