@@ -5,7 +5,7 @@ import { useColorMode } from '@vueuse/core';
 import {
   getHTThemeColors,
   getHTChartColors,
-  getHTVariable,
+  getCSSVariable,
 } from '@nf-data-iu3/ht-design/runtime';
 
 // #region Tooltip
@@ -78,8 +78,8 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
    */
   const getCalculatedFontSize = (fontSizeVar) => {
     return (
-      parseFloat(getHTVariable(fontSizeVar)) *
-      parseFloat(getHTVariable('ht-font-size-base'))
+      parseFloat(getCSSVariable(fontSizeVar)) *
+      parseFloat(getCSSVariable('--ht-font-size-base'))
     );
   };
 
@@ -88,36 +88,90 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
     backgroundColor: themeColors.surface1,
     textStyle: {
       color: themeColors.textColor1,
-      fontFamily: getHTVariable('ht-font-sans'),
-      fontSize: getCalculatedFontSize('ht-font-size-0'),
+      fontFamily: getCSSVariable('--ht-font-sans'),
+      fontSize: getCalculatedFontSize('--ht-font-size-0'),
     },
     title: {
       textStyle: {
         color: themeColors.textColor1,
-        fontFamily: getHTVariable('ht-font-sans'),
-        fontWeight: getHTVariable('ht-font-weight-5'),
-        fontSize: getCalculatedFontSize('ht-font-size-3'),
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontWeight: getCSSVariable('--ht-font-weight-5'),
+        fontSize: getCalculatedFontSize('--ht-font-size-3'),
       },
     },
     legend: {
+      left: 'center',
       textStyle: {
         color: themeColors.textColor1,
-        fontFamily: getHTVariable('ht-font-sans'),
-        fontSize: getCalculatedFontSize('ht-font-size-1'),
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontWeight: getCSSVariable('--ht-font-weight-5'),
+        fontSize: getCalculatedFontSize('--ht-font-size-1'),
+      },
+    },
+    tooltip: {
+      backgroundColor: getCSSVariable('--ht-surface-2'),
+      borderColor: getCSSVariable('--ht-surface-shadow'),
+      textStyle: {
+        color: themeColors.textColor1,
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-1'),
       },
     },
     xAxis: {
       axisLabel: {
         color: themeColors.textColor2,
-        fontFamily: getHTVariable('ht-font-sans'),
-        fontSize: getCalculatedFontSize('ht-font-size-2'),
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-3'),
+      },
+      nameTextStyle: {
+        color: themeColors.textColor1,
+        fontFamily: getCSSVariable('--ht-font-sans'),
+      },
+      splitLine: {
+        lineStyle: {
+          color: getCSSVariable('--ht-surface-2'),
+          type: 'dashed',
+        },
       },
     },
     yAxis: {
       axisLabel: {
         color: themeColors.textColor2,
-        fontFamily: getHTVariable('ht-font-sans'),
-        fontSize: getCalculatedFontSize('ht-font-size-2'),
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-3'),
+      },
+      nameTextStyle: {
+        color: themeColors.textColor1,
+        fontFamily: getCSSVariable('--ht-font-sans'),
+      },
+      splitLine: {
+        lineStyle: {
+          color: getCSSVariable('--ht-surface-2'),
+          type: 'dashed',
+        },
+      },
+    },
+    label: {
+      color: themeColors.textColor1,
+      fontFamily: getCSSVariable('--ht-font-sans'),
+      fontSize: getCalculatedFontSize('--ht-font-size-2'),
+    },
+    visualMap: {
+      textStyle: {
+        color: themeColors.textColor1,
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-2'),
+      },
+    },
+    seriesDefaults: {
+      heatmap: {
+        itemStyle: {
+          borderColor: themeColors.chartContrast,
+          borderWidth: 1,
+        },
+        color: themeColors.textColor2,
+        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontSize: getCalculatedFontSize('--ht-font-size-2'),
       },
     },
   };
