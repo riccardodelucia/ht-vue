@@ -1,12 +1,12 @@
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useColorMode } from '@vueuse/core';
 import {
-  getHTThemeColors,
-  getHTChartColors,
-  getCSSVariable,
-} from '@nf-data-iu3/ht-design/runtime';
+  getCSSHTThemeColors,
+  getCSSHTChartColors,
+  getCSSProperty,
+} from '@nf-data-iu3/ht-design';
 
 // #region Tooltip
 
@@ -62,14 +62,14 @@ export const useHTColorTheme = () => {
 
 /**
  * Returns ECharts theme object based on the current active CSS theme.
- * Reads CSS custom properties at runtime to automatically match light/dark mode.
+ * Waits for DOM to be mounted before reading CSS properties.
  *
  * @param {string} [paletteType='full'] - Palette type: 'full' or 'simple'.
- * @returns {Object} ECharts theme with resolved colors and styles.
+ * @returns {Ref<Object|null>} Reactive ref with ECharts theme (null until mounted).
  */
 export const useHTEchartsTheme = (paletteType = 'full') => {
-  const chartColors = getHTChartColors(paletteType);
-  const themeColors = getHTThemeColors();
+  const echartsTheme = ref(null);
+  const colorTheme = useHTColorTheme(); // Reactive theme reference
 
   /**
    * Calculates the numeric font size value by multiplying the given CSS variable by ht-font-size-base.
@@ -77,103 +77,119 @@ export const useHTEchartsTheme = (paletteType = 'full') => {
    * @returns {number} The calculated font size as a number
    */
   const getCalculatedFontSize = (fontSizeVar) => {
-    const fontSize = parseFloat(getCSSVariable(fontSizeVar)) || 1;
-    const baseSize = parseFloat(getCSSVariable('--ht-font-size-base')) || 16;
+    const fontSize = parseFloat(getCSSProperty(fontSizeVar)) || 1;
+    const baseSize = parseFloat(getCSSProperty('--ht-font-size-base')) || 16;
     const result = fontSize * baseSize;
     return isNaN(result) ? 16 : result;
   };
 
-  return {
-    color: Object.values(chartColors),
-    backgroundColor: themeColors.surface1,
-    textStyle: {
-      color: themeColors.textColor1,
-      fontFamily: getCSSVariable('--ht-font-sans'),
-      //fontSize: getCalculatedFontSize('--ht-font-size-1'),
-    },
-    title: {
+  /**
+   * Updates the ECharts theme based on current CSS variables and color theme.
+   * This function reads from the DOM, so it should only be called after mounting.
+   */
+  const updateTheme = () => {
+    const chartColors = getCSSHTChartColors(paletteType);
+    const themeColors = getCSSHTThemeColors();
+
+    echartsTheme.value = {
+      color: Object.values(chartColors),
+      backgroundColor: themeColors.surface1,
       textStyle: {
         color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontWeight: getCSSVariable('--ht-font-weight-5'),
-        fontSize: getCalculatedFontSize('--ht-font-size-3'),
+        fontFamily: getCSSProperty('--ht-font-sans'),
       },
-    },
-    legend: {
-      left: 'center',
-      textStyle: {
-        color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontWeight: getCSSVariable('--ht-font-weight-5'),
-        fontSize: getCalculatedFontSize('--ht-font-size-1'),
+      title: {
+        textStyle: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontWeight: getCSSProperty('--ht-font-weight-5'),
+          fontSize: getCalculatedFontSize('--ht-font-size-3'),
+        },
       },
-    },
-    tooltip: {
-      backgroundColor: getCSSVariable('--ht-surface-2'),
-      borderColor: getCSSVariable('--ht-surface-shadow'),
-      textStyle: {
-        color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-1'),
+      legend: {
+        left: 'center',
+        textStyle: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontWeight: getCSSProperty('--ht-font-weight-5'),
+          fontSize: getCalculatedFontSize('--ht-font-size-1'),
+        },
       },
-    },
-    xAxis: {
-      axisLabel: {
+      tooltip: {
+        backgroundColor: getCSSProperty('--ht-surface-2'),
+        borderColor: getCSSProperty('--ht-surface-shadow'),
+        textStyle: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontSize: getCalculatedFontSize('--ht-font-size-1'),
+        },
+      },
+      xAxis: {
+        axisLabel: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontSize: getCalculatedFontSize('--ht-font-size-0'),
+        },
+        nameTextStyle: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontSize: getCalculatedFontSize('--ht-font-size-1'),
+        },
+        splitLine: {
+          lineStyle: {
+            color: getCSSProperty('--ht-surface-2'),
+            type: 'dashed',
+          },
+        },
+      },
+      yAxis: {
+        axisLabel: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontSize: getCalculatedFontSize('--ht-font-size-0'),
+        },
+        nameTextStyle: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontSize: getCalculatedFontSize('--ht-font-size-1'),
+        },
+        splitLine: {
+          lineStyle: {
+            color: getCSSProperty('--ht-surface-2'),
+            type: 'dashed',
+          },
+        },
+      },
+      label: {
         color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
+        fontFamily: getCSSProperty('--ht-font-sans'),
         fontSize: getCalculatedFontSize('--ht-font-size-0'),
       },
-      nameTextStyle: {
-        color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-1'),
-      },
-      splitLine: {
-        lineStyle: {
-          color: getCSSVariable('--ht-surface-2'),
-          type: 'dashed',
+      visualMap: {
+        textStyle: {
+          color: themeColors.textColor1,
+          fontFamily: getCSSProperty('--ht-font-sans'),
+          fontSize: getCalculatedFontSize('--ht-font-size-1'),
         },
       },
-    },
-    yAxis: {
-      axisLabel: {
-        color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-0'),
-      },
-      nameTextStyle: {
-        color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-1'),
-      },
-      splitLine: {
-        lineStyle: {
-          color: getCSSVariable('--ht-surface-2'),
-          type: 'dashed',
+      seriesDefaults: {
+        heatmap: {
+          itemStyle: {
+            borderColor: 'black',
+            borderWidth: 1.2,
+          },
         },
       },
-    },
-    label: {
-      color: themeColors.textColor1,
-      fontFamily: getCSSVariable('--ht-font-sans'),
-      fontSize: getCalculatedFontSize('--ht-font-size-0'),
-    },
-    visualMap: {
-      textStyle: {
-        color: themeColors.textColor1,
-        fontFamily: getCSSVariable('--ht-font-sans'),
-        fontSize: getCalculatedFontSize('--ht-font-size-1'),
-      },
-    },
-    seriesDefaults: {
-      heatmap: {
-        itemStyle: {
-          borderColor: 'black',
-          borderWidth: 1.2,
-        },
-      },
-    },
+    };
   };
+
+  // Watch for color theme changes and update the ECharts theme accordingly
+  watch(colorTheme, () => updateTheme(), {
+    immediate: true, // Execute immediately when the composable is created
+    flush: 'post', // Execute after DOM updates to ensure CSS variables are available
+  });
+
+  return echartsTheme;
 };
 
 // #endregion
