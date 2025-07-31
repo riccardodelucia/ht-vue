@@ -19,10 +19,10 @@
               class="chevron"
               @click="setCurrentPage(currentPage - 1)"
             >
-              <HTIcon type="chevron-left"/>
+              <HTIcon type="chevron-left" />
             </button>
             <button v-else class="chevron" aria-disabled="true">
-              <HTIcon type="chevron-left"/>
+              <HTIcon type="chevron-left" />
             </button>
           </li>
 
@@ -41,10 +41,10 @@
               class="chevron"
               @click="setCurrentPage(currentPage + 1)"
             >
-              <HTIcon type="chevron-right"/>
+              <HTIcon type="chevron-right" />
             </button>
             <button v-else class="chevron" aria-disabled="true">
-              <HTIcon type="chevron-right"/>
+              <HTIcon type="chevron-right" />
             </button>
           </li>
         </ul>
@@ -145,7 +145,7 @@ const pages = computed(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .pagination-controls {
   display: flex;
   align-items: center;

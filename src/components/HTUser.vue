@@ -29,7 +29,7 @@
       </h2>
       <nav aria-labelledby="user-menu-heading">
         <a class="ht-reset logout" href="#" @click="auth.logout()">
-          <HTIcon type="log-out"/>logout
+          <HTIcon type="log-out" />logout
         </a>
       </nav>
     </div>
@@ -59,7 +59,7 @@ const userName = computed(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 h2 {
   font-size: var(--font-size-3);
 }

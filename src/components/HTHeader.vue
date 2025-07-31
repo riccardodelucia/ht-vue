@@ -41,7 +41,7 @@ const onClick = () => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .header {
   background-image: var(--ht-color-brand-gradient);
   background-size: cover;

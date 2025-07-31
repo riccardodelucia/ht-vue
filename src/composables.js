@@ -64,10 +64,10 @@ export const useHTColorTheme = () => {
  * Returns ECharts theme object based on the current active CSS theme.
  * Waits for DOM to be mounted before reading CSS properties.
  *
- * @param {string} [paletteType='full'] - Palette type: 'full' or 'simple'.
+ * @param {string} [paletteType='default'] - Palette type: 'default' or 'simple'.
  * @returns {Ref<Object|null>} Reactive ref with ECharts theme (null until mounted).
  */
-export const useHTEchartsTheme = (paletteType = 'full') => {
+export const useHTEchartsTheme = (paletteType = 'default') => {
   const echartsTheme = ref(null);
   const colorTheme = useHTColorTheme(); // Reactive theme reference
 

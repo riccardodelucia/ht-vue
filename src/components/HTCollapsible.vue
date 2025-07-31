@@ -2,7 +2,7 @@
   <div class="collapsible">
     <div class="collapsible-header" @click="collapsed = !collapsed">
       <slot name="header"></slot>
-      <HTIcon type="chevron-down" iconClass="collapsible-icon"/>
+      <HTIcon type="chevron-down" class="collapsible-icon" />
     </div>
     <div class="panel" v-show="collapsed">
       <slot></slot>
@@ -23,7 +23,7 @@ const collapsed = ref(props.initiallyExpanded);
 const rotation = computed(() => (collapsed.value ? '0deg' : '180deg'));
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .collapsible-header {
   display: grid;
   grid-template-columns: 1fr 2rem;

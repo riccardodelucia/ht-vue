@@ -157,7 +157,7 @@ const setAriaSort = (column, columnIndex) => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .datatable {
   display: grid;
   grid-row-gap: var(--size-5);
@@ -192,11 +192,11 @@ tr:nth-child(even) {
   background-color: var(--ht-surface-3);
 }
 
-// putting a div within th, td allows to controls the cell height and scrolling behavior.
+/*  putting a div within th, td allows to controls the cell height and scrolling behavior. */
 .table-cell {
   height: v-bind(tableCellHeight);
   overflow-y: scroll;
-  white-space: pre-line; // this converts JS '\n' characters into HTML new line.
+  white-space: pre-line; /* this converts JS '\n' characters into HTML new line. */
 }
 
 .sort-button {

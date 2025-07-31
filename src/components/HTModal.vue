@@ -36,7 +36,7 @@ watchEffect(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .modal {
   padding: 0;
   background-color: var(--ht-surface-1);

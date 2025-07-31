@@ -45,7 +45,7 @@ defineProps({
 const model = defineModel();
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 label,
 input {
   vertical-align: middle;

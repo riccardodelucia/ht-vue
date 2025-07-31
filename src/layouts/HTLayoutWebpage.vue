@@ -14,7 +14,7 @@
 
 <script setup></script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .container {
   display: grid;
   min-height: 100vh;

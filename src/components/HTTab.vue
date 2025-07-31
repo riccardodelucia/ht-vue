@@ -53,7 +53,7 @@ const onClick = (tab) => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .tab {
   width: fit-content;
 }

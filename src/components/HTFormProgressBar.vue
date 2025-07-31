@@ -59,7 +59,7 @@ const progressPercentage = computed(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .form-progressbar {
   padding-bottom: 3rem;
 

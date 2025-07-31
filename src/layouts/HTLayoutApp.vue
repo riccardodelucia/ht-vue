@@ -45,7 +45,7 @@ const onClick = () => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .container {
   display: grid;
   min-height: 100vh;
@@ -68,7 +68,7 @@ const onClick = () => {
   display: flex;
   align-items: center;
 
-  // colored line below header
+  /*   colored line below header */
   &::after {
     content: '';
     height: var(--size-1);

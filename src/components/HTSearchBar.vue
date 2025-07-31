@@ -16,7 +16,7 @@
       label="Submit Search"
       @click="onClick"
     >
-      <HTIcon type="search" width="5"/>
+      <HTIcon type="search" width="5" />
     </button>
     <datalist :id="listId">
       <option
@@ -54,7 +54,7 @@ const onClick = () => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 /**
   Note: currently, there no way to style a datalist with pure CSS. The approach to style it requires a bunch of work with JS, which here is omitted for simplicity.
 */
