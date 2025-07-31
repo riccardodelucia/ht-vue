@@ -9,33 +9,21 @@
 -->
 
 <script setup>
-import { computed } from 'vue';
 import VueFeather from 'vue-feather';
 
-const props = defineProps({
+defineProps({
   type: {
     type: String,
+    required: true,
   },
   width: {
+    //in pixels
     type: [String, Number],
     default: 25,
   },
 });
-
-const iconStyle = computed(() => ({
-  '--icon-width':
-    typeof props.width === 'number' ? props.width + 'px' : props.width,
-}));
 </script>
 
 <template>
-  <VueFeather v-if="type" :type="type" :width="width" v-bind="$attrs" />
-  <span v-else v-bind="$attrs" class="ht-icon-placeholder" :style="iconStyle" />
+  <VueFeather :type="type" :width="width" v-bind="$attrs" />
 </template>
-
-<style scoped>
-.ht-icon-placeholder {
-  display: inline-block;
-  min-width: var(--icon-width, 25px);
-}
-</style>

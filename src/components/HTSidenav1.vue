@@ -11,13 +11,9 @@
     <ul v-if="links.length > 0" class="sidenav-list">
       <li v-for="(link, idx) in links" :key="idx">
         <RouterLink :to="link.to" class="sidenav-link" active-class="active">
-          <HTIcon
-            v-if="link.icon"
-            :type="link.icon"
-            :width="25"
-            class="sidenav-link-icon"
-          />
-          <span class="sidenav-link-label">{{ link.label }}</span>
+          <HTIcon v-if="link.icon" :type="link.icon" :width="25" />
+          <span v-else class="ht-icon-placeholder"></span>
+          <span>{{ link.label }}</span>
         </RouterLink>
       </li>
     </ul>
@@ -66,14 +62,18 @@ defineProps({
 }
 
 .sidenav-link {
-  display: grid;
-  grid-template-columns: 32px 1fr;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   padding: var(--size-2);
   gap: var(--size-3);
   cursor: pointer;
   color: white;
   text-decoration: none;
+
+  & > *:first-child {
+    flex: 0 0 auto;
+  }
 
   &.active {
     background-color: var(--ht-color-secondary);
@@ -90,14 +90,10 @@ defineProps({
   & > span {
     transition: transform 0.3s ease-in-out;
   }
+}
 
-  .sidenav-link-icon {
-    grid-column: 1;
-    justify-self: center;
-  }
-
-  .sidenav-link-label {
-    grid-column: 2;
-  }
+.ht-icon-placeholder {
+  display: inline-block;
+  width: 25px;
 }
 </style>
