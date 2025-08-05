@@ -1,9 +1,6 @@
 <template>
   <div class="form-progressbar">
-    <HTProgress
-      :value="progressPercentage"
-      aria-label="Progress Percentage"
-    ></HTProgress>
+    <HTProgress :value="progressPercentage" aria-label="Progress Percentage" />
     <ol class="ht-reset">
       <li
         v-for="(step, idx) in steps"

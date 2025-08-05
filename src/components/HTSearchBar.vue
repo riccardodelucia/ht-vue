@@ -19,11 +19,7 @@
       <HTIcon type="search" width="5" />
     </button>
     <datalist :id="listId">
-      <option
-        v-for="(hint, id) in hints"
-        :key="`hint-${id}`"
-        :value="hint"
-      ></option>
+      <option v-for="(hint, id) in hints" :key="`hint-${id}`" :value="hint" />
     </datalist>
   </div>
 </template>
