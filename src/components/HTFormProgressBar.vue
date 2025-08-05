@@ -12,12 +12,12 @@
           :data-state="idx <= currentStep ? 'completed' : null"
         >
           {{ idx + 1 }}
-          <span v-if="idx < currentStep" class="ht-visually-hidden"
-            >Completed</span
-          >
-          <span v-else-if="idx === currentStep" class="ht-visually-hidden"
-            >Current</span
-          >
+          <span v-if="idx < currentStep" class="ht-visually-hidden">
+            Completed
+          </span>
+          <span v-else-if="idx === currentStep" class="ht-visually-hidden">
+            Current
+          </span>
           <small>{{ step }}</small>
         </div>
       </li>

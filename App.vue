@@ -27,11 +27,11 @@
     </div>
     <h2>Input Controls</h2>
     <div>
-      <ht-input v-model="inputFieldModel" label="Input field"></ht-input>
+      <ht-input v-model="inputFieldModel" label="Input field" />
       <p>inputFieldModel: {{ inputFieldModel }}</p>
     </div>
     <div>
-      <ht-textarea v-model="inputTextareaModel" label="Textarea"></ht-textarea>
+      <ht-textarea v-model="inputTextareaModel" label="Textarea" />
       <p>inputTextareaModel: {{ inputTextareaModel }}</p>
     </div>
     <div>
@@ -39,7 +39,7 @@
         v-model="searchModelValue"
         label="Search bar reactive"
         :hints="searchHints"
-      ></ht-search-bar>
+      />
       <p>searchModelValue: {{ searchModelValue }}</p>
     </div>
     <div>
@@ -47,7 +47,7 @@
         label="Search bar with submit"
         :hints="searchHints"
         @search="onSearchSubmit"
-      ></ht-search-bar>
+      />
       <p>searchModelValue: {{ searchModelValue }}</p>
     </div>
     <div>
@@ -56,7 +56,7 @@
         label="Checkbox label"
         :true-value="true"
         :false-value="'false'"
-      ></ht-checkbox>
+      />
       <p>checkboxModelValue: {{ checkboxModelValue }}</p>
     </div>
 
@@ -65,12 +65,12 @@
         v-model="checkboxMultipleModelValue"
         value="italy"
         label="Italy"
-      ></ht-checkbox>
+      />
       <ht-checkbox
         v-model="checkboxMultipleModelValue"
         value="france"
         label="France"
-      ></ht-checkbox>
+      />
       <p>checkboxMultipleModelValue: {{ checkboxMultipleModelValue }}</p>
     </div>
     <div>
@@ -78,23 +78,23 @@
         :options="checkboxSelectAllOptions"
         v-model="checkboxSelectAllOptionsModel"
         :initially-selected="false"
-      ></ht-checkbox-select-all>
+      />
       <div>
         <ht-checkbox
           v-model="checkboxSelectAllOptionsModel"
           label="First"
           :value="checkboxSelectAllOptions[0]"
-        ></ht-checkbox>
+        />
         <ht-checkbox
           v-model="checkboxSelectAllOptionsModel"
           label="Second"
           :value="checkboxSelectAllOptions[1]"
-        ></ht-checkbox>
+        />
         <ht-checkbox
           v-model="checkboxSelectAllOptionsModel"
           label="Third"
           :value="checkboxSelectAllOptions[2]"
-        ></ht-checkbox>
+        />
       </div>
       <p>
         checkboxSelectAllOptionsModel:
@@ -107,7 +107,7 @@
         :true-value="1"
         :false-value="{ value: 'false' }"
         label="Toggle Switch label"
-      ></ht-toggle-switch>
+      />
       <p>toggleSwitchModelValue: {{ toggleSwitchModelValue }}</p>
     </div>
     <div>
@@ -115,14 +115,11 @@
         v-model="selectModelValue"
         :options="selectOptions"
         :option-labels="selectOptionLabels"
-      ></ht-select>
+      />
       <p>selectModelValue: {{ selectModelValue }}</p>
     </div>
     <div>
-      <ht-select
-        v-model="multipleSelectModelValue"
-        :options="activeOptions"
-      ></ht-select>
+      <ht-select v-model="multipleSelectModelValue" :options="activeOptions" />
       <p>multipleSelectModelValue: {{ multipleSelectModelValue }}</p>
       <ht-checkbox
         v-for="(option, idx) in multipleSelectOptions"
@@ -130,7 +127,7 @@
         :value="option"
         v-model="activeOptions"
         :label="option"
-      ></ht-checkbox>
+      />
       <p>activeOptions: {{ activeOptions }}</p>
     </div>
     <div>
@@ -139,27 +136,27 @@
         :labels="radioLabels"
         v-model="radioModelValue"
         name="test"
-      ></ht-radio-group>
+      />
       <p>radioModelValue: {{ radioModelValue }}</p>
     </div>
     <div>
-      <ht-input-file v-model="file" label="File input"></ht-input-file>
+      <ht-input-file v-model="file" label="File input" />
       <p>file: {{ file?.name }}</p>
     </div>
     <div>
-      <ht-input-file v-model="multipleFiles" label="File input"></ht-input-file>
+      <ht-input-file v-model="multipleFiles" label="File input" />
       <p>multipleFiles: {{ multipleFiles?.map(({ name }) => name) }}</p>
     </div>
     <div class="ht-layout-stack">
       <h2>Accordion</h2>
       <ht-collapsible :initially-expanded="true">
         <template #header>Label</template>
-        <template #default
-          >Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
+        <template #default>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
           dolores amet autem. Eos dolor labore aliquam quis voluptatem
           laudantium facilis, consequatur dolore enim harum, reiciendis impedit,
-          eveniet eius. Accusantium, dicta.</template
-        >
+          eveniet eius. Accusantium, dicta.
+        </template>
       </ht-collapsible>
     </div>
     <div class="ht-layout-stack">
@@ -193,9 +190,9 @@
         "
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps.column.name === 'Action'"
-            ><button type="button">Action</button></template
-          >
+          <template v-if="slotProps.column.name === 'Action'">
+            <button type="button">Action</button>
+          </template>
         </template>
       </ht-datatable-server>
       <h2>Client side table</h2>
@@ -210,8 +207,8 @@
         :displayable-pages="3"
       >
         <template v-slot="slotProps">
-          <template v-if="slotProps?.column.name === 'Action'"
-            ><button type="button">
+          <template v-if="slotProps?.column.name === 'Action'">
+            <button type="button">
               Action: {{ slotProps.dataValue }}Original Row Index:
             </button>
             <p>Original Row Index: {{ slotProps.originalRowIndex }}</p>
@@ -224,7 +221,7 @@
         :value="idx"
         :label="option"
         v-model="activeColumnsIndexes"
-      ></ht-checkbox>
+      />
       <p>{{ activeColumnsIndexes }}</p>
     </div>
     <div>
