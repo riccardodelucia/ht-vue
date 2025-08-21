@@ -729,7 +729,7 @@ const searchHints = [
 ];
 </script>
 
-<style lang="postcss">
+<style>
 .notifications-container {
   padding: var(--size-2);
   position: absolute;

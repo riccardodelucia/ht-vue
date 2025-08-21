@@ -145,7 +145,7 @@ const pages = computed(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .pagination-controls {
   display: flex;
   align-items: center;

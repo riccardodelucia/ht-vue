@@ -59,7 +59,7 @@ const userName = computed(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 h2 {
   font-size: var(--font-size-3);
 }

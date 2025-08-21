@@ -12,7 +12,7 @@ defineProps({
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .message-page {
   display: flex;
   flex-direction: column;

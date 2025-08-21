@@ -53,7 +53,7 @@ const onClick = () => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 /**
   Note: currently, there no way to style a datalist with pure CSS. The approach to style it requires a bunch of work with JS, which here is omitted for simplicity.
 */

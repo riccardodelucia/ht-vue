@@ -22,10 +22,11 @@ const collapsed = ref(props.initiallyExpanded);
 const rotation = computed(() => (collapsed.value ? '0deg' : '180deg'));
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .collapsible-header {
   display: grid;
   grid-template-columns: 1fr 2rem;
+  cursor: pointer;
 }
 
 .collapsible-icon {

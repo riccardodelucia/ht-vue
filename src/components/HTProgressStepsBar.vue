@@ -8,17 +8,17 @@
       <li
         v-for="(step, idx) in steps"
         :key="idx"
-        :aria-current="idx === currentStep ? 'step' : null"
+        :aria-current="step === currentStep ? 'step' : null"
       >
         <div
           class="ht-number-indicator"
-          :data-state="idx <= currentStep ? 'completed' : null"
+          :data-state="idx <= currentStepIndex ? 'completed' : null"
         >
           {{ idx + 1 }}
-          <span v-if="idx < currentStep" class="ht-visually-hidden"
+          <span v-if="idx < currentStepIndex" class="ht-visually-hidden"
             >Completed</span
           >
-          <span v-else-if="idx === currentStep" class="ht-visually-hidden"
+          <span v-else-if="idx === currentStepIndex" class="ht-visually-hidden"
             >Current</span
           >
           <small>{{ step }}</small>
@@ -34,7 +34,7 @@ import { computed } from 'vue';
 
 const props = defineProps({
   currentStep: {
-    type: Number,
+    type: String,
     required: true,
   },
   steps: {
@@ -50,16 +50,18 @@ const nSteps = computed(() => {
   return props.steps.length;
 });
 
+const currentStepIndex = computed(() => props.steps.indexOf(props.currentStep));
+
 const progressPercentage = computed(() => {
   const nIntervals = nSteps.value - 1;
 
   const stepWidthPercentage = 100 / nIntervals;
 
-  return props.currentStep * stepWidthPercentage;
+  return currentStepIndex.value * stepWidthPercentage;
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .form-progressbar {
   padding-bottom: 3rem;
 

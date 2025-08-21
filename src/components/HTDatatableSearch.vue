@@ -27,7 +27,7 @@ defineEmits(['search-column', 'search-value']);
 const searchColumn = ref(props.columnOptions[0]);
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .datatable-search {
   display: flex;
   align-items: center;

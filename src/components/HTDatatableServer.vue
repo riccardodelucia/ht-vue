@@ -157,7 +157,7 @@ const setAriaSort = (column, columnIndex) => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .datatable {
   display: grid;
   grid-row-gap: var(--size-5);

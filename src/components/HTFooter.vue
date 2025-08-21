@@ -15,7 +15,7 @@
 import htLogoWhite from '../assets/ht-logo-white.svg';
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .footer {
   background-color: var(
     --footer-background-color,

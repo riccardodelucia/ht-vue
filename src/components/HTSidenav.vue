@@ -29,7 +29,7 @@ defineProps({
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .sidenav {
   background-color: var(--ht-color-brand-blue-1);
   width: 16rem;

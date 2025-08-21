@@ -55,7 +55,7 @@ const onClick = () => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .accordion {
   --animation-time: 200ms;
 

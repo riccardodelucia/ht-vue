@@ -69,7 +69,7 @@ const filename = computed(() => {
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .input-file-container {
   position: relative;
   width: max-content;

@@ -67,7 +67,7 @@ defineExpose({
 });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 label,
 input {
   vertical-align: middle;
