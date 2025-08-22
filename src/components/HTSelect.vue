@@ -35,10 +35,6 @@ import { computed, watch } from 'vue';
 
 const props = defineProps({
   label: { type: String, default: null },
-  modelValue: {
-    type: [Object, String, Number, Array],
-    required: true,
-  },
   showDisabledOption: { default: true },
   disabledOptionLabel: { type: String, default: 'Please select one' },
   // options refers to possible candidates values for the modelValue
@@ -69,17 +65,19 @@ const isMultiple = computed(() => {
   return Array.isArray(model.value);
 });
 
+// this watcher is used to reset the assigned selection if options change and they don't contain the current model value
 watch(
   () => props.options,
   () => {
     if (isMultiple.value) {
       const newSelections = props.options.filter((newOption) => {
-        return props.modelValue.includes(newOption);
+        return model.value.includes(newOption);
       });
       model.value = newSelections;
     } else if (!props.options.includes(model.value))
       if (props.showDisabledOption)
-        // this is used to reset the assigned selection if options change and they don't contain the previously selected option value
+        /* if isMultiple === false and model contains a valid prop option, do nothing,
+         otherwise, set the model value to either null, if showDisabledOption is true, or the first availbale option. */
         model.value = null;
       else model.value = props.options[0];
   },

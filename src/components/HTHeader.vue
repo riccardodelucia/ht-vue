@@ -30,11 +30,30 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import htLogoWhite from '../assets/ht-logo-white.svg';
 import HTButtonIcon from './HTButtonIcon.vue';
 
 const isExpanded = ref(false);
+const mediaQuery = window.matchMedia('(min-width: 50em)'); // matches your CSS media query
+
+const setIsExpanded = () => {
+  isExpanded.value = mediaQuery.matches; // true on large screens, false on small screens
+};
+
+// Watch for changes in screen size
+const handleResize = () => {
+  setIsExpanded();
+};
+
+onMounted(() => {
+  setIsExpanded();
+  mediaQuery.addEventListener('change', handleResize);
+});
+
+onUnmounted(() => {
+  mediaQuery.removeEventListener('change', handleResize);
+});
 
 const onClick = () => {
   isExpanded.value = !isExpanded.value;

@@ -27,6 +27,7 @@ const rotation = computed(() => (collapsed.value ? '0deg' : '180deg'));
 .collapsible-header {
   display: grid;
   grid-template-columns: 1fr 2rem;
+  cursor: pointer;
 }
 
 .collapsible-icon {
