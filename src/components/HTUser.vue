@@ -17,7 +17,7 @@
       :aria-expanded="open"
       aria-controls="user-menu"
       @click="open = !open"
-    ></HTButtonIcon>
+    />
     <div
       v-show="open"
       id="user-menu"
@@ -29,7 +29,7 @@
       </h2>
       <nav aria-labelledby="user-menu-heading">
         <a class="ht-reset logout" href="#" @click="auth.logout()">
-          <VueFeather type="log-out"></VueFeather>logout
+          <HTIcon type="log-out" />logout
         </a>
       </nav>
     </div>
@@ -39,7 +39,7 @@
 <script setup>
 import { ref, computed, inject } from 'vue';
 import HTButtonIcon from './HTButtonIcon.vue';
-import VueFeather from 'vue-feather';
+import HTIcon from './HTIcon.vue';
 
 const open = ref(false);
 const auth = inject('auth');

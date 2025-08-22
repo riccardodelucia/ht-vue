@@ -17,8 +17,9 @@
     :id="`input-file-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
-    >{{ errorMessage }}</span
   >
+    {{ errorMessage }}
+  </span>
 </template>
 
 <script setup>

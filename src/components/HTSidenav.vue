@@ -4,24 +4,31 @@
       class="sidenav-logo"
       href="https://humantechnopole.it/en/"
       target="_blank"
-      ><img :src="htLogoWhite" alt="HT sidenav logo"
-    /></a>
+    >
+      <img :src="htLogoWhite" alt="HT sidenav logo" />
+    </a>
     <h2>{{ title }}</h2>
     <ul v-if="links.length > 0" class="sidenav-list">
-      <li class="sidenav-link" v-for="(link, idx) in links" :key="idx">
-        <RouterLink active-class="active" :to="link.to">
-          <VueFeather :type="link.icon"></VueFeather
-          ><span>{{ link.label }}</span>
+      <li v-for="(link, idx) in links" :key="idx">
+        <RouterLink :to="link.to" class="sidenav-link" active-class="active">
+          <HTIcon
+            v-if="link.icon"
+            :type="link.icon"
+            :width="25"
+            class="sidenav-link-icon"
+          />
+          <span class="sidenav-link-label">{{ link.label }}</span>
         </RouterLink>
       </li>
     </ul>
-    <!-- Us this slot if you want to override the default render behavior of the sidenav -->
+    <!-- Use this slot if you want to override the default render behavior of the sidenav -->
     <slot name="sidenav-content"></slot>
   </nav>
 </template>
 
 <script setup>
 import htLogoWhite from '../assets/ht-logo-white.svg';
+import HTIcon from './HTIcon.vue';
 
 defineProps({
   title: { type: String, default: 'Test' },
@@ -58,9 +65,9 @@ defineProps({
   margin: 0;
 }
 
-.sidenav-link > a {
-  display: flex;
-  flex-wrap: nowrap;
+.sidenav-link {
+  display: grid;
+  grid-template-columns: 32px 1fr;
   align-items: center;
   padding: var(--size-2);
   gap: var(--size-3);
@@ -82,6 +89,15 @@ defineProps({
 
   & > span {
     transition: transform 0.3s ease-in-out;
+  }
+
+  .sidenav-link-icon {
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  .sidenav-link-label {
+    grid-column: 2;
   }
 }
 </style>
