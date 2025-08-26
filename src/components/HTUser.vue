@@ -1,6 +1,6 @@
 <template>
   <a
-    v-if="!auth.authenticated"
+    v-if="!auth.state.authenticated"
     tabindex="0"
     class="ht-reset"
     to="#"
@@ -37,12 +37,13 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed } from 'vue';
 import HTButtonIcon from './HTButtonIcon.vue';
 import HTIcon from './HTIcon.vue';
 
+const props = defineProps({ auth: { type: Object, required: true } });
+
 const open = ref(false);
-const auth = inject('auth');
 
 const onClickOutside = () => {
   open.value = false;
@@ -51,7 +52,9 @@ const onClickOutside = () => {
 const userName = computed(() => {
   const maxLength = 20;
   const name =
-    auth.userProfile?.firstName || auth.userProfile?.username || 'user';
+    props.auth.state.userProfile?.firstName ||
+    props.auth.state.userProfile?.username ||
+    'user';
 
   return name.length > maxLength
     ? name.substring(0, maxLength - 3).concat('...')
