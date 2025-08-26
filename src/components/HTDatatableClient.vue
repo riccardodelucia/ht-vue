@@ -108,7 +108,7 @@ const getOriginalRowIndex = (rowIndex) => {
 // ===== COMPUTED PIPELINE =====
 
 /**
- * data processing is implemented as the following pipeline: filtering -> sorting -> paginating
+ * data processing is implemented as the following pipeline: filtering -> sorting -> pagination
  * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
  * Computed properties are computed on top of each previous stage.
  */
@@ -116,7 +116,8 @@ const getOriginalRowIndex = (rowIndex) => {
 // STEP 1: Add original indexes to track row identity
 /**
  * This is used to append the original row index value to the filtered+sorted+paginated data.
- * This information is used to inform back the parent component about the currently shown rows of data.
+ * This information is used to inform back the parent component about the currently shown rows of data from the initial dataset,
+ * which is possibly higher than the actual data rows shoen on the table (e.g. because of filtering or pagination).
  */
 const internalTableData = computed(() =>
   props.data.map((row, rowIndex) => ({ row, rowIndex })),
@@ -222,12 +223,13 @@ const availablePages = computed(() => {
 });
 
 // ===== SIDE EFFECTS =====
-
+/**
+ * Reset search and pagination when base data changes,
+ * but preserve sort settings as they might still be valid
+ */
 watch(
   () => props.data,
   () => {
-    // Reset search and pagination when base data changes
-    // But preserve sort settings as they might still be valid
     resetPagination();
 
     // If current search column no longer exists, reset to "All"

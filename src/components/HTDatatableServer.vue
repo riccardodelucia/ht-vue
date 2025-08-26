@@ -73,13 +73,15 @@
 
 <script setup>
 /**
- * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and paginate events, the parent can implement both
- * client side and server side sorting+paginating solutions
+ * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and pagination events, the parent can implement both
+ * client side and server side sorting+pagination solutions
  */
 
 import { computed, ref } from 'vue';
 const props = defineProps({
   /**
+   * this is the minimum set of required attributes. Any further attribute can still be passed,
+   * and it will be exposed back to the parent a slot prop, to be used according to needs.
    * column_item_example = {
    *  name: String //the name to describe the column
    *  sortable: Boolean // optional, it indicates whether the column is sortable
@@ -89,28 +91,62 @@ const props = defineProps({
    *
    */
   columns: { type: Array, required: true },
-  rowHeader: { type: String, default: null }, // use to set the html element to <th> instead of <td>
   /**
-   *  data is an array of objects, where each object contains {rowIndex, rowData}. This allows to map back to the original row indexes of the table, whenever filtered
-   *  Note: data must provide a value for every column cell, even cells that have a custom HTML rendered slot.
-   *  The corresponding value will be exposed as a slotProp to the parent.
+   * Each row needs a table cell used as row head. This props is compared to the
+   * corresponding column hnnameame for each column. When there is a correspondence, the corresponding
+   * cell is set as <th>, instead of <td>.
+   */
+  rowHeader: { type: String, default: null },
+  /**
+   * Data is an array of arrays, i.e. a 2D matrix, where each matrix element is the corresponding data value for that table indexed position (i, j).
+   * Empty values must therefore be provided as either null or undefined, to keep the array elements alignment in the matrix.
+   * Each matrix value is exposed as a slotProp to the parent in the corresponding table cell.
    */
   data: { type: Array, required: true },
+  /**
+   * Enables/ disables the search bar for the table.
+   */
   useSearch: { type: Boolean, default: true },
+  /**
+   * This sets the default option for researching values in all table columns
+   */
   searchAllColumnsLabel: { type: String, default: 'All Columns' },
+  /**
+   * Enables/ disables the sorting for column table headers.
+   */
   useSort: { type: Boolean, default: true },
+  /**
+   * Enables/ disables pagination for the table.
+   */
   usePagination: { type: Boolean, default: true },
+  /**
+   * Maximum number of pages to be shown in the pagination cursor. Must be an odd value.
+   */
   displayablePages: {
     type: Number,
     required: false,
   },
+  /**
+   * Total number of pages according to the size of data
+   */
   availablePages: {
     type: Number,
     required: false,
   },
+  /**
+   * Total number of data rows according to the current data filtering.
+   * This is shown in the pagination component.
+   */
   totalItemsCount: { type: Number, default: null },
-  tableCellWidth: { type: String, default: '30rem' }, // this defines the min width of the table cell. Column width can still grow more than this number according to the size of the column header content.
-  tableCellHeight: { type: String, default: '100%' }, // when 100%, the cell height is adapted to fit the cell content.
+  /**
+   * This defines the min width of the table cell.
+   * Column width can still grow more than this number according to the size of the column header content.
+   */
+  tableCellWidth: { type: String, default: '30rem' },
+  /**
+   * When 100%, the cell height is adapted to fit the cell content.
+   */
+  tableCellHeight: { type: String, default: '100%' },
 });
 
 const emit = defineEmits([
