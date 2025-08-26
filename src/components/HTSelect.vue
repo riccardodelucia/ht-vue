@@ -16,7 +16,7 @@
       :key="`option-${idx}`"
       :value="option"
     >
-      {{ optionLabels[idx] || option }}
+      {{ labelMap.get(option) }}
     </option>
   </select>
   <span
@@ -63,6 +63,19 @@ const model = defineModel();
 
 const isMultiple = computed(() => {
   return Array.isArray(model.value);
+});
+
+/**
+ * Build a Map to keep the association between option -> label.
+ * Works with primitives or objects, and remains stable if the
+ * options array is reordered.
+ */
+const labelMap = computed(() => {
+  const map = new Map();
+  props.options.forEach((opt, idx) => {
+    map.set(opt, props.optionLabels[idx] || String(opt));
+  });
+  return map;
 });
 
 // this watcher is used to reset the assigned selection if options change and they don't contain the current model value
