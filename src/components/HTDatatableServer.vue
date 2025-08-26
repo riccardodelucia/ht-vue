@@ -73,7 +73,7 @@
 
 <script setup>
 /**
- * Not: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and pagination events, the parent can implement both
+ * Note: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and pagination events, the parent can implement both
  * client side and server side sorting+pagination solutions
  */
 
