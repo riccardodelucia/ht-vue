@@ -28,24 +28,32 @@ import { ref } from 'vue';
 
 defineProps({
   trueValue: {
+    // Custom value returned when checked.
     type: [String, Number, Boolean, Object, Array, null],
     default: () => true,
   },
   falseValue: {
+    // Custom value returned when unchecked.
     type: [String, Number, Boolean, Object, Array, null],
     default: () => false,
   },
-  value: { type: [String, Number, Boolean, Object], required: false }, // for multiple checkboxes only
+  value: {
+    // Only used for checkbox groups: the value for this checkbox in a group
+    type: [String, Number, Boolean, Object],
+    required: false,
+  },
   label: {
+    // Optional text label for the checkbox
     type: String,
     default: null,
   },
   errorMessage: {
+    // Optional error message shown below the checkbox
     type: String,
     default: null,
   },
-  // SSR only
   id: {
+    // Unique id used for input/label association in SSR scenario; generated if not provided
     type: String,
     default: () => uuidv4(),
   },
@@ -54,6 +62,7 @@ defineProps({
 const model = defineModel();
 const checkbox = ref(null);
 
+// Exposed methods to set/reset indeterminate state (useful for tri-state checkboxes)
 const setIndeterminate = () => {
   checkbox.value.indeterminate = true;
 };

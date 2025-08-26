@@ -4,7 +4,7 @@
     :id="id"
     v-model="model"
     v-bind="$attrs"
-    :multiple="isMultiple"
+    :multiple="isMultiSelect"
     :aria-invalid="errorMessage ? true : null"
     :aria-describedby="errorMessage ? `select-error-${id}` : null"
   >
@@ -30,30 +30,41 @@
 
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
-
 import { computed, watch } from 'vue';
 
 const props = defineProps({
-  label: { type: String, default: null },
-  showDisabledOption: { default: true },
-  disabledOptionLabel: { type: String, default: 'Please select one' },
-  // options refers to possible candidates values for the modelValue
-  // Note: options cannot be null, which is used for the disabled option
+  label: {
+    // Optional label for the select
+    type: String,
+    default: null,
+  },
+  showDisabledOption: {
+    // Show a disabled placeholder option at the top of the options list
+    default: true,
+  },
+  disabledOptionLabel: {
+    // Text for the disabled placeholder option
+    type: String,
+    default: 'Please select one',
+  },
   options: {
+    // Array of selectable values (required)
+    // Note: options cannot be null, which is reserved for the disabled option
     type: Array,
     required: true,
   },
-  // optionLabels refers to labels to be associated to the corresponding options
   optionLabels: {
+    // Array of labels for each option (optional)
     type: Array,
     default: () => [],
   },
   errorMessage: {
+    // Optional error message to display below the select
     type: String,
     default: null,
   },
-  // SSR only
   id: {
+    // Unique id used for input/label association in SSR scenario; generated if not provided
     type: String,
     default: () => uuidv4(),
   },
@@ -61,7 +72,8 @@ const props = defineProps({
 
 const model = defineModel();
 
-const isMultiple = computed(() => {
+// Computed that indicates if the select is a multi-select (true if model is an array)
+const isMultiSelect = computed(() => {
   return Array.isArray(model.value);
 });
 
@@ -78,20 +90,25 @@ const labelMap = computed(() => {
   return map;
 });
 
-// this watcher is used to reset the assigned selection if options change and they don't contain the current model value
+/**
+ * Watch for changes in the options array.
+ * - For multi-select: remove any selected values that are no longer present in the new options.
+ * - For single select: if the current value is not present in the new options,
+ *   - If showDisabledOption is true, reset the value to null (show placeholder).
+ *   - Otherwise, set the value to the first available option.
+ * This keeps the selected value(s) always in sync with the available options,
+ * preventing invalid selections when the options change dynamically.
+ */
 watch(
   () => props.options,
   () => {
-    if (isMultiple.value) {
+    if (isMultiSelect.value) {
       const newSelections = props.options.filter((newOption) => {
         return model.value.includes(newOption);
       });
       model.value = newSelections;
     } else if (!props.options.includes(model.value))
-      if (props.showDisabledOption)
-        /* if isMultiple === false and model contains a valid prop option, do nothing,
-         otherwise, set the model value to either null, if showDisabledOption is true, or the first availbale option. */
-        model.value = null;
+      if (props.showDisabledOption) model.value = null;
       else model.value = props.options[0];
   },
 );

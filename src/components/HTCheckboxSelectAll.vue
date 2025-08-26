@@ -4,41 +4,59 @@
     :label="label"
     :model-value="selectAll"
     @update:model-value="onCheckboxSelectAllUpdated"
-  ></ht-checkbox>
+  />
 </template>
 
 <script setup>
 import { ref, watchEffect } from 'vue';
 
-const selectAll = ref(false);
-
-const checkbox = ref(null);
+const selectAll = ref(false); // Tracks the state of the "Select All" checkbox
+const checkbox = ref(null); // Ref to access HTCheckbox methods (for indeterminate state)
 
 const props = defineProps({
   options: {
+    // Array of selectable values (must have at least one)
     type: Array,
     required: true,
     validator(value) {
-      // Must have at least one option
       return value.length > 0;
     },
   },
-  initiallySelected: { type: Boolean, default: true },
+  initiallySelected: {
+    // If true, all options are selected on mount
+    type: Boolean,
+    default: true,
+  },
   label: {
+    // Optional text label for the "select all" checkbox
     type: String,
     default: null,
   },
 });
-const model = defineModel({ type: Array, required: true }); // array of checkbox selections
 
-// we set the model content from within the component to be more robust against spurious initial arrays which could not contain declared options.
+const model = defineModel({ type: Array, required: true }); // Array of selected options
+
+// Initialize the model value based on initiallySelected prop.
+// Ensures that only declared options are selected, ignoring any spurious initial array.
 model.value = props.initiallySelected ? props.options : [];
 
+/**
+ * Handler for when the "select all" checkbox is toggled.
+ * - If checked, select all options.
+ * - If unchecked, deselect all options.
+ */
 const onCheckboxSelectAllUpdated = (value) => {
   model.value = value ? props.options : [];
   selectAll.value = value;
 };
 
+/**
+ * Watch for changes in the selected options array.
+ * - If all options are selected, "Select All" is checked.
+ * - If none are selected, "Select All" is unchecked.
+ * - If some are selected, "Select All" is indeterminate (tristate).
+ * Uses HTCheckbox methods via ref to set/reset indeterminate state.
+ */
 watchEffect(() => {
   if (model.value.length === props.options.length) {
     selectAll.value = true;
