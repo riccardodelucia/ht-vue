@@ -31,7 +31,8 @@
     "lodash": "^4.17.21",
     "tippy.js": "^6.3.7",
     "uuid": "^11.0.3",
-    "vue-feather": "^2.0.0"
+    "vue-feather": "^2.0.0",
+    "vuedraggable": "^4.1.0"
   },
   "peerDependencies": {
     "@vueuse/core": "^13.5.0",

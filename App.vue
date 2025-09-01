@@ -102,6 +102,17 @@
       </p>
     </div>
     <div>
+      <ht-checklist
+        label="Checklist with Drag & Drop"
+        :options="fruits"
+        :option-labels="fruitLabels"
+        select-all-label="Select All Fruits"
+        mode="single"
+        @submit="handleChecklistSubmit"
+      />
+      <p>Selected: {{ selectedFruits }}</p>
+    </div>
+    <div>
       <ht-toggle-switch
         v-model="toggleSwitchModelValue"
         :true-value="1"
@@ -380,6 +391,15 @@ const checkboxMultipleModelValue = ref([]);
 const checkboxSelectAllOptions = [1, 2, 3];
 const checkboxSelectAllOptionsModel = ref([]);
 
+const fruits = ref(['apple', 'banana', 'orange', 'pear']);
+const fruitLabels = ['Apple', 'Banana', 'Orange', 'Pear'];
+const selectedFruits = ref([]);
+
+// This function receives the emitted array
+const handleChecklistSubmit = (selected) => {
+  console.log('Checklist submitted:', selected);
+  selectedFruits.value = selected;
+};
 ///////////////////////////////////
 // Toggle Switch
 
