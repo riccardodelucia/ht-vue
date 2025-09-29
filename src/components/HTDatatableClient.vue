@@ -12,7 +12,7 @@
     :total-items-count="totalItemsCount"
     :table-cell-width="tableCellWidth"
     :table-cell-height="tableCellHeight"
-    v-model:page="currentPage"
+    v-model:page="page"
     @search-value="setSearchValue"
     @search-column="setSearchColumn"
     @sort="setSortColumn"
@@ -48,11 +48,13 @@ const props = defineProps({
   activeColumnsIndexes: { type: Array, default: null },
 });
 
+const page = defineModel('page', { type: Number });
+
 // ===== REACTIVE STATE =====
 const searchValue = ref('');
 const searchColumn = ref(props.searchAllColumnsLabel);
 const currentSortColumnInfo = ref(null);
-const currentPage = ref(1);
+//const currentPage = ref(1);
 const pageSize = ref(5);
 
 const internalActiveColumnsIndexes = computed(() => {
@@ -63,7 +65,7 @@ const internalActiveColumnsIndexes = computed(() => {
 
 // ===== HELPER FUNCTIONS =====
 const resetPagination = () => {
-  currentPage.value = 1;
+  page.value = 1;
 };
 
 const paginate = (items, pageSize, currentPage) => {
@@ -201,7 +203,7 @@ const paginatedData = computed(() => {
   if (!props.usePagination) {
     return sortedTableData.value;
   }
-  return paginate(sortedTableData.value, pageSize.value, currentPage.value);
+  return paginate(sortedTableData.value, pageSize.value, page.value);
 });
 
 const serverDatatableColumns = computed(() =>
