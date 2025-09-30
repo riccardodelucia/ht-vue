@@ -232,8 +232,6 @@ const availablePages = computed(() => {
 watch(
   () => props.data,
   () => {
-    resetPagination();
-
     // If current search column no longer exists, reset to "All"
     if (searchColumn.value !== props.searchAllColumnsLabel) {
       const columnExists = props.columns.some(

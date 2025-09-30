@@ -98,12 +98,16 @@ const currentPage = defineModel('page', { type: Number, required: true });
  */
 watchEffect(() => {
   if (currentPage.value > props.availablePages) {
+    currentPage.value = props.availablePages;
+  }
+  if (currentPage.value < 1) {
     currentPage.value = 1;
   }
 });
 
 const setCurrentPage = (page) => {
-  currentPage.value = page;
+  //currentPage.value = page;
+  currentPage.value = Math.min(Math.max(page, 1), props.availablePages);
 };
 
 const emit = defineEmits(['page-size']);
