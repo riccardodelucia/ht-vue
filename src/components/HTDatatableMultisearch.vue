@@ -8,8 +8,13 @@
       >
         <ht-button-icon @click="onTagRemove(idx)" icon-type="x-circle" />
         <div class="tag-content">
-          <span class="ellipsis">{{ filter.column }}</span>
-          <span>: {{ filter.value }}</span>
+          <span
+            class="ellipsis"
+            @mouseenter="handleTooltip($event, filter.column)"
+            @mouseleave="hideTooltip"
+          >
+            {{ filter.column }}
+          </span>
         </div>
       </span>
     </div>
@@ -75,6 +80,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useTooltip } from '../composables';
 
 const props = defineProps({
   columnOptions: { type: Array, required: true },
@@ -86,6 +92,8 @@ const showModal = ref(false);
 
 const errorMessage = ref('');
 
+const { showTooltip, hideTooltip } = useTooltip({ animation: false });
+
 // Array of filters that are currently applied (shown as tags): each is an object { column, value }
 const appliedFilters = ref([]);
 
@@ -95,6 +103,7 @@ const editingFilters = ref([]);
 // Open the modal and copy applied filters to editing filters
 function openModal() {
   showModal.value = true;
+  resetError();
   editingFilters.value = appliedFilters.value.length
     ? appliedFilters.value.map((f) => ({ ...f }))
     : [];
@@ -102,15 +111,21 @@ function openModal() {
 
 // Add a new filter to the editing list
 function addFilter() {
-  editingFilters.value.push({
-    column: props.columnOptions[0] ?? '',
-    value: '',
-  });
+  if (editingFilters.value.length < 4) {
+    editingFilters.value.push({
+      column: props.columnOptions[0] ?? '',
+      value: '',
+    });
+    resetError();
+  } else {
+    errorMessage.value = 'Maximum of 4 filters allowed.';
+  }
 }
 
 // Remove a filter from the editing list
 function removeFilter(idx) {
   editingFilters.value.splice(idx, 1);
+  resetError();
 }
 
 // Validate and emit list of filters to the parent
@@ -123,7 +138,7 @@ function applyFilters() {
     errorMessage.value = 'Please fill in all filter values before applying.';
     return;
   }
-  errorMessage.value = '';
+  resetError();
   // Update applied filters and emit to parent
   appliedFilters.value = [...editingFilters.value];
   emit('search-filters', appliedFilters.value);
@@ -134,6 +149,30 @@ function applyFilters() {
 function onTagRemove(idx) {
   appliedFilters.value.splice(idx, 1);
   emit('search-filters', appliedFilters.value);
+}
+
+function resetError() {
+  if (
+    editingFilters.value.length < 4 &&
+    errorMessage.value === 'Maximum of 4 filters allowed.'
+  ) {
+    errorMessage.value = '';
+  }
+  if (
+    errorMessage.value ===
+      'Please fill in all filter values before applying.' &&
+    editingFilters.value.every((f) => f.value && f.value.trim() !== '')
+  ) {
+    errorMessage.value = '';
+  }
+}
+
+function handleTooltip(event, content) {
+  const el = event.target;
+  // Mostra il tooltip solo se il testo è troncato
+  if (el.offsetWidth < el.scrollWidth) {
+    showTooltip(event, content);
+  }
 }
 </script>
 
