@@ -34,7 +34,7 @@ export const useTooltip = function (config = { animation: 'false' }) {
    * Hide and destroy the tooltip instance.
    */
   const hideTooltip = () => {
-    tooltipInstance.value.destroy();
+    if (tooltipInstance.value) tooltipInstance.value.destroy();
   };
 
   return { showTooltip, hideTooltip };
