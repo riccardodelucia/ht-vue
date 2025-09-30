@@ -7,6 +7,7 @@
     :displayable-pages="displayablePages"
     :search-all-columns-label="searchAllColumnsLabel"
     :use-search="useSearch"
+    :use-multisearch="useMultisearch"
     :use-sort="useSort"
     :use-pagination="usePagination"
     :total-items-count="totalItemsCount"
@@ -15,6 +16,7 @@
     v-model:page="page"
     @search-value="setSearchValue"
     @search-column="setSearchColumn"
+    @search-filters="setSearchFilters"
     @sort="setSortColumn"
     @page-size="setPageSize"
   >
@@ -23,36 +25,72 @@
       <slot
         v-bind="slotProps"
         :originalRowIndex="getOriginalRowIndex(slotProps.rowIndex)"
-      ></slot>
+      />
     </template>
   </ht-datatable-server>
 </template>
 
 <script setup>
+/* Note: This component is a wrapper component for HTDatatableServer.
+  - It receives raw data and column definitions from the parent.
+  - Applies client-side filtering, sorting, and pagination to the data.
+  - Passes the processed (filtered, sorted, paginated) data and columns to <ht-datatable-server>,
+    which is responsible only for rendering and emitting table events.
+  - Exposes the slot of the inner server table to the parent via <template v-slot="slotProps">,
+    allowing full customization of cell rendering and access to additional slot props,
+    such as the original row index of each displayed row. */
+
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
+  /* Array of column definitions ( {name, sortable, sortFn, sortDirection} ). */
   columns: { type: Array, required: true },
+
+  /* Name of the column to use as row header (optional). */
   rowHeader: { type: String, default: null },
+
+  /* Array of rows (each row is an array of cell values). */
   data: { type: Array, required: true },
+
+  /* Enables the search bar for filtering rows. */
   useSearch: { type: Boolean, default: true },
+
+  /* Enables/disables the multiple search bar for the table. */
+  useMultisearch: { type: Boolean, default: false },
+
+  /* Label for the "search all columns" option. */
   searchAllColumnsLabel: { type: String, default: 'All' },
+
+  /* Enables sorting for sortable columns. */
   useSort: { type: Boolean, default: true },
+
+  /* Enables pagination controls. */
   usePagination: { type: Boolean, default: true },
+
+  /* Maximum number of page buttons to show. */
   displayablePages: {
     type: Number,
     required: false,
   },
+
+  /* Array of column indexes to display (optional). */
+  activeColumnsIndexes: { type: Array, default: null },
+
+  /* Properties to control cell sizing. */
   tableCellWidth: { type: String, default: '100%' },
   tableCellHeight: { type: String, default: '100%' },
-  activeColumnsIndexes: { type: Array, default: null },
 });
 
 const page = defineModel('page', { type: Number });
 
 // ===== REACTIVE STATE =====
+// Array of active multi-search filters: [{ column, value }]:
+const searchFilters = ref([]);
+// Current search term:
 const searchValue = ref('');
+// Column to search in:
 const searchColumn = ref(props.searchAllColumnsLabel);
+// Info about the currently sorted column:
 const currentSortColumnInfo = ref(null);
 //const currentPage = ref(1);
 const pageSize = ref(5);
@@ -64,6 +102,7 @@ const internalActiveColumnsIndexes = computed(() => {
 });
 
 // ===== HELPER FUNCTIONS =====
+// Reset to first page when sorting or filtering changes are applied.
 const resetPagination = () => {
   page.value = 1;
 };
@@ -84,10 +123,16 @@ const setSearchColumn = (column) => {
   resetPagination();
 };
 
+function setSearchFilters(filters) {
+  // Advanced multi-search: filter on specific columns
+  searchFilters.value = filters;
+  resetPagination();
+}
+
 const setSortColumn = (sortColumnInfo) => {
   if (props.useSort) {
     currentSortColumnInfo.value = sortColumnInfo;
-    resetPagination(); // Reset to first page when sorting changes
+    resetPagination();
   }
 };
 
@@ -98,19 +143,19 @@ const setPageSize = (value) => {
   }
 };
 
-// gets the row index of the selected row irrespectively of filtering, sorting and pagination.
+// Gets the row index of the selected row irrespectively of filtering, sorting and pagination.
 const getOriginalRowIndex = (rowIndex) => {
-  // tableserver sends back the rowIndex which indicates the current position of the row in the actual shown table.
+  // HTDatatableServer sends back the rowIndex which indicates the current position of the row in the actual shown table.
   // since the actual shown table corresponds to the rows in paginatedData, rowIndex retrieves the corresponding row in paginated data.
   // finally, since paginatedData comes from internalTableData, which stores the initial rowIndex, we can finally retrieve the index of the origianl item in props.data
   const item = paginatedData.value[rowIndex];
   return item ? item.rowIndex : -1;
 };
 
-// ===== COMPUTED PIPELINE =====
+// ===== DATA PROCESSING PIPELINE =====
 
 /**
- * data processing is implemented as the following pipeline: filtering -> sorting -> pagination
+ * Data processing is implemented as the following pipeline: filtering -> sorting -> pagination
  * Each block is activated only if corresponding setting parameters are valid (e.g. there is a valid filter value).
  * Computed properties are computed on top of each previous stage.
  */
@@ -125,39 +170,62 @@ const internalTableData = computed(() =>
   props.data.map((row, rowIndex) => ({ row, rowIndex })),
 );
 
-// STEP 2: Apply filtering
+// STEP 2: Filter rows based on search value and selected column.
 const filteredTableData = computed(() => {
-  if (!props.useSearch || !searchValue.value) return internalTableData.value;
+  let data = internalTableData.value;
 
-  const searchTerm = searchValue.value.toLowerCase();
+  // If advanced multi-search is active
+  if (props.useMultisearch && searchFilters.value.length > 0) {
+    // Keep only rows that match ALL filters
+    return data.filter(({ row }) =>
+      searchFilters.value.every(({ column, value }) => {
+        // Find the index of the column to filter
+        const colIdx = props.columns.findIndex((col) => col.name === column);
+        if (colIdx === -1) return false; // Column not found
+        // Check if the cell value includes the filter value (case insensitive)
+        return String(row[colIdx] ?? '')
+          .toLowerCase()
+          .includes(value.toLowerCase());
+      }),
+    );
+  }
+  // If standard search is active
+  else if (props.useSearch && searchValue.value) {
+    const searchTerm = searchValue.value.toLowerCase();
 
-  if (searchColumn.value === props.searchAllColumnsLabel) {
-    return internalTableData.value.filter(({ row }) =>
-      row.some(
-        (elem) => String(elem).toLocaleLowerCase().indexOf(searchTerm) > -1,
-      ),
+    // Search all columns
+    if (searchColumn.value === props.searchAllColumnsLabel) {
+      return data.filter(({ row }) =>
+        row.some(
+          (elem) => String(elem).toLocaleLowerCase().indexOf(searchTerm) > -1,
+        ),
+      );
+    }
+
+    // Search specific column
+    const colIdx = props.columns.findIndex(
+      (col) => col.name === searchColumn.value,
+    );
+    if (colIdx === -1) {
+      console.warn('Search column not found:', searchColumn.value);
+      return data;
+    }
+
+    return data.filter(
+      ({ row }) =>
+        String(row[colIdx] || '')
+          .toLocaleLowerCase()
+          .indexOf(searchTerm) > -1,
     );
   }
 
-  const searchColumnIndex = props.columns.findIndex(
-    (column) => column.name === searchColumn.value,
-  );
-  if (searchColumnIndex === -1) {
-    console.warn('Search column not found:', searchColumn.value);
-    return internalTableData.value;
-  }
-
-  return internalTableData.value.filter(
-    ({ row }) =>
-      String(row[searchColumnIndex] || '')
-        .toLocaleLowerCase()
-        .indexOf(searchTerm) > -1,
-  );
+  // No search: return all data
+  return data;
 });
 
 const totalItemsCount = computed(() => filteredTableData.value.length);
 
-// STEP 3: Apply sorting
+// STEP 3: Sort filtered rows if sorting is enabled.
 const sortedTableData = computed(() => {
   if (!currentSortColumnInfo.value || !props.useSort)
     return filteredTableData.value;
@@ -198,7 +266,7 @@ const sortedTableData = computed(() => {
   }
 });
 
-// STEP 4: Apply pagination
+// STEP 4: Paginate sorted rows if pagination is enabled.
 const paginatedData = computed(() => {
   if (!props.usePagination) {
     return sortedTableData.value;
@@ -206,10 +274,11 @@ const paginatedData = computed(() => {
   return paginate(sortedTableData.value, pageSize.value, page.value);
 });
 
+// STEP 5: Extract only the active columns for display.
 const serverDatatableColumns = computed(() =>
   internalActiveColumnsIndexes.value.map((index) => props.columns[index]),
 );
-// STEP: 5 Extract final data for table server component
+// STEP 6: Pass the processed data and columns to HTDatatableServer.
 const serverDatatableData = computed(() =>
   paginatedData.value.map(({ row }) => {
     const activeColumnsRowItems = internalActiveColumnsIndexes.value.map(

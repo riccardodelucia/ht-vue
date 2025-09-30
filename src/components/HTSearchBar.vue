@@ -16,7 +16,7 @@
       label="Submit Search"
       @click="onClick"
     >
-      <HTIcon type="search" width="5" />
+      <ht-icon type="search" width="5" />
     </button>
     <datalist :id="listId">
       <option v-for="(hint, id) in hints" :key="`hint-${id}`" :value="hint" />
@@ -30,7 +30,6 @@
  * Note: accessibility of this component is not perfect.
  */
 import { v4 as uuidv4 } from 'uuid';
-import HTIcon from './HTIcon.vue';
 
 defineProps({
   label: { type: String, required: true },

@@ -10,7 +10,7 @@
     Sign in or Register
   </a>
   <div v-else v-click-outside="onClickOutside" class="user ht-grid-center-xy">
-    <HTButtonIcon
+    <ht-button-icon
       icon-type="user"
       type="button"
       label="Open User Menu"
@@ -29,7 +29,7 @@
       </h2>
       <nav aria-labelledby="user-menu-heading">
         <a class="ht-reset logout" href="#" @click="auth.logout()">
-          <HTIcon type="log-out" />logout
+          <ht-icon type="log-out" />logout
         </a>
       </nav>
     </div>
@@ -38,8 +38,6 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import HTButtonIcon from './HTButtonIcon.vue';
-import HTIcon from './HTIcon.vue';
 
 const props = defineProps({ auth: { type: Object, required: true } });
 

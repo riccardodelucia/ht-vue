@@ -19,10 +19,10 @@
               class="chevron"
               @click="setCurrentPage(currentPage - 1)"
             >
-              <HTIcon type="chevron-left" />
+              <ht-icon type="chevron-left" />
             </button>
             <button v-else class="chevron" aria-disabled="true">
-              <HTIcon type="chevron-left" />
+              <ht-icon type="chevron-left" />
             </button>
           </li>
 
@@ -41,10 +41,10 @@
               class="chevron"
               @click="setCurrentPage(currentPage + 1)"
             >
-              <HTIcon type="chevron-right" />
+              <ht-icon type="chevron-right" />
             </button>
             <button v-else class="chevron" aria-disabled="true">
-              <HTIcon type="chevron-right" />
+              <ht-icon type="chevron-right" />
             </button>
           </li>
         </ul>
@@ -61,7 +61,6 @@
  * either provided links or a linkResolving function which extrapolates the link for each page.
  */
 import { computed, ref, watchEffect } from 'vue';
-import HTIcon from './HTIcon.vue';
 
 const props = defineProps({
   // max number of pages to be displayed

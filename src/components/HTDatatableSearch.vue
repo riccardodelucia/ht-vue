@@ -3,7 +3,7 @@
     <ht-search-bar
       label="Search data"
       @search="$emit('search-value', $event)"
-    ></ht-search-bar>
+    />
     <div>
       <ht-select
         class="search-select"
@@ -12,7 +12,7 @@
         :show-disabled-option="false"
         label="Search By: "
         @update:modelValue="$emit('search-column', $event)"
-      ></ht-select>
+      />
     </div>
   </div>
 </template>

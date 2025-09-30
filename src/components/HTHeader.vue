@@ -4,7 +4,7 @@
       <img :src="htLogoWhite" alt="HT header logo" class="header-logo" />
     </a>
     <template v-if="$slots.default">
-      <HTButtonIcon
+      <ht-button-icon
         v-if="!isExpanded"
         aria-controls="primary-header-content"
         icon-type="menu"
@@ -13,7 +13,7 @@
         :aria-expanded="false"
         @click="onClick"
       />
-      <HTButtonIcon
+      <ht-button-icon
         v-else
         aria-controls="primary-header-content"
         icon-type="x"
@@ -32,7 +32,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import htLogoWhite from '../assets/ht-logo-white.svg';
-import HTButtonIcon from './HTButtonIcon.vue';
 
 const isExpanded = ref(false);
 const mediaQuery = window.matchMedia('(min-width: 50em)'); // matches your CSS media query
