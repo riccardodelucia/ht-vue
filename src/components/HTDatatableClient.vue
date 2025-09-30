@@ -179,10 +179,17 @@ const filteredTableData = computed(() => {
     // Keep only rows that match ALL filters
     return data.filter(({ row }) =>
       searchFilters.value.every(({ column, value }) => {
-        // Find the index of the column to filter
+        // If the filter is set to "All Columns", match if value is in ANY column
+        if (column === props.searchAllColumnsLabel) {
+          return row.some((cell) =>
+            String(cell ?? '')
+              .toLowerCase()
+              .includes(value.toLowerCase()),
+          );
+        }
+        // Otherwise, match only the specific column
         const colIdx = props.columns.findIndex((col) => col.name === column);
-        if (colIdx === -1) return false; // Column not found
-        // Check if the cell value includes the filter value (case insensitive)
+        if (colIdx === -1) return false;
         return String(row[colIdx] ?? '')
           .toLowerCase()
           .includes(value.toLowerCase());

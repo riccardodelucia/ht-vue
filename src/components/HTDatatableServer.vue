@@ -2,7 +2,7 @@
   <div class="datatable">
     <ht-datatable-multisearch
       v-if="useMultisearch"
-      :column-options="columns"
+      :column-options="searchableColumns"
       @search-filters="onSetSearchFilters"
     />
     <ht-datatable-search
@@ -192,7 +192,7 @@ const setAriaSort = (column, columnIndex) => {
 <style scoped>
 .datatable {
   display: grid;
-  grid-row-gap: var(--size-5);
+  grid-row-gap: var(--size-4);
   width: 100%;
 }
 
