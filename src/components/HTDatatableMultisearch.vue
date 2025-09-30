@@ -218,7 +218,8 @@ function handleTooltip(event, content) {
   display: inline-block;
 }
 .modal-content {
-  padding-bottom: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
   width: 100%;
 }
 
