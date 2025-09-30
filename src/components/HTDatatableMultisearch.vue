@@ -88,6 +88,7 @@ const errorMessage = ref('');
 
 // Array of filters that are currently applied (shown as tags): each is an object { column, value }
 const appliedFilters = ref([]);
+
 //  Array of filters being edited in the modal: each is an object { column, value }
 const editingFilters = ref([]);
 
