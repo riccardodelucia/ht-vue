@@ -22,11 +22,6 @@ const props = defineProps({
       return value.length > 0;
     },
   },
-  initiallySelected: {
-    // If true, all options are selected on mount
-    type: Boolean,
-    default: true,
-  },
   label: {
     // Optional text label for the "select all" checkbox
     type: String,
@@ -35,10 +30,6 @@ const props = defineProps({
 });
 
 const model = defineModel({ type: Array, required: true }); // Array of selected options
-
-// Initialize the model value based on initiallySelected prop.
-// Ensures that only declared options are selected, ignoring any spurious initial array.
-model.value = props.initiallySelected ? props.options : [];
 
 /**
  * Handler for when the "select all" checkbox is toggled.

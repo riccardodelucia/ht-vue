@@ -196,6 +196,11 @@
         </template>
       </ht-datatable-server>
       <h2>Client side table</h2>
+      <ht-input
+        v-model="dataTableClientCurrentPage"
+        type="number"
+        label="Select Page"
+      ></ht-input>
       <ht-datatable-client
         :active-columns-indexes="activeColumnsIndexes"
         :data="tableData"
@@ -205,6 +210,7 @@
         :use-sort="true"
         :use-pagination="true"
         :displayable-pages="3"
+        v-model:page="dataTableClientCurrentPage"
       >
         <template v-slot="slotProps">
           <template v-if="slotProps?.column.name === 'Action'">
@@ -462,6 +468,9 @@ const tableData = [
 ];
 
 const activeColumnsIndexes = ref(columns.map((_, idx) => idx));
+
+// client side table
+const dataTableClientCurrentPage = ref(1);
 
 // Server side table
 const currentPage = ref(1);

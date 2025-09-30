@@ -60,7 +60,7 @@
  * non accessible nav, where internal elements do not navigate anywhere. Proper logic should be integrated to switch between buttons and anchors, in presence of
  * either provided links or a linkResolving function which extrapolates the link for each page.
  */
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import HTIcon from './HTIcon.vue';
 
 const props = defineProps({
@@ -92,8 +92,22 @@ const props = defineProps({
  */
 const currentPage = defineModel('page', { type: Number, required: true });
 
+/**
+ * Since the current page can be passed as a prop, we need to control its value and possibily change it to be coherent with
+ * the number of available pages.
+ */
+watchEffect(() => {
+  if (currentPage.value > props.availablePages) {
+    currentPage.value = props.availablePages;
+  }
+  if (currentPage.value < 1) {
+    currentPage.value = 1;
+  }
+});
+
 const setCurrentPage = (page) => {
-  currentPage.value = page;
+  //currentPage.value = page;
+  currentPage.value = Math.min(Math.max(page, 1), props.availablePages);
 };
 
 const emit = defineEmits(['page-size']);
