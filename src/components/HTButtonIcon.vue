@@ -1,5 +1,5 @@
 <template>
-  <button class="ht-reset ht-grid-center-xy">
+  <button class="ht-reset ht-grid-center-xy" v-bind="$attrs">
     <span class="ht-visually-hidden">{{ label }}</span>
     <ht-icon :type="iconType" :width="width" />
   </button>
