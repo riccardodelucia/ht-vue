@@ -6,7 +6,7 @@
         :options="[5, 10, 20, 30]"
         @update:modelValue="emit('page-size', $event)"
         label="Page Size"
-      ></ht-select>
+      />
     </div>
     <div class="pagination-controls">
       <span v-if="totalItemsCount">Total count: {{ totalItemsCount }}</span>
@@ -23,7 +23,7 @@
               <ht-icon type="chevron-left" />
             </button>
             <button v-else class="chevron" type="button" aria-disabled="true">
-              <HTIcon type="chevron-left" />
+              <ht-icon type="chevron-left" />
             </button>
           </li>
 
@@ -47,7 +47,7 @@
               <ht-icon type="chevron-right" />
             </button>
             <button v-else class="chevron" type="button" aria-disabled="true">
-              <HTIcon type="chevron-right" />
+              <ht-icon type="chevron-right" />
             </button>
           </li>
         </ul>

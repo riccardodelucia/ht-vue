@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useTooltip } from '../composables';
 
 const props = defineProps({
@@ -151,6 +151,7 @@ function onTagRemove(idx) {
   emit('search-filters', appliedFilters.value);
 }
 
+// Reset the error message if the current state resolves the previous error.
 function resetError() {
   if (
     editingFilters.value.length < 4 &&
@@ -167,6 +168,7 @@ function resetError() {
   }
 }
 
+// Shows a tooltip only if the content of the tag is visually truncated (ellipsis).
 function handleTooltip(event, content) {
   const el = event.target;
   // Mostra il tooltip solo se il testo è troncato
@@ -174,6 +176,21 @@ function handleTooltip(event, content) {
     showTooltip(event, content);
   }
 }
+
+// If columnOptions prop changes, resets all filters (applied or editing)
+watch(
+  () => props.columnOptions,
+  (newOptions) => {
+    const validColumns = new Set(newOptions);
+    appliedFilters.value = appliedFilters.value.filter((f) =>
+      validColumns.has(f.column),
+    );
+    editingFilters.value = editingFilters.value.filter((f) =>
+      validColumns.has(f.column),
+    );
+    applyFilters();
+  },
+);
 </script>
 
 <style scoped>
