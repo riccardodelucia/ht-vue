@@ -9,6 +9,7 @@
         aria-controls="primary-header-content"
         icon-type="menu"
         class="menu-button"
+        type="button"
         label="Toggle Primary Navigation"
         :aria-expanded="false"
         @click="onClick"
@@ -17,6 +18,7 @@
         v-else
         aria-controls="primary-header-content"
         icon-type="x"
+        type="button"
         class="menu-button"
         label="Toggle Primary Navigation"
         :aria-expanded="true"

@@ -15,19 +15,21 @@
         <ul>
           <li>
             <button
+              type="button"
               v-if="currentPage > 1"
               class="chevron"
               @click="setCurrentPage(currentPage - 1)"
             >
               <HTIcon type="chevron-left" />
             </button>
-            <button v-else class="chevron" aria-disabled="true">
+            <button v-else class="chevron" type="button" aria-disabled="true">
               <HTIcon type="chevron-left" />
             </button>
           </li>
 
           <li v-for="page in pages" :key="page">
             <button
+              type="button"
               class="page number-indicator"
               :aria-current="page === currentPage ? 'page' : null"
               @click="setCurrentPage(page)"
@@ -38,12 +40,13 @@
           <li>
             <button
               v-if="currentPage < availablePages"
+              type="button"
               class="chevron"
               @click="setCurrentPage(currentPage + 1)"
             >
               <HTIcon type="chevron-right" />
             </button>
-            <button v-else class="chevron" aria-disabled="true">
+            <button v-else class="chevron" type="button" aria-disabled="true">
               <HTIcon type="chevron-right" />
             </button>
           </li>
