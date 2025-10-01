@@ -206,7 +206,7 @@
         :data="tableData"
         :columns="columns"
         row-header="Country"
-        :use-search="true"
+        :use-multisearch="true"
         :use-sort="true"
         :use-pagination="true"
         :displayable-pages="3"

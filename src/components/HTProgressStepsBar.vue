@@ -1,6 +1,6 @@
 <template>
   <div class="form-progressbar">
-    <HTProgress :value="progressPercentage" aria-label="Progress Percentage" />
+    <ht-progress :value="progressPercentage" aria-label="Progress Percentage" />
     <ol class="ht-reset">
       <li
         v-for="(step, idx) in steps"
@@ -12,12 +12,12 @@
           :data-state="idx <= currentStepIndex ? 'completed' : null"
         >
           {{ idx + 1 }}
-          <span v-if="idx < currentStepIndex" class="ht-visually-hidden"
-            >Completed</span
-          >
-          <span v-else-if="idx === currentStepIndex" class="ht-visually-hidden"
-            >Current</span
-          >
+          <span v-if="idx < currentStepIndex" class="ht-visually-hidden">
+            Completed
+          </span>
+          <span v-else-if="idx === currentStepIndex" class="ht-visually-hidden">
+            Current
+          </span>
           <small>{{ step }}</small>
         </div>
       </li>
@@ -26,7 +26,6 @@
 </template>
 
 <script setup>
-import HTProgress from './HTProgress.vue';
 import { computed } from 'vue';
 
 const props = defineProps({
