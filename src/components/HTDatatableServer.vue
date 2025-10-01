@@ -1,11 +1,16 @@
 <template>
   <div class="datatable">
+    <ht-datatable-multisearch
+      v-if="useMultisearch"
+      :column-options="searchableColumns"
+      @search-filters="onSetSearchFilters"
+    />
     <ht-datatable-search
-      v-if="useSearch"
+      v-else-if="useSearch"
       :column-options="searchableColumns"
       @search-column="onSetSearchColumn"
       @search-value="onSetSearchValue"
-    ></ht-datatable-search>
+    />
     <div class="table-container">
       <table>
         <thead>
@@ -40,8 +45,9 @@
                     :columnIndex="columnIndex"
                     :rowIndex="rowIndex"
                     :dataValue="row[columnIndex]"
-                    >{{ row[columnIndex] }}</slot
                   >
+                    {{ row[columnIndex] }}
+                  </slot>
                 </div>
               </th>
               <td v-else>
@@ -51,8 +57,9 @@
                     :columnIndex="columnIndex"
                     :rowIndex="rowIndex"
                     :dataValue="data[rowIndex][columnIndex]"
-                    >{{ data[rowIndex][columnIndex] }}</slot
                   >
+                    {{ data[rowIndex][columnIndex] }}
+                  </slot>
                 </div>
               </td>
             </template>
@@ -67,85 +74,69 @@
       :available-pages="availablePages"
       :displayable-pages="displayablePages"
       :total-items-count="totalItemsCount"
-    ></ht-datatable-pagination>
+    />
   </div>
 </template>
 
 <script setup>
-/**
- * Note: sorting and pagination is not done on the component to allow for more flexible logic. By emitting sort and pagination events, the parent can implement both
- * client side and server side sorting+pagination solutions
- */
+/* Note: This component does not handle sorting or pagination internally. Instead, it emits events for sort and pagination actions, allowing the parent component to implement custom logic (client-side or server-side) as needed. */
 
 import { computed, ref } from 'vue';
+
+/* This is the minimum set of required attributes. Any additional attributes passed will be exposed to the parent as slot props, allowing for further customization and usage as needed. */
 const props = defineProps({
-  /**
-   * this is the minimum set of required attributes. Any further attribute can still be passed,
-   * and it will be exposed back to the parent a slot prop, to be used according to needs.
-   * column_item_example = {
-   *  name: String //the name to describe the column
-   *  sortable: Boolean // optional, it indicates whether the column is sortable
-   *  sortFn: Function // optional, it specifies a sorting logic for the column, to adapt to the column values type. Default logic is used otherwise (see sort function)
-   *  sortDirection: defines the current sorting direction for the column
-   * }
-   *
-   */
+  /* Array of column definitions for the table.
+  Each column object can have:
+  - name: String (column header)
+  - sortable: Boolean (optional: if true, column can be sorted)
+  - sortFn: Function (optional: custom sort logic for the column)
+  - sortDirection: String ('ASC' or 'DESC', defines the current sort direction for the column) */
   columns: { type: Array, required: true },
-  /**
-   * Each row needs a table cell used as row head. This props is compared to the
-   * corresponding column hnnameame for each column. When there is a correspondence, the corresponding
-   * cell is set as <th>, instead of <td>.
-   */
+
+  /* Name of the column to use as row header.
+  The cell matching this column will be rendered as <th scope="row">, instead of <td>. */
   rowHeader: { type: String, default: null },
-  /**
-   * Data is an array of arrays, i.e. a 2D matrix, where each matrix element is the corresponding data value for that table indexed position (i, j).
-   * Empty values must therefore be provided as either null or undefined, to keep the array elements alignment in the matrix.
-   * Each matrix value is exposed as a slotProp to the parent in the corresponding table cell.
-   */
+
+  /* Data should be a two-dimensional array ( 2D matrix), where each element represents the value at position (rowIndex, columnIndex) in the table.
+  - Use null or undefined for empty cells to maintain correct alignment.
+  - Each matrix value is exposed as a slot prop to the parent in the corresponding table cell. */
   data: { type: Array, required: true },
-  /**
-   * Enables/ disables the search bar for the table.
-   */
+
+  /* Enables/disables the search bar for the table. */
   useSearch: { type: Boolean, default: true },
-  /**
-   * This sets the default option for researching values in all table columns
-   */
+
+  /* Enables/disables the multiple search bar for the table. */
+  useMultisearch: { type: Boolean, default: false },
+
+  /* Label for the "search all columns" option in the search bar. */
   searchAllColumnsLabel: { type: String, default: 'All Columns' },
-  /**
-   * Enables/ disables the sorting for column table headers.
-   */
+
+  /* Enables/disables the sorting for column table headers. */
   useSort: { type: Boolean, default: true },
-  /**
-   * Enables/ disables pagination for the table.
-   */
+
+  /* Enables/disables pagination for the table. */
   usePagination: { type: Boolean, default: true },
-  /**
-   * Maximum number of pages to be shown in the pagination cursor. Must be an odd value.
-   */
+
+  /* Maximum number of pages to be shown in the pagination cursor. Must be an odd number. */
   displayablePages: {
     type: Number,
     required: false,
   },
-  /**
-   * Total number of pages according to the size of data
-   */
+
+  /* Total number of pages according to the size of data */
   availablePages: {
     type: Number,
     required: false,
   },
-  /**
-   * Total number of data rows according to the current data filtering.
-   * This is shown in the pagination component.
-   */
+
+  /* Total number of data rows according to the current data filtering.
+  This is shown in the pagination component. */
   totalItemsCount: { type: Number, default: null },
-  /**
-   * This defines the min width of the table cell.
-   * Column width can still grow more than this number according to the size of the column header content.
-   */
+
+  /* Minimum width for each table cell. Cells can grow wider according to the size of the column header content. */
   tableCellWidth: { type: String, default: '30rem' },
-  /**
-   * When 100%, the cell height is adapted to fit the cell content.
-   */
+
+  /* Height for each table cell. If set to '100%', cell height adapts to content. */
   tableCellHeight: { type: String, default: '100%' },
 });
 
@@ -154,15 +145,12 @@ const emit = defineEmits([
   'page-size',
   'search-column',
   'search-value',
+  'search-filters',
 ]);
 
 const page = defineModel('page', { type: Number });
 
 const sortState = ref({});
-
-const onPageSizeChange = (pageSize) => {
-  emit('page-size', pageSize);
-};
 
 const onSortColumn = (column, columnIndex) => {
   const sortDirection =
@@ -177,6 +165,14 @@ const onSetSearchColumn = (column) => {
 
 const onSetSearchValue = (value) => {
   emit('search-value', value);
+};
+
+const onSetSearchFilters = (filters) => {
+  emit('search-filters', filters); // filters = [{ column, value }, ...]
+};
+
+const onPageSizeChange = (pageSize) => {
+  emit('page-size', pageSize);
 };
 
 const searchableColumns = computed(() => [
@@ -196,7 +192,7 @@ const setAriaSort = (column, columnIndex) => {
 <style scoped>
 .datatable {
   display: grid;
-  grid-row-gap: var(--size-5);
+  grid-row-gap: var(--size-4);
   width: 100%;
 }
 

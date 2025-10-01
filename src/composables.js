@@ -26,6 +26,7 @@ export const useTooltip = function (config = { animation: 'false' }) {
     const instance = tippy(event.target);
     instance.setProps(config);
     instance.setContent(content);
+    instance.show();
     tooltipInstance.value = instance;
   };
 
@@ -33,7 +34,7 @@ export const useTooltip = function (config = { animation: 'false' }) {
    * Hide and destroy the tooltip instance.
    */
   const hideTooltip = () => {
-    tooltipInstance.value.destroy();
+    if (tooltipInstance.value) tooltipInstance.value.destroy();
   };
 
   return { showTooltip, hideTooltip };

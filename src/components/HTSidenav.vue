@@ -11,7 +11,7 @@
     <ul v-if="links.length > 0" class="sidenav-list">
       <li v-for="(link, idx) in links" :key="idx">
         <RouterLink :to="link.to" class="sidenav-link" active-class="active">
-          <HTIcon
+          <ht-icon
             v-if="link.icon"
             :type="link.icon"
             :width="25"
@@ -28,7 +28,6 @@
 
 <script setup>
 import htLogoWhite from '../assets/ht-logo-white.svg';
-import HTIcon from './HTIcon.vue';
 
 defineProps({
   title: { type: String, default: 'Test' },
