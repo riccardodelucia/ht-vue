@@ -198,7 +198,7 @@ const setAriaSort = (column, columnIndex) => {
 
 .table-container {
   max-width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 table {
@@ -227,7 +227,7 @@ tr:nth-child(even) {
 /*  putting a div within th, td allows to controls the cell height and scrolling behavior. */
 .table-cell {
   height: v-bind(tableCellHeight);
-  overflow-y: scroll;
+  overflow-y: auto;
   white-space: pre-line; /* this converts JS '\n' characters into HTML new line. */
 }
 
