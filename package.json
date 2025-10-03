@@ -23,7 +23,7 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "@nf-data-iu3/ht-design": "^0.0.3",
+    "@nf-data-iu3/ht-design": "^0.0.4",
     "axios": "^1.7.9",
     "d3": "^7.7.0",
     "deepdash-es": "^5.3.9",
