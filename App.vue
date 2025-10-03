@@ -200,7 +200,7 @@
         v-model="dataTableClientCurrentPage"
         type="number"
         label="Select Page"
-      ></ht-input>
+      />
       <ht-datatable-client
         :active-columns-indexes="activeColumnsIndexes"
         :data="tableData"
