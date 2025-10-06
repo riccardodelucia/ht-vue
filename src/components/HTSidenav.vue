@@ -1,29 +1,35 @@
 <template>
-  <nav class="sidenav">
-    <a
-      class="sidenav-logo"
-      href="https://humantechnopole.it/en/"
-      target="_blank"
-    >
-      <img :src="htLogoWhite" alt="HT sidenav logo" />
-    </a>
-    <h2>{{ title }}</h2>
-    <ul v-if="links.length > 0" class="sidenav-list">
-      <li v-for="(link, idx) in links" :key="idx">
-        <RouterLink :to="link.to" class="sidenav-link" active-class="active">
-          <ht-icon
-            v-if="link.icon"
-            :type="link.icon"
-            :width="25"
-            class="sidenav-link-icon"
-          />
-          <span class="sidenav-link-label">{{ link.label }}</span>
-        </RouterLink>
-      </li>
-    </ul>
-    <!-- Use this slot if you want to override the default render behavior of the sidenav -->
-    <slot name="sidenav-content"></slot>
-  </nav>
+  <div class="sidenav">
+    <slot name="sidenav-logo">
+      <a
+        class="sidenav-logo"
+        href="https://humantechnopole.it/en/"
+        target="_blank"
+      >
+        <img :src="htLogoWhite" alt="HT sidenav logo" />
+      </a>
+    </slot>
+
+    <h2 id="sidenav-title">{{ title }}</h2>
+
+    <nav aria-labelledby="sidenav-title">
+      <ul v-if="links.length > 0" class="sidenav-list">
+        <li v-for="(link, idx) in links" :key="idx">
+          <RouterLink :to="link.to" class="sidenav-link" active-class="active">
+            <ht-icon
+              v-if="link.icon"
+              :type="link.icon"
+              :width="25"
+              class="sidenav-link-icon"
+            />
+            <span class="sidenav-link-label">{{ link.label }}</span>
+          </RouterLink>
+        </li>
+      </ul>
+      <!-- Use this slot if you want to override the default render behavior of the sidenav -->
+      <slot name="sidenav-content"></slot>
+    </nav>
+  </div>
 </template>
 
 <script setup>
@@ -42,20 +48,20 @@ defineProps({
   min-height: 100vh;
   color: white;
   padding-block: var(--size-3);
-
-  h2 {
-    padding-inline: var(--size-3);
-    margin-bottom: var(--size-2);
-    font-size: var(--font-size-3);
-    font-weight: var(--font-weight-5);
-  }
 }
 
-.sidenav-logo {
+:slotted(.sidenav-logo) {
   display: block;
-  width: 9rem;
+  width: 10rem;
   padding-inline: var(--size-3);
   margin-bottom: var(--size-3);
+}
+
+h2 {
+  padding-inline: var(--size-3);
+  margin-bottom: var(--size-2);
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-5);
 }
 
 .sidenav-list {

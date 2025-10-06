@@ -11,7 +11,7 @@
         @click="onClick"
       >
       </ht-button-icon>
-      <slot name="header"></slot>
+      <slot name="header" />
     </header>
     <ht-sidenav
       id="sidenav"
@@ -20,12 +20,15 @@
       :title="sidenavTitle"
       :links="sidenavLinks"
     >
+      <template #sidenav-logo>
+        <slot name="sidenav-logo" />
+      </template>
       <template #sidenav-content>
-        <slot name="sidenav-content"></slot>
+        <slot name="sidenav-content" />
       </template>
     </ht-sidenav>
     <main class="main">
-      <slot></slot>
+      <slot />
     </main>
   </div>
 </template>
