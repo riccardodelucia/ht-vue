@@ -13,6 +13,7 @@
     :total-items-count="totalItemsCount"
     :table-cell-width="tableCellWidth"
     :table-cell-height="tableCellHeight"
+    :show-sticky-column="showStickyColumn"
     v-model:page="page"
     @search-value="setSearchValue"
     @search-column="setSearchColumn"
@@ -20,9 +21,10 @@
     @sort="setSortColumn"
     @page-size="setPageSize"
   >
-    <!-- This allows to pass the slot of the inner server table up to the parent -->
-    <template v-slot="slotProps">
+    <!-- This allows to forward the dynamic slots of the inner server table up to the parent -->
+    <template v-for="(_, name) in $slots" #[name]="slotProps">
       <slot
+        :name="name"
         v-bind="slotProps"
         :originalRowIndex="getOriginalRowIndex(slotProps.rowIndex)"
       />
@@ -36,9 +38,9 @@
   - Applies client-side filtering, sorting, and pagination to the data.
   - Passes the processed (filtered, sorted, paginated) data and columns to <ht-datatable-server>,
     which is responsible only for rendering and emitting table events.
-  - Exposes the slot of the inner server table to the parent via <template v-slot="slotProps">,
-    allowing full customization of cell rendering and access to additional slot props,
-    such as the original row index of each displayed row. */
+  - Forwards all named slots from the parent to <ht-datatable-server>,
+    enabling full customization of cell rendering and row actions,
+    and provides additional slot props (e.g., the original row index) to the parent. */
 
 import { computed, ref, watch } from 'vue';
 
@@ -79,6 +81,9 @@ const props = defineProps({
   /* Properties to control cell sizing. */
   tableCellWidth: { type: String, default: '100%' },
   tableCellHeight: { type: String, default: '100%' },
+  stickyCellWidth: { type: String, default: '100%' },
+
+  showStickyColumn: { type: Boolean, default: true },
 });
 
 const page = defineModel('page', { type: Number });
