@@ -1,22 +1,26 @@
 <template>
-  <input
-    :id="id"
-    role="switch"
-    v-model="model"
-    :true-value="trueValue"
-    :false-value="falseValue"
-    v-bind="$attrs"
-    type="checkbox"
-    :aria-invalid="errorMessage ? true : null"
-    :aria-describedby="errorMessage ? `input-error-${id}` : null"
-  />
-  <label :for="id">{{ model }}</label>
+  <label v-if="label" :for="id">{{ label }}</label>
+  <div>
+    <input
+      :id="id"
+      role="switch"
+      v-model="model"
+      :true-value="trueValue"
+      :false-value="falseValue"
+      v-bind="$attrs"
+      type="checkbox"
+      :aria-invalid="errorMessage ? true : null"
+      :aria-describedby="errorMessage ? `input-error-${id}` : null"
+    />
+    <span class="toggle-status">{{ model }}</span>
+  </div>
   <span
     v-if="errorMessage"
     :id="`input-error-${uuid}`"
     class="ht-input-error-message"
     aria-live="assertive"
-    >{{ errorMessage }}
+  >
+    {{ errorMessage }}
   </span>
 </template>
 
@@ -24,6 +28,10 @@
 import { v4 as uuidv4 } from 'uuid';
 
 defineProps({
+  label: {
+    type: String,
+    default: null,
+  },
   trueValue: {
     type: [String, Number, Boolean, Object, Array, null],
     default: () => true,
@@ -46,14 +54,11 @@ const model = defineModel();
 </script>
 
 <style scoped>
-label,
+.toggle-status,
 input {
   vertical-align: middle;
 }
-label {
+.toggle-status {
   margin-left: var(--size-1);
-}
-input:not(:first-child) {
-  margin-left: var(--size-4);
 }
 </style>

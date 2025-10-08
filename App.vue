@@ -27,11 +27,11 @@
     </div>
     <h2>Input Controls</h2>
     <div>
-      <ht-input v-model="inputFieldModel" label="Input field" />
+      <ht-input v-model="inputFieldModel" label="Input field label" />
       <p>inputFieldModel: {{ inputFieldModel }}</p>
     </div>
     <div>
-      <ht-textarea v-model="inputTextareaModel" label="Textarea" />
+      <ht-textarea v-model="inputTextareaModel" label="Textarea label" />
       <p>inputTextareaModel: {{ inputTextareaModel }}</p>
     </div>
     <div>
@@ -196,11 +196,7 @@
         </template>
       </ht-datatable-server>
       <h2>Client side table</h2>
-      <ht-input
-        v-model="dataTableClientCurrentPage"
-        type="number"
-        label="Select Page"
-      />
+
       <ht-datatable-client
         :active-columns-indexes="activeColumnsIndexes"
         :data="tableData"
@@ -212,15 +208,39 @@
         :displayable-pages="3"
         v-model:page="dataTableClientCurrentPage"
       >
+        <template #table-controls>
+          <div class="ht-flex-align-center">
+            <ht-input
+              v-model="dataTableClientCurrentPage"
+              type="number"
+              label="Select Page"
+            />
+          </div>
+        </template>
         <template v-slot="slotProps">
           <template v-if="slotProps?.column.name === 'Action'">
-            <button type="button">
-              Action: {{ slotProps.dataValue }}Original Row Index:
-            </button>
+            <button type="button">Action: {{ slotProps.dataValue }}</button>
             <p>Original Row Index: {{ slotProps.originalRowIndex }}</p>
           </template>
         </template>
+
+        <template #sticky-row="slotProps">
+          <div class="ht-flex-center-xy" style="--flex-gap: 1rem">
+            <ht-button-icon
+              label="Edit row"
+              iconType="edit"
+              @click="() => console.log(slotProps.originalRowIndex)"
+            />
+
+            <ht-button-icon
+              label="Edit row"
+              iconType="trash"
+              @click="() => console.log(slotProps.originalRowIndex)"
+            />
+          </div>
+        </template>
       </ht-datatable-client>
+
       <ht-checkbox
         v-for="(option, idx) in columns.map(({ name }) => name)"
         :key="`datatable-client-checkbox-${idx}`"
