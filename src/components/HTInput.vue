@@ -13,7 +13,8 @@
     :id="`input-error-${id}`"
     class="ht-input-error-message"
     aria-live="assertive"
-    >{{ errorMessage }}
+  >
+    {{ errorMessage }}
   </span>
 </template>
 

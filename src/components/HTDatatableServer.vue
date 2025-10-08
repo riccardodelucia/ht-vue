@@ -1,16 +1,21 @@
 <template>
   <div class="datatable">
-    <ht-datatable-multisearch
-      v-if="useMultisearch"
-      :column-options="searchableColumns"
-      @search-filters="onSetSearchFilters"
-    />
-    <ht-datatable-search
-      v-else-if="useSearch"
-      :column-options="searchableColumns"
-      @search-column="onSetSearchColumn"
-      @search-value="onSetSearchValue"
-    />
+    <div class="ht-flex">
+      <slot name="table-controls" />
+      <!-- The flexible spacer ensures that any controls in the table-controls slot stay left-aligned, while search components are always right-aligned. -->
+      <div style="flex: 1 1 auto" />
+      <ht-datatable-multisearch
+        v-if="useMultisearch"
+        :column-options="searchableColumns"
+        @search-filters="onSetSearchFilters"
+      />
+      <ht-datatable-search
+        v-else-if="useSearch"
+        :column-options="searchableColumns"
+        @search-column="onSetSearchColumn"
+        @search-value="onSetSearchValue"
+      />
+    </div>
     <div class="table-container">
       <table>
         <thead>
@@ -31,6 +36,12 @@
               <template v-else>{{ column.name }}</template>
             </th>
           </template>
+          <transition name="slide-sticky-col">
+            <th
+              v-if="$slots['sticky-row'] && showStickyColumn"
+              class="sticky-header"
+            />
+          </transition>
         </thead>
         <tbody>
           <tr v-for="(row, rowIndex) in data" :key="`tbody-row-${rowIndex}`">
@@ -63,6 +74,14 @@
                 </div>
               </td>
             </template>
+            <transition name="slide-sticky-col">
+              <td
+                v-if="$slots['sticky-row'] && showStickyColumn"
+                class="sticky-cell"
+              >
+                <slot name="sticky-row" :rowIndex="rowIndex" />
+              </td>
+            </transition>
           </tr>
         </tbody>
       </table>
@@ -138,6 +157,11 @@ const props = defineProps({
 
   /* Height for each table cell. If set to '100%', cell height adapts to content. */
   tableCellHeight: { type: String, default: '100%' },
+
+  /* Minimum width for each table cell. Cells can grow wider according to the size of the column header content. */
+  stickyCellWidth: { type: String, default: '5rem' },
+
+  showStickyColumn: { type: Boolean, default: true },
 });
 
 const emit = defineEmits([
@@ -199,6 +223,7 @@ const setAriaSort = (column, columnIndex) => {
 .table-container {
   max-width: 100%;
   overflow-x: auto;
+  position: relative;
 }
 
 table {
@@ -229,6 +254,34 @@ tr:nth-child(even) {
   height: v-bind(tableCellHeight);
   overflow-y: auto;
   white-space: pre-line; /* this converts JS '\n' characters into HTML new line. */
+}
+
+.sticky-header,
+.sticky-cell {
+  position: sticky;
+  right: -2px;
+  padding-inline: var(--size-3);
+  background-color: var(--ht-surface-3);
+  min-width: v-bind(stickyCellWidth);
+  width: v-bind(stickyCellWidth);
+}
+
+.sticky-header::before,
+.sticky-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 10px;
+  height: 100%;
+
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.15) 20%,
+    rgba(0, 0, 0, 0.05) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .sort-button {
@@ -275,5 +328,18 @@ th[aria-sort='ASC'] .sort-button:before {
 th[aria-sort='DESC'] .sort-button:after {
   border-top-color: var(--ht-color-gray-3);
   margin-top: 1px;
+}
+
+.slide-sticky-col-enter-active,
+.slide-sticky-col-leave-active {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-sticky-col-enter-from,
+.slide-sticky-col-leave-to {
+  transform: translateX(100%);
+}
+.slide-sticky-col-enter-to,
+.slide-sticky-col-leave-from {
+  transform: translateX(0);
 }
 </style>
